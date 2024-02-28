@@ -3,6 +3,7 @@
     "functions": {
         "api/index.php": { "runtime": "vercel-php@0.6.0" }
     },
+    "builds": [{ "src": "public/**/*", "use": "@now/static" }],
     "routes": [{
         "src": "/(css|js)/(.*)",
         "dest": "public/$1/$2"
