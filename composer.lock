@@ -8197,5 +8197,10 @@
         "php": "^8.1"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.6.0",
+    "vercel": [
+        "@php -v",
+        "npm -v",
+        "npm install && npm run prod"
+    ]
 }
