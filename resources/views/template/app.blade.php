@@ -34,7 +34,7 @@
             </div>
             <footer class="main-footer">
                 <div class="footer-left">
-                    Copyright &copy; 2023 <div class="bullet"></div> TA <a href="https://www.linkedin.com/in/agustinus-frinsen-farrelino-yoses/">Agustinus Frinsen Farrelino Yoses</a>
+                    Copyright &copy; 2024 <div class="bullet"></div> TA <a href="https://www.linkedin.com/in/agustinus-frinsen-farrelino-yoses/">Agustinus Frinsen Farrelino Yoses</a>
                 </div>
                 <div class="footer-right">
 

@@ -15,7 +15,7 @@
                 <ul class="dropdown-menu">
                     <li><a class="nav-link" href="layout-default.html">Province</a></li>
                     <li><a class="nav-link" href="layout-transparent.html">City</a></li>
-                    <li><a class="nav-link" href="layout-top-navigation.html">District</a></li>
+                    <li><a class="nav-link" href="layout-top-navigation.html">Subdistrict</a></li>
                     <li><a class="nav-link" href="layout-top-navigation.html">Branch</a></li>
                     <li><a class="nav-link" href="layout-top-navigation.html">Warehouse (Rack)</a></li>
                 </ul>
@@ -50,7 +50,6 @@
             <li class="menu-header">Setting</li>
             <li><a class="nav-link" href="blank.html"><i class="fas fa-user"></i> <span>User</span></a></li>
             <li><a class="nav-link" href="blank.html"><i class="fas fa-users"></i> <span>User Group</span></a></li>
-            <li><a class="nav-link" href="blank.html"><i class="fas fa-ban"></i> <span>Authorization</span></a></li>
         </ul>
     </aside>
 </div>

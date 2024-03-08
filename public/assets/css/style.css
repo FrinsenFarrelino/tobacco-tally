@@ -216,14 +216,14 @@ ol {
 .custom-select,
 .custom-file-label {
     background-color: #fdfdff;
-    border-color: #e4e6fc;
+    border-color: #fae1e1;
 }
 .form-control:focus,
 .input-group-text:focus,
 .custom-select:focus,
 .custom-file-label:focus {
     background-color: #fefeff;
-    border-color: #95a0f4;
+    border-color: #3d3232;
 }
 
 .input-group-text,
@@ -390,7 +390,7 @@ select.form-control:not([size]):not([multiple]) {
 
 .selectgroup-button {
     background-color: #fdfdff;
-    border-color: #e4e6fc;
+    border-color: #fae1e1;
     border-width: 1px;
     border-style: solid;
     display: block;
@@ -526,7 +526,7 @@ select.form-control:not([size]):not([multiple]) {
 
 .imagecheck-figure {
     background-color: #fdfdff;
-    border-color: #e4e6fc;
+    border-color: #fae1e1;
     border-width: 1px;
     border-style: solid;
     border-radius: 3px;
@@ -622,7 +622,7 @@ select.form-control:not([size]):not([multiple]) {
 
 .colorinput-color {
     background-color: #fdfdff;
-    border-color: #e4e6fc;
+    border-color: #fae1e1;
     border-width: 1px;
     border-style: solid;
     display: inline-block;
@@ -988,7 +988,7 @@ select.form-control:not([size]):not([multiple]) {
 }
 .card.card-hero .card-header {
     padding: 40px;
-    background-image: linear-gradient(to bottom, #572d0c, #95a0f4);
+    background-image: linear-gradient(to bottom, #572d0c, #3d3232);
     color: #fff;
     overflow: hidden;
     height: auto;
@@ -1852,17 +1852,17 @@ h6 .badge {
 }
 .btn-primary:focus,
 .btn-primary.disabled:focus {
-    background-color: #394eea !important;
+    background-color: #1c1313 !important;
 }
 .btn-primary:focus:active,
 .btn-primary.disabled:focus:active {
-    background-color: #394eea !important;
+    background-color: #1c1313 !important;
 }
 .btn-primary:active,
 .btn-primary:hover,
 .btn-primary.disabled:active,
 .btn-primary.disabled:hover {
-    background-color: #394eea !important;
+    background-color: #1c1313 !important;
 }
 
 .btn-outline-primary,
