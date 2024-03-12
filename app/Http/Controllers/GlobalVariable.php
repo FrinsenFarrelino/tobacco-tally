@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\FrontEnd;
+namespace App\Http\Controllers;
 
 class GlobalVariable
 {
@@ -172,13 +172,9 @@ class GlobalVariable
         $this->actionGetCategory = 'getCategory';
         $this->actionGetGroup = 'getGroup';
         $this->actionGetType = 'getType';
-        $this->actionGetColorFactor = 'getColorFactor';
         $this->actionGetDocumentSetting = 'getDocumentSetting';
         $this->actionGetPrincipalCommodity = 'getPrincipalCommodity';
         $this->actionGetPrincipalBankAccount = 'getPrincipalBankAccount';
-        $this->actionGetPrincipalAddress = 'getPrincipalAddress';
-        $this->actionGetPrincipalPic = 'getPrincipalPic';
-        $this->actionGetLockedParty = 'getLockedParty';
         $this->actionGetPrincipalCategory = 'getPrincipalCategory';
         $this->actionGetPrincipalCommodityCategory = 'getCommodityCategory';
         $this->actionGetPrincipalData = 'getPrincipal';
@@ -207,8 +203,6 @@ class GlobalVariable
         $this->actionGetOriginalCopy = 'getOriginalCopy';
         $this->actionGetPaymentMethod = 'getPaymentMethod';
         $this->actionGetPaymentTerm = 'getPaymentTerm';
-        $this->actionGetDeliveryStatus = 'getDeliveryStatus';
-        $this->actionGetTaxInvoice = 'getTaxInvoice';
         $this->actionGetServiceFromSupplier = 'getServiceFromSupplier';
         $this->actionGetCustomerCategory = 'getCustomerCategory';
         $this->actionGetCustomerGroup = 'getCustomerGroup';

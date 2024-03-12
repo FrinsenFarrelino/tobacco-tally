@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\FrontEnd\Transaction\Warehouse;
+namespace App\Http\Controllers\Transaction;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\FrontEnd\Controller;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\GlobalVariable;
 use App\Traits\ValidationTrait;
 
-class IncomingItemController extends Controller
+class PurchaseController extends Controller
 {
     /**
      * Display a listing of the resource.
