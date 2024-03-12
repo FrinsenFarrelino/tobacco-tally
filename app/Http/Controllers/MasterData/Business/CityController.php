@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\FrontEnd\MasterData\Relation;
+namespace App\Http\Controllers\MasterData\Business;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\FrontEnd\Controller;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\GlobalVariable;
 use App\Traits\ValidationTrait;
 
-class CustomerController extends Controller
+class CityController extends Controller
 {
     private $globalVariable;
 
