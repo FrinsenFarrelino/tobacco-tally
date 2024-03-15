@@ -3,6 +3,23 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FrontEnd\MasterData\Business\BranchController;
 use App\Http\Controllers\GlobalController;
+use App\Http\Controllers\MasterData\Business\CityController;
+use App\Http\Controllers\MasterData\Business\ProvinceController;
+use App\Http\Controllers\MasterData\Business\SubdistrictController;
+use App\Http\Controllers\MasterData\Business\WarehouseController;
+use App\Http\Controllers\MasterData\Product\CategoryController;
+use App\Http\Controllers\MasterData\Product\ItemController;
+use App\Http\Controllers\MasterData\Product\PriceListController;
+use App\Http\Controllers\MasterData\Product\UnitController;
+use App\Http\Controllers\MasterData\Relation\CustomerController;
+use App\Http\Controllers\MasterData\Relation\EmployeeController;
+use App\Http\Controllers\MasterData\Relation\SupplierController;
+use App\Http\Controllers\Setting\GroupUserController;
+use App\Http\Controllers\Setting\UserController;
+use App\Http\Controllers\Transaction\PurchaseController;
+use App\Http\Controllers\Transaction\SaleController;
+use App\Http\Controllers\Transaction\Warehouse\IncomingItemController;
+use App\Http\Controllers\Transaction\Warehouse\OutgoingItemController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,7 +47,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('get-browse-data', 'getBrowseData')->name('get-browse-data');
         });
 
-        Route::middleware('checkUserGroupPermission')->group(function () {
+        // Route::middleware('checkUserGroupPermission')->group(function () {
             Route::controller(UserController::class)->group(function(){
                 Route::get('/profile', 'seeProfile')->name('seeprofile');
                 Route::post('/profile/send', 'updateProfileSend');
@@ -72,7 +89,7 @@ Route::group(['middleware' => ['web']], function () {
                     Route::resource('outgoing-item', OutgoingItemController::class);
                 });
             });
-        });
+        // });
     });
 
     Route::controller(DashboardController::class)->group(function(){
