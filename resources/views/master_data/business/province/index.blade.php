@@ -17,11 +17,11 @@
 @section('content')
 <section class="section">
     <div class="section-header">
-        <h1>Master Data - Province</h1>
+        <h1>{{ $title }} - {{ $subtitle }}</h1>
         <div class="section-header-breadcrumb">
-            <div class="breadcrumb-item active"><a href="#">Master Data</a></div>
-            <div class="breadcrumb-item"><a href="#">Business</a></div>
-            <div class="breadcrumb-item">Province</div>
+            <div class="breadcrumb-item active">{{ $title }}</div>
+            <div class="breadcrumb-item">Business</div>
+            <div class="breadcrumb-item">{{ $subtitle }}</div>
         </div>
     </div>
     <div class="section-body">
@@ -30,7 +30,7 @@
                 <div class="card">
                     <div class="d-flex justify-content-between">
                         <div class="card-header">
-                            <h4>List Master Data - Province</h4>
+                            <h4>{{ __('master_data_business_province')['list'] }} {{ $title }} - {{ $subtitle }}</h4>
                         </div>
                         <div class="d-flex justify-content-end align-items-center pr-3">
                             <div class="col-auto">
@@ -111,7 +111,14 @@
                     data: 'action',
                     name: 'action',
                     orderable: false,
-                    searchable: false
+                    searchable: false,
+                    render: function(data, type, row) {
+                        var showButton = '<a href="' + row.showUrl + '" class="btn btn-secondary btn-sm rounded-circle"><i class="fas fa-eye"></i></a>';
+                        var editButton = '<a href="' + row.editUrl + '" class="btn btn-warning btn-sm ml-2 rounded-circle"><i class="fas fa-pencil-alt"></i></a>';
+                        var deleteButton = '<a href="' + row.destroyUrl + '" class="btn btn-danger btn-sm ml-2 rounded-circle"><i class="fas fa-trash-alt"></i></a>';
+                        
+                        return showButton + editButton + deleteButton;
+                    }
                 }
             ]
         });

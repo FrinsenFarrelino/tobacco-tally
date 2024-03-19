@@ -5,7 +5,6 @@ namespace App\Http\Controllers\MasterData\Business;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\GlobalVariable;
-use App\Traits\ValidationTrait;
 
 class CityController extends Controller
 {
@@ -18,15 +17,15 @@ class CityController extends Controller
     {
         $this->globalVariable = $globalVariable;
 
-        $this->globalVariable->ModuleGlobal("master_data", "branch_office", 'master-data/branch-office', 'branch-office', 'branch_office');
+        $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'city', subModule: 'master_data_business_city', menuRoute: 'city', menuUrl: 'master-data/business/city');
 
-        $this->index_file = 'master_data.branch_office.index';
-        $this->form_file = 'master_data.branch_office.form';
+        $this->index_file = 'master_data.business.city.index';
+        $this->form_file = 'master_data.business.city.form';
     }
 
     private function computeSetFeatures()
     {
-        $code = 'branch';
+        $code = 'city';
         $setValueFeature = $this->setPrivButton($code);
 
         return $setValueFeature;
@@ -42,11 +41,11 @@ class CityController extends Controller
         $generate_nav_button = generateNavbutton([],'reload'.$setFeatures,'index', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'index');
-        $formData['action'] = $this->globalVariable->actionGetBranchOffice;
+        
+        $formData['list_nav_button'] = $generate_nav_button;
         $formData['menu_route'] = $this->globalVariable->menuRoute;
         $formData['menu_param'] = $this->globalVariable->menuParam;
-        $formData['list_nav_button'] = $generate_nav_button;
-        $formData['setFeatures'] = $setFeatures;
+
         return view($this->index_file,$formData);
     }
 
@@ -67,8 +66,6 @@ class CityController extends Controller
 
         return view($this->form_file, $formData);
     }
-
-    use ValidationTrait;
 
     /**
      * Store a newly created resource in storage.

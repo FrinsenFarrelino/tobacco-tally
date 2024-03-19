@@ -45,6 +45,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('autocomplete', 'autoComplete')->name('autocomplete');
             Route::get('ajax-data-table/{action}', 'getAjaxDataTable')->name('ajax-data-table');
             Route::get('get-browse-data', 'getBrowseData')->name('get-browse-data');
+            Route::post('getData/{param}', 'getData')->name('getData');
         });
 
         // Route::middleware('checkUserGroupPermission')->group(function () {

@@ -41,7 +41,7 @@ class ProvinceController extends Controller
     {
         $setFeatures = $this->computeSetFeatures();
 
-        $generate_nav_button = generateNavbutton([],'reload|export'.$setFeatures,'index', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
+        $generate_nav_button = generateNavbutton([],'reload'.$setFeatures,'index', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'index');
         

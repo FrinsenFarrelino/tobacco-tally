@@ -5,7 +5,6 @@ namespace App\Http\Controllers\MasterData\Business;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Controllers\GlobalVariable;
-use App\Traits\ValidationTrait;
 
 class BranchController extends Controller
 {
@@ -19,8 +18,8 @@ class BranchController extends Controller
         $this->globalVariable = $globalVariable;
 
         $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'branch', subModule: 'master_data_business_branch', menuRoute: 'branch', menuUrl: 'master-data/business/branch');
-        $this->index_file = 'master_data.branch.index';
-        $this->form_file = 'master_data.branch.form';
+        $this->index_file = 'master_data.business.branch.index';
+        $this->form_file = 'master_data.business.branch.form';
     }
 
     private function computeSetFeatures()
@@ -41,11 +40,11 @@ class BranchController extends Controller
         $generate_nav_button = generateNavbutton([],'reload'.$setFeatures,'index', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'index');
-        $formData['action'] = $this->globalVariable->actionGetBranchOffice;
+        
+        $formData['list_nav_button'] = $generate_nav_button;
         $formData['menu_route'] = $this->globalVariable->menuRoute;
         $formData['menu_param'] = $this->globalVariable->menuParam;
-        $formData['list_nav_button'] = $generate_nav_button;
-        $formData['setFeatures'] = $setFeatures;
+
         return view($this->index_file,$formData);
     }
 
@@ -66,8 +65,6 @@ class BranchController extends Controller
 
         return view($this->form_file, $formData);
     }
-
-    use ValidationTrait;
 
     /**
      * Store a newly created resource in storage.

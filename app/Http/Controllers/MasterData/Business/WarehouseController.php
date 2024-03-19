@@ -5,36 +5,28 @@ namespace App\Http\Controllers\MasterData\Business;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\GlobalVariable;
-use App\Traits\ValidationTrait;
 
 class WarehouseController extends Controller
 {
     private $globalVariable;
 
     private $index_file;
-
     private $form_file;
-
-    private $arrayIsCenter;
 
     public function __construct(GlobalVariable $globalVariable)
     {
         $this->globalVariable = $globalVariable;
+        $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'warehouse', subModule: 'master_data_business_warehouse', menuRoute: 'warehouse', menuUrl: 'master-data/business/warehouse');
 
-        $this->globalVariable->ModuleGlobal("master_data", "branch_office", 'master-data/branch-office', 'branch-office', 'branch_office');
-
-        $this->index_file = 'master_data.branch_office.index';
-        $this->form_file = 'master_data.branch_office.form';
-
-        $this->arrayIsCenter = generateIsBoolean('Yes','No');
-        $this->arrayIsActive = generateIsBoolean('Active','Inactive');
+        $this->index_file = 'master_data.business.warehouse.index';
+        $this->form_file = 'master_data.business.warehouse.form';
     }
 
     private function computeSetFeatures()
     {
         // You can use the existing logic you have in setPrivButton or modify it as needed
 
-        $code = 'branch_office';
+        $code = 'warehouse';
         $setValueFeature = $this->setPrivButton($code);
 
         return $setValueFeature;
@@ -50,11 +42,11 @@ class WarehouseController extends Controller
         $generate_nav_button = generateNavbutton([],'reload'.$setFeatures,'index', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'index');
-        $formData['action'] = $this->globalVariable->actionGetBranchOffice;
+        
+        $formData['list_nav_button'] = $generate_nav_button;
         $formData['menu_route'] = $this->globalVariable->menuRoute;
         $formData['menu_param'] = $this->globalVariable->menuParam;
-        $formData['list_nav_button'] = $generate_nav_button;
-        $formData['setFeatures'] = $setFeatures;
+
         return view($this->index_file,$formData);
     }
 
@@ -75,8 +67,6 @@ class WarehouseController extends Controller
 
         return view($this->form_file, $formData);
     }
-
-    use ValidationTrait;
 
     /**
      * Store a newly created resource in storage.
