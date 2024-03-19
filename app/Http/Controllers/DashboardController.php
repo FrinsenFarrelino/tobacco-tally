@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\LoginRequest;
+use App\Models\Menu;
 
 class DashboardController extends Controller
 {
@@ -27,6 +28,8 @@ class DashboardController extends Controller
     {
         $listMenu = Session::get('list_menu');
         $formData['list_menus'] = $listMenu;
+        // dd($formData);
+        // $formData['name'] = 'Home';
 
         return view('dashboard', $formData);
     }
@@ -79,6 +82,8 @@ class DashboardController extends Controller
 
             $user = Auth::user();
             Session::put('user', $user);
+            $list_menu = Menu::all();
+            Session::put('list_menu',$list_menu);
             return redirect()->route('dashboard');
         } catch (\Exception $e) {
             return redirect()->back()

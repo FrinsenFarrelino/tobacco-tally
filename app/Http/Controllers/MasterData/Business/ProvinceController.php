@@ -5,7 +5,6 @@ namespace App\Http\Controllers\MasterData\Business;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\GlobalVariable;
-use App\Traits\ValidationTrait;
 
 class ProvinceController extends Controller
 {
@@ -21,8 +20,8 @@ class ProvinceController extends Controller
         $this->globalVariable = $globalVariable;
         $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'province', subModule: 'master_data_business_province', menuRoute: 'province', menuUrl: 'master-data/business/province');
 
-        $this->index_file = 'master_data.branch_office.index';
-        $this->form_file = 'master_data.branch_office.form';
+        $this->index_file = 'master_data.business.province.index';
+        $this->form_file = 'master_data.business.province.form';
 
         $this->arrayIsActive = [['id' => '1', 'name' => 'Active'], ['id' => '0', 'name' => 'Inactive']];
     }
@@ -57,8 +56,6 @@ class ProvinceController extends Controller
 
         return view($this->form_file, $formData);
     }
-
-    use ValidationTrait;
 
     /**
      * Store a newly created resource in storage.
