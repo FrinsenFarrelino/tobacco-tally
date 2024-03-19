@@ -5,7 +5,6 @@
         }, 1000);
     });
 </script>
-@yield('scripts')
 <script src="{{ asset('assets/modules/jquery.min.js') }}"></script>
 <script src="{{ asset('assets/modules/popper.js') }}"></script>
 <script src="{{ asset('assets/modules/tooltip.js') }}"></script>
@@ -28,3 +27,10 @@
 <!-- Template JS File -->
 <script src="{{ asset('assets/js/scripts.js') }}"></script>
 <script src="{{ asset('assets/js/custom.js') }}"></script>
+
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<!-- DataTables Bootstrap 5 integration -->
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/fixedcolumns/3.3.4/js/dataTables.fixedColumns.min.js"></script>
+@yield('scripts')

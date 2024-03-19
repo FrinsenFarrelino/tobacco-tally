@@ -11,9 +11,9 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -103,88 +103,76 @@ class Controller extends BaseController
         return $objResponse;
     }
 
-    public function jsonMock($path, $id = null)
-    {
-        if (!$id) {
-            return storage_path() . "/app/${path}.json";
-        }
-
-        return  storage_path() . "/app/${path}${id}.json";
-    }
-
     public function setPrivButton($code)
     {
         $setValueFeature = '';
-        foreach (Session::get('user')['user_group'] as $group_user) {
-            if ($group_user['name'] == 'Admin') {
-                if ($code == 'locked_principal') {
-                    $setValueFeature .= '|' . 'locked';
-                } elseif ($code == 'pre_order') {
-                    $setValueFeature .= '|' . 'add';
-                    $setValueFeature .= '|' . 'edit';
-                    $setValueFeature .= '|' . 'delete';
-                    $setValueFeature .= '|' . 'rollbackdraft';
-                    $setValueFeature .= '|' . 'rollbackreqrfq';
-                } elseif ($code == 'bom_eva_material' || $code == 'bom_eva_material_pigment') {
-                    $setValueFeature .= '|' . 'add';
-                    $setValueFeature .= '|' . 'edit';
-                    $setValueFeature .= '|' . 'copy';
-                    $setValueFeature .= '|' . 'delete';
-                } elseif ($code == 'marketing_order_closing') {
-                    $setValueFeature .= '|' . 'close';
-                } elseif ($code == 'sales_order') {
-                    $setValueFeature .= '|' . 'add';
-                    $setValueFeature .= '|' . 'edit';
-                    $setValueFeature .= '|' . 'delete';
-                    $setValueFeature .= '|' . 'approve';
-                } elseif ($code == 'sales_order_closing') {
-                    $setValueFeature .= '|' . 'item-cls';
-                    $setValueFeature .= '|' . 'invoice-cls';
-                } else {
-                    $setValueFeature .= '|' . 'add';
-                    $setValueFeature .= '|' . 'edit';
-                    $setValueFeature .= '|' . 'delete';
-                }
-                break;
+        if (Session::get('user_group')['name'] === 'Admin') {
+            if ($code == 'locked_principal') {
+                $setValueFeature .= '|' . 'locked';
+            } elseif ($code == 'pre_order') {
+                $setValueFeature .= '|' . 'add';
+                $setValueFeature .= '|' . 'edit';
+                $setValueFeature .= '|' . 'delete';
+                $setValueFeature .= '|' . 'rollbackdraft';
+                $setValueFeature .= '|' . 'rollbackreqrfq';
+            } elseif ($code == 'bom_eva_material' || $code == 'bom_eva_material_pigment') {
+                $setValueFeature .= '|' . 'add';
+                $setValueFeature .= '|' . 'edit';
+                $setValueFeature .= '|' . 'copy';
+                $setValueFeature .= '|' . 'delete';
+            } elseif ($code == 'marketing_order_closing') {
+                $setValueFeature .= '|' . 'close';
+            } elseif ($code == 'sales_order') {
+                $setValueFeature .= '|' . 'add';
+                $setValueFeature .= '|' . 'edit';
+                $setValueFeature .= '|' . 'delete';
+                $setValueFeature .= '|' . 'approve';
+            } elseif ($code == 'sales_order_closing') {
+                $setValueFeature .= '|' . 'item-cls';
+                $setValueFeature .= '|' . 'invoice-cls';
             } else {
-                if (Session::has('list_menu') && Session::has('access_menu')) {
-                    $listMenu = Session::get('list_menu');
-                    $accessMaster = Session::get('access_menu');
+                $setValueFeature .= '|' . 'add';
+                $setValueFeature .= '|' . 'edit';
+                $setValueFeature .= '|' . 'delete';
+            }
+        } else {
+            if (Session::has('list_menu') && Session::has('access_menu')) {
+                $listMenu = Session::get('list_menu');
+                $accessMaster = Session::get('access_menu');
 
-                    foreach ($listMenu as $list_menu) {
-                        if ($list_menu['code'] == $code) {
-                            foreach ($accessMaster as $access_master) {
-                                if ($access_master['menu_id'] == $list_menu['id']) {
-                                    if ($access_master['add'] == true) {
-                                        if ($code == 'locked_principal') {
-                                            $setValueFeature .= '|' . 'locked';
-                                        } else {
-                                            $setValueFeature .= '|' . 'add';
-                                        }
+                foreach ($listMenu as $list_menu) {
+                    if ($list_menu['code'] == $code) {
+                        foreach ($accessMaster as $access_master) {
+                            if ($access_master['menu_id'] == $list_menu['id']) {
+                                if ($access_master['add'] == true) {
+                                    if ($code == 'locked_principal') {
+                                        $setValueFeature .= '|' . 'locked';
+                                    } else {
+                                        $setValueFeature .= '|' . 'add';
                                     }
-                                    if ($access_master['edit'] == true) {
-                                        if ($code == 'locked_principal') {
-                                            $setValueFeature .= '|' . 'locked';
-                                        } elseif ($code == 'pre_order') {
-                                            $setValueFeature .= '|' . 'edit';
-                                            $setValueFeature .= '|' . 'rollbackdraft';
-                                            $setValueFeature .= '|' . 'rollbackreqrfq';
-                                        } else {
-                                            $setValueFeature .= '|' . 'edit';
-                                        }
-                                    }
-                                    if ($access_master['delete'] == true) {
-                                        if ($code == 'locked_principal') {
-                                            $setValueFeature .= '|' . 'locked';
-                                        } else {
-                                            $setValueFeature .= '|' . 'delete';
-                                        }
-                                    }
-                                    break;
                                 }
+                                if ($access_master['edit'] == true) {
+                                    if ($code == 'locked_principal') {
+                                        $setValueFeature .= '|' . 'locked';
+                                    } elseif ($code == 'pre_order') {
+                                        $setValueFeature .= '|' . 'edit';
+                                        $setValueFeature .= '|' . 'rollbackdraft';
+                                        $setValueFeature .= '|' . 'rollbackreqrfq';
+                                    } else {
+                                        $setValueFeature .= '|' . 'edit';
+                                    }
+                                }
+                                if ($access_master['delete'] == true) {
+                                    if ($code == 'locked_principal') {
+                                        $setValueFeature .= '|' . 'locked';
+                                    } else {
+                                        $setValueFeature .= '|' . 'delete';
+                                    }
+                                }
+                                break;
                             }
-                            break;
                         }
+                        break;
                     }
                 }
             }

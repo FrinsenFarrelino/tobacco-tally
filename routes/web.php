@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FrontEnd\MasterData\Business\BranchController;
 use App\Http\Controllers\GlobalController;
+use App\Http\Controllers\MasterData\Business\BranchController;
 use App\Http\Controllers\MasterData\Business\CityController;
 use App\Http\Controllers\MasterData\Business\ProvinceController;
 use App\Http\Controllers\MasterData\Business\SubdistrictController;
@@ -43,7 +43,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('generate-excel', 'generateExcel')->name('generate-excel');
             Route::get('download-excel', 'downloadExcel')->name('download-excel');
             Route::get('autocomplete', 'autoComplete')->name('autocomplete');
-            Route::get('ajax-data-table', 'getAjaxDataTable')->name('ajax-data-table');
+            Route::get('ajax-data-table/{action}', 'getAjaxDataTable')->name('ajax-data-table');
             Route::get('get-browse-data', 'getBrowseData')->name('get-browse-data');
         });
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\FrontEnd\MasterData\Business;
+namespace App\Http\Controllers\MasterData\Business;
 
-use App\Http\Controllers\FrontEnd\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Controllers\GlobalVariable;
 use App\Traits\ValidationTrait;
@@ -12,29 +12,20 @@ class BranchController extends Controller
     private $globalVariable;
 
     private $index_file;
-
     private $form_file;
-
-    private $arrayIsCenter;
 
     public function __construct(GlobalVariable $globalVariable)
     {
         $this->globalVariable = $globalVariable;
 
-        $this->globalVariable->ModuleGlobal("master_data", "branch_office", 'master-data/branch-office', 'branch-office', 'branch_office');
-
-        $this->index_file = 'master_data.branch_office.index';
-        $this->form_file = 'master_data.branch_office.form';
-
-        $this->arrayIsCenter = generateIsBoolean('Yes','No');
-        $this->arrayIsActive = generateIsBoolean('Active','Inactive');
+        $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'branch', subModule: 'master_data_business_branch', menuRoute: 'branch', menuUrl: 'master-data/business/branch');
+        $this->index_file = 'master_data.branch.index';
+        $this->form_file = 'master_data.branch.form';
     }
 
     private function computeSetFeatures()
     {
-        // You can use the existing logic you have in setPrivButton or modify it as needed
-
-        $code = 'branch_office';
+        $code = 'branch';
         $setValueFeature = $this->setPrivButton($code);
 
         return $setValueFeature;

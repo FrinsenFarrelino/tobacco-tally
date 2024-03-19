@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\LoginRequest;
 use App\Models\Menu;
+use App\Models\UserGroup;
 
 class DashboardController extends Controller
 {
@@ -83,13 +84,16 @@ class DashboardController extends Controller
             $user = Auth::user();
             Session::put('user', $user);
             $list_menu = Menu::all();
-            Session::put('list_menu',$list_menu);
+            Session::put('list_menu', $list_menu);
+            $userGroupName = UserGroup::where('id', Session::get('user')['user_group_id'])->first();
+            Session::put('user_group', $userGroupName);
+            
             return redirect()->route('dashboard');
         } catch (\Exception $e) {
             return redirect()->back()
-                    ->withErrors($e)
-                    ->with('error', $e->getMessage())
-                    ->withInput();
+                ->withErrors($e)
+                ->with('error', $e->getMessage())
+                ->withInput();
         }
     }
 
@@ -97,7 +101,7 @@ class DashboardController extends Controller
     {
         $message = 'Successfully logged out';
 
-        if($request->session()->get('message')){
+        if ($request->session()->get('message')) {
             $message = $request->session()->get('message');
         }
 
