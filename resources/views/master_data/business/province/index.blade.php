@@ -1,6 +1,17 @@
 @extends('template.app')
 
 @section('styles')
+<style>
+    .dataTables_wrapper .dataTables_filter {
+        text-align: right;
+        margin-right: 10px;
+        /* Add margin for spacing */
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: right;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -13,7 +24,6 @@
             <div class="breadcrumb-item">Province</div>
         </div>
     </div>
-
     <div class="section-body">
         <div class="row">
             <div class="col-12">
@@ -24,128 +34,29 @@
                         </div>
                         <div class="d-flex justify-content-end align-items-center pr-3">
                             <div class="col-auto">
-                                <a href="#" class="btn btn-secondary">Reload</a>
+                                {!! $list_nav_button['reload'] !!}
                             </div>
                             <div class="col-auto">
-                                <a href="#" class="btn btn-primary">Add</a>
+                                @if (isset($list_nav_button['add']))
+                                {!! $list_nav_button['add'] !!}
+                                @endif
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-striped" id="table-1">
+                            <table class="table table-striped" id="myTable">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">
-                                            #
-                                        </th>
-                                        <th>Task Name</th>
-                                        <th>Progress</th>
-                                        <th>Members</th>
-                                        <th>Due Date</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th></th>
+                                        <th>{{ __('master_data_business_province')['col_code'] }}</th>
+                                        <th>{{ __('master_data_business_province')['col_name'] }}</th>
+                                        <th>{{ __('master_data_business_province')['col_country'] }}</th>
+                                        <th>{{ __('master_data_business_province')['col_is_active'] }}</th>
+                                        <th>{{ __('master_data_business_province')['col_action'] }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>
-                                            1
-                                        </td>
-                                        <td>Create a mobile app</td>
-                                        <td class="align-middle">
-                                            <div class="progress" data-height="4" data-toggle="tooltip" title="100%">
-                                                <div class="progress-bar bg-success" data-width="100%"></div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img alt="image" src="assets/img/avatar/avatar-5.png" class="rounded-circle" width="35" data-toggle="tooltip" title="Wildan Ahdian">
-                                        </td>
-                                        <td>2018-01-20</td>
-                                        <td>
-                                            <div class="badge badge-success">Completed</div>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="btn btn-secondary btn-sm rounded-circle"><i class="fas fa-eye"></i></a>
-                                            <a href="#" class="btn btn-warning btn-sm ml-2 rounded-circle"><i class="fas fa-pencil-alt"></i></a>
-                                            <a href="#" class="btn btn-danger btn-sm ml-2 rounded-circle"><i class="fas fa-trash-alt"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            2
-                                        </td>
-                                        <td>Redesign homepage</td>
-                                        <td class="align-middle">
-                                            <div class="progress" data-height="4" data-toggle="tooltip" title="0%">
-                                                <div class="progress-bar" data-width="0"></div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle" width="35" data-toggle="tooltip" title="Nur Alpiana">
-                                            <img alt="image" src="assets/img/avatar/avatar-3.png" class="rounded-circle" width="35" data-toggle="tooltip" title="Hariono Yusup">
-                                            <img alt="image" src="assets/img/avatar/avatar-4.png" class="rounded-circle" width="35" data-toggle="tooltip" title="Bagus Dwi Cahya">
-                                        </td>
-                                        <td>2018-04-10</td>
-                                        <td>
-                                            <div class="badge badge-info">Todo</div>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="btn btn-secondary btn-sm rounded-circle"><i class="fas fa-eye"></i></a>
-                                            <a href="#" class="btn btn-warning btn-sm ml-2 rounded-circle"><i class="fas fa-pencil-alt"></i></a>
-                                            <a href="#" class="btn btn-danger btn-sm ml-2 rounded-circle"><i class="fas fa-trash-alt"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            3
-                                        </td>
-                                        <td>Backup database</td>
-                                        <td class="align-middle">
-                                            <div class="progress" data-height="4" data-toggle="tooltip" title="70%">
-                                                <div class="progress-bar bg-warning" data-width="70%"></div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle" width="35" data-toggle="tooltip" title="Rizal Fakhri">
-                                            <img alt="image" src="assets/img/avatar/avatar-2.png" class="rounded-circle" width="35" data-toggle="tooltip" title="Hasan Basri">
-                                        </td>
-                                        <td>2018-01-29</td>
-                                        <td>
-                                            <div class="badge badge-warning">In Progress</div>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="btn btn-secondary btn-sm rounded-circle"><i class="fas fa-eye"></i></a>
-                                            <a href="#" class="btn btn-warning btn-sm ml-2 rounded-circle"><i class="fas fa-pencil-alt"></i></a>
-                                            <a href="#" class="btn btn-danger btn-sm ml-2 rounded-circle"><i class="fas fa-trash-alt"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            4
-                                        </td>
-                                        <td>Input data</td>
-                                        <td class="align-middle">
-                                            <div class="progress" data-height="4" data-toggle="tooltip" title="100%">
-                                                <div class="progress-bar bg-success" data-width="100%"></div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img alt="image" src="assets/img/avatar/avatar-2.png" class="rounded-circle" width="35" data-toggle="tooltip" title="Rizal Fakhri">
-                                            <img alt="image" src="assets/img/avatar/avatar-5.png" class="rounded-circle" width="35" data-toggle="tooltip" title="Isnap Kiswandi">
-                                            <img alt="image" src="assets/img/avatar/avatar-4.png" class="rounded-circle" width="35" data-toggle="tooltip" title="Yudi Nawawi">
-                                            <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle" width="35" data-toggle="tooltip" title="Khaerul Anwar">
-                                        </td>
-                                        <td>2018-01-16</td>
-                                        <td>
-                                            <div class="badge badge-success">Completed</div>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="btn btn-secondary btn-sm rounded-circle"><i class="fas fa-eye"></i></a>
-                                            <a href="#" class="btn btn-warning btn-sm ml-2 rounded-circle"><i class="fas fa-pencil-alt"></i></a>
-                                            <a href="#" class="btn btn-danger btn-sm ml-2 rounded-circle"><i class="fas fa-trash-alt"></i></a>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -159,4 +70,55 @@
 @endsection
 
 @section('scripts')
+<script>
+    $(document).ready(function() {
+        $('#myTable').DataTable({
+            processing: true,
+            serverSide: true,
+            responsive: true,
+            ajax: {
+                url: "{{ route('ajax-data-table', ['action' => 'getProvince']) }}",
+                type: "GET",
+                data: function(d) {
+                    d.route = "province"; // Add extra parameters here
+                }
+            },
+            columns: [{
+                    data: null,
+                    render: function(data, type, row, meta) {
+                        return meta.row + 1;
+                    },
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'code',
+                    name: 'code'
+                },
+                {
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'country',
+                    name: 'country'
+                },
+                {
+                    data: 'is_active',
+                    name: 'is_active'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                }
+            ]
+        });
+
+        new $.fn.dataTable.FixedColumns(table, {
+            rightColumns: 1
+        });
+    });
+</script>
 @endsection

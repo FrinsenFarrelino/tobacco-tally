@@ -23,22 +23,9 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function register(UserRegisterRequest $request)
-    {
-        try {
-            $inputUser = $request->validated();
-            $inputUser['password'] = bcrypt($inputUser['password']);
-
-            $user = User::create($inputUser);
-
-            return $this->sendResponse(true, Response::HTTP_CREATED, $user);
-        } catch (\Exception $e) {
-            return $this->sendResponse(false, Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
-        }
-    }
 
     /**
-     * Login api
+     * 
      *
      * @return \Illuminate\Http\Response
      */

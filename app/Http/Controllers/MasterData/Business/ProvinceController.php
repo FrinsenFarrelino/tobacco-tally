@@ -26,13 +26,26 @@ class ProvinceController extends Controller
         $this->arrayIsActive = [['id' => '1', 'name' => 'Active'], ['id' => '0', 'name' => 'Inactive']];
     }
 
+    private function computeSetFeatures()
+    {
+        $code = 'province';
+        $setValueFeature = $this->setPrivButton($code);
+
+        return $setValueFeature;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $setFeatures = $this->computeSetFeatures();
+
+        $generate_nav_button = generateNavbutton([],'reload|export'.$setFeatures,'index', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
+
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'index');
-        $formData['action'] = $this->globalVariable->actionGetProvince;
+        
+        $formData['list_nav_button'] = $generate_nav_button;
         $formData['menu_route'] = $this->globalVariable->menuRoute;
         $formData['menu_param'] = $this->globalVariable->menuParam;
 
@@ -49,9 +62,6 @@ class ProvinceController extends Controller
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'add');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['is_center'] = $this->arrayIsCenter;
-        $formData['action_port'] = $this->globalVariable->actionGetPort;
-        $formData['action_pic'] = $this->globalVariable->actionGetEmployee;
         $formData['selectActive'] = $this->arrayIsActive;
 
         return view($this->form_file, $formData);

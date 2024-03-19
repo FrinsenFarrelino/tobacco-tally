@@ -1793,6 +1793,10 @@
         "view": "View",
         "add": "Add",
         "edit": "Edit",
-        "col_action": "Action"
+        "col_action": "Action",
+        "col_code": "Code",
+        "col_name": "Name",
+        "col_country": "Country",
+        "col_is_active": "Status"
     }
 }

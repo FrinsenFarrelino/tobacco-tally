@@ -12,10 +12,7 @@ class CityController extends Controller
     private $globalVariable;
 
     private $index_file;
-
     private $form_file;
-
-    private $arrayIsCenter;
 
     public function __construct(GlobalVariable $globalVariable)
     {
@@ -25,16 +22,11 @@ class CityController extends Controller
 
         $this->index_file = 'master_data.branch_office.index';
         $this->form_file = 'master_data.branch_office.form';
-
-        $this->arrayIsCenter = generateIsBoolean('Yes','No');
-        $this->arrayIsActive = generateIsBoolean('Active','Inactive');
     }
 
     private function computeSetFeatures()
     {
-        // You can use the existing logic you have in setPrivButton or modify it as needed
-
-        $code = 'branch_office';
+        $code = 'branch';
         $setValueFeature = $this->setPrivButton($code);
 
         return $setValueFeature;
