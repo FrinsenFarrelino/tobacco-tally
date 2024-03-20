@@ -20,7 +20,9 @@
         <h1>{{ $title }} - {{ $subtitle }}</h1>
         <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active">{{ $title }}</div>
-            <div class="breadcrumb-item">Business</div>
+            @if($submodule !== '')
+            <div class="breadcrumb-item">{{ $submodule }}</div>
+            @endif
             <div class="breadcrumb-item">{{ $subtitle }}</div>
         </div>
     </div>
@@ -72,15 +74,17 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
+        setMenuActive();
+        
         $('#myTable').DataTable({
             processing: true,
             serverSide: true,
             responsive: true,
             ajax: {
-                url: "{{ route('ajax-data-table', ['action' => 'getProvince']) }}",
+                url: "{{ route('ajax-data-table', ['action' => $action]) }}",
                 type: "GET",
                 data: function(d) {
-                    d.route = "province"; // Add extra parameters here
+                    d.route = "{{ $menu_route }}";
                 }
             },
             columns: [{

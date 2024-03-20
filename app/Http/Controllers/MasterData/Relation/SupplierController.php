@@ -5,7 +5,6 @@ namespace App\Http\Controllers\MasterData\Relation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\GlobalVariable;
-use App\Traits\ValidationTrait;
 
 class SupplierController extends Controller
 {
@@ -20,21 +19,17 @@ class SupplierController extends Controller
     public function __construct(GlobalVariable $globalVariable)
     {
         $this->globalVariable = $globalVariable;
+        $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'supplier', subModule: 'master_data_relation_supplier', menuRoute: 'supplier', menuUrl: 'master-data/business/supplier');
 
-        $this->globalVariable->ModuleGlobal("master_data", "branch_office", 'master-data/branch-office', 'branch-office', 'branch_office');
-
-        $this->index_file = 'master_data.branch_office.index';
-        $this->form_file = 'master_data.branch_office.form';
-
-        $this->arrayIsCenter = generateIsBoolean('Yes','No');
-        $this->arrayIsActive = generateIsBoolean('Active','Inactive');
+        $this->index_file = 'master_data.relation.supplier.index';
+        $this->form_file = 'master_data.relation.supplier.form';
     }
 
     private function computeSetFeatures()
     {
         // You can use the existing logic you have in setPrivButton or modify it as needed
 
-        $code = 'branch_office';
+        $code = 'supplier';
         $setValueFeature = $this->setPrivButton($code);
 
         return $setValueFeature;
@@ -50,11 +45,11 @@ class SupplierController extends Controller
         $generate_nav_button = generateNavbutton([],'reload'.$setFeatures,'index', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'index');
-        $formData['action'] = $this->globalVariable->actionGetBranchOffice;
-        $formData['menu_route'] = $this->globalVariable->menuRoute;
-        $formData['menu_param'] = $this->globalVariable->menuParam;
+        
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['setFeatures'] = $setFeatures;
+        $formData['action'] = $this->globalVariable->actionGetSupplier;
+        $formData['menu_route'] = $this->globalVariable->menuRoute;
+
         return view($this->index_file,$formData);
     }
 
@@ -75,8 +70,6 @@ class SupplierController extends Controller
 
         return view($this->form_file, $formData);
     }
-
-    use ValidationTrait;
 
     /**
      * Store a newly created resource in storage.

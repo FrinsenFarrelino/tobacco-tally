@@ -108,6 +108,50 @@ class GlobalController extends Controller
                 'updated_by_user.name as updated_by',
                 'deleted_by_user.name as deleted_by',
             );
+        } elseif($action == 'getEmployee') {
+            $query->leftJoin('positions', 'positions.id', '=', 'employees.position_id' );
+            $query->leftJoin('divisions', 'divisions.id', '=', 'employees.division_id' );
+            $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'employees.created_by');
+            $query->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', 'employees.updated_by');
+            $query->leftJoin('users as deleted_by_user', 'deleted_by_user.id', '=', 'employees.deleted_by');
+            $query->select(
+                'employees.*', 
+                'positions.name as position_name',
+                'divisions.name as division_name',
+                'created_by_user.name as created_by',
+                'updated_by_user.name as updated_by',
+                'deleted_by_user.name as deleted_by',
+            );
+        } elseif($action == 'getItem') {
+            $query->leftJoin('types', 'types.id', '=', 'items.type_id' );
+            $query->leftJoin('categories', 'categories.id', '=', 'items.category_id' );
+            $query->leftJoin('units', 'units.id', '=', 'items.unit_id' );
+            $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'items.created_by');
+            $query->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', 'items.updated_by');
+            $query->leftJoin('users as deleted_by_user', 'deleted_by_user.id', '=', 'items.deleted_by');
+            $query->select(
+                'items.*', 
+                'categories.name as category_name',
+                'types.name as type_name',
+                'units.name as unit_name',
+                'created_by_user.name as created_by',
+                'updated_by_user.name as updated_by',
+                'deleted_by_user.name as deleted_by',
+            );
+        } elseif($action == 'getPriceList') {
+            $query->leftJoin('items', 'items.id', '=', 'price_lists.item_id' );
+            $query->leftJoin('units', 'units.id', '=', 'price_lists.unit_id' );
+            $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'price_lists.created_by');
+            $query->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', 'price_lists.updated_by');
+            $query->leftJoin('users as deleted_by_user', 'deleted_by_user.id', '=', 'price_lists.deleted_by');
+            $query->select(
+                'price_lists.*', 
+                'items.name as item_name',
+                'units.name as unit_name',
+                'created_by_user.name as created_by',
+                'updated_by_user.name as updated_by',
+                'deleted_by_user.name as deleted_by',
+            );
         } 
         else {
             $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', $tableName . '.created_by')

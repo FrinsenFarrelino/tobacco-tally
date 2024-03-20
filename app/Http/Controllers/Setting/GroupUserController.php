@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Http;
 use Session;
 use Illuminate\Support\Facades\Auth;
 use App\Events\LogoutOtherUsers;
-use App\Traits\ValidationTrait;
 
 class GroupUserController extends Controller
 {
@@ -143,8 +142,6 @@ class GroupUserController extends Controller
 
         return view($this->form_file, $formData);
     }
-
-    use ValidationTrait;
 
     /**
      * Store a newly created resource in storage.

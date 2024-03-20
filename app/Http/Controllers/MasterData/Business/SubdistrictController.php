@@ -41,11 +41,11 @@ class SubdistrictController extends Controller
         $generate_nav_button = generateNavbutton([],'reload'.$setFeatures,'index', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'index');
-        $formData['action'] = $this->globalVariable->actionGetBranchOffice;
-        $formData['menu_route'] = $this->globalVariable->menuRoute;
-        $formData['menu_param'] = $this->globalVariable->menuParam;
+        
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['setFeatures'] = $setFeatures;
+        $formData['action'] = $this->globalVariable->actionGetSubdistrict;
+        $formData['menu_route'] = $this->globalVariable->menuRoute;
+
         return view($this->index_file,$formData);
     }
 

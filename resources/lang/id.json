@@ -181,6 +181,7 @@
     },
 
     "master_data_business_province": {
+        "submodule": "Bisnis",
         "name": "Provinsi",
         "list": "Daftar",
         "view": "Lihat",
@@ -195,6 +196,7 @@
     },
 
     "master_data_business_city": {
+        "submodule": "Bisnis",
         "name": "Kota",
         "list": "Daftar",
         "view": "Lihat",
@@ -209,6 +211,7 @@
     },
 
     "master_data_business_subdistrict": {
+        "submodule": "Bisnis",
         "name": "Kecamatan",
         "list": "Daftar",
         "view": "Lihat",
@@ -224,6 +227,7 @@
     },
 
     "master_data_business_warehouse": {
+        "submodule": "Bisnis",
         "name": "Gudang",
         "list": "Daftar",
         "view": "Lihat",
@@ -239,6 +243,7 @@
     },
 
     "master_data_business_branch": {
+        "submodule": "Bisnis",
         "name": "Cabang",
         "list": "Daftar",
         "view": "Lihat",
@@ -250,6 +255,184 @@
         "col_address": "Alamat",
         "col_phone": "No. Telp",
         "col_remark": "Remark",
+        "col_is_active": "Status"
+    },
+
+    "master_data_relation_customer": {
+        "submodule": "Relasi",
+        "name": "Customer",
+        "list": "Daftar",
+        "view": "Lihat",
+        "add": "Tambah",
+        "edit": "Ubah",
+        "col_action": "Aksi",
+        "col_code": "Kode",
+        "col_name": "Nama",
+        "col_title": "Title",
+        "col_address": "Alamat",
+        "col_subdistrict": "Kecamatan",
+        "col_city": "Kota",
+        "col_province": "Provinsi",
+        "col_sales": "Sales",
+        "col_office_phone": "Office Phone",
+        "col_fax": "Fax",
+        "col_contact_person": "Contact Person",
+        "col_phone_number": "No Telp",
+        "col_send_name": "Nama Kirim",
+        "col_send_address": "Alamat Kirim",
+        "col_send_city": "Kota Kirim",
+        "col_send_phone": "Nomor Kirim",
+        "col_remark": "Keterangan",
+        "col_is_active": "Status"
+    },
+
+    "master_data_relation_supplier": {
+        "submodule": "Relasi",
+        "name": "Supplier",
+        "list": "Daftar",
+        "view": "Lihat",
+        "add": "Tambah",
+        "edit": "Ubah",
+        "col_action": "Aksi",
+        "col_code": "Kode",
+        "col_name": "Nama",
+        "col_address": "Alamat",
+        "col_subdistrict": "Kecamatan",
+        "col_city": "Kota",
+        "col_province": "Provinsi",
+        "col_remark": "Remark",
+        "col_is_active": "Status"
+    },
+
+    "master_data_relation_employee": {
+        "submodule": "Relasi",
+        "name": "Karyawan",
+        "list": "Daftar",
+        "view": "Lihat",
+        "add": "Tambah",
+        "edit": "Ubah",
+        "col_action": "Aksi",
+        "col_code": "Kode",
+        "col_name": "Nama",
+        "col_nik": "NIK",
+        "col_address": "Alamat",
+        "col_subdistrict": "Kecamatan",
+        "col_city": "Kota",
+        "col_province": "Provinsi",
+        "col_postal_code": "Kode Pos",
+        "col_phone_number": "No Telp",
+        "col_mobile_phone_number": "No Hp",
+        "col_whatsapp": "Whatsapp",
+        "col_emai": "Email",
+        "col_telegram": "Telegram",
+        "col_skype": "Skype",
+        "col_division": "Divisi",
+        "col_position": "Posisi",
+        "col_remark": "Keterangan",
+        "col_is_active": "Status"
+    },
+
+    "master_data_relation_position": {
+        "submodule": "Relasi",
+        "name": "Posisi",
+        "list": "Daftar",
+        "view": "Lihat",
+        "add": "Tambah",
+        "edit": "Ubah",
+        "col_action": "Aksi",
+        "col_code": "Kode",
+        "col_name": "Nama",
+        "col_remark": "Keterangan",
+        "col_is_active": "Status"
+    },
+
+    "master_data_relation_division": {
+        "submodule": "Relasi",
+        "name": "Divisi",
+        "list": "Daftar",
+        "view": "Lihat",
+        "add": "Tambah",
+        "edit": "Ubah",
+        "col_action": "Aksi",
+        "col_code": "Kode",
+        "col_name": "Nama",
+        "col_remark": "Keterangan",
+        "col_is_active": "Status"
+    },
+
+    "master_data_product_item": {
+        "submodule": "Produk",
+        "name": "Barang",
+        "list": "Daftar",
+        "view": "Lihat",
+        "add": "Tambah",
+        "edit": "Ubah",
+        "col_action": "Aksi",
+        "col_code": "Kode",
+        "col_name": "Nama",
+        "col_type": "Jenis",
+        "col_category": "Kategori",
+        "col_unit": "Satuan",
+        "col_remark": "Keterangan",
+        "col_is_active": "Status"
+    },
+
+    "master_data_product_category": {
+        "submodule": "Produk",
+        "name": "Kategori",
+        "list": "Daftar",
+        "view": "Lihat",
+        "add": "Tambah",
+        "edit": "Ubah",
+        "col_action": "Aksi",
+        "col_code": "Kode",
+        "col_name": "Nama",
+        "col_remark": "Keterangan",
+        "col_is_active": "Status"
+    },
+
+    "master_data_product_type": {
+        "submodule": "Produk",
+        "name": "Jenis",
+        "list": "Daftar",
+        "view": "Lihat",
+        "add": "Tambah",
+        "edit": "Ubah",
+        "col_action": "Aksi",
+        "col_code": "Kode",
+        "col_name": "Nama",
+        "col_remark": "Keterangan",
+        "col_is_active": "Status"
+    },
+
+    "master_data_product_unit": {
+        "submodule": "Produk",
+        "name": "Satuan",
+        "list": "Daftar",
+        "view": "Lihat",
+        "add": "Tambah",
+        "edit": "Ubah",
+        "col_action": "Aksi",
+        "col_code": "Kode",
+        "col_name": "Nama",
+        "col_remark": "Keterangan",
+        "col_is_active": "Status"
+    },
+
+    "master_data_product_price_list": {
+        "submodule": "Produk",
+        "name": "Daftar Harga",
+        "list": "Daftar",
+        "view": "Lihat",
+        "add": "Tambah",
+        "edit": "Ubah",
+        "col_action": "Aksi",
+        "col_code": "Kode",
+        "col_name": "Nama",
+        "col_item": "Barang",
+        "col_unit": "Satuan",
+        "col_selling_price": "Harga Jual",
+        "col_remark": "Keterangan",
         "col_is_active": "Status"
     }
 }
