@@ -10,9 +10,12 @@ use App\Http\Controllers\MasterData\Business\WarehouseController;
 use App\Http\Controllers\MasterData\Product\CategoryController;
 use App\Http\Controllers\MasterData\Product\ItemController;
 use App\Http\Controllers\MasterData\Product\PriceListController;
+use App\Http\Controllers\MasterData\Product\TypeController;
 use App\Http\Controllers\MasterData\Product\UnitController;
 use App\Http\Controllers\MasterData\Relation\CustomerController;
+use App\Http\Controllers\MasterData\Relation\DivisionController;
 use App\Http\Controllers\MasterData\Relation\EmployeeController;
+use App\Http\Controllers\MasterData\Relation\PositionController;
 use App\Http\Controllers\MasterData\Relation\SupplierController;
 use App\Http\Controllers\Setting\GroupUserController;
 use App\Http\Controllers\Setting\UserController;
@@ -73,12 +76,15 @@ Route::group(['middleware' => ['web']], function () {
                     Route::resource('item', ItemController::class);
                     Route::resource('price-list', PriceListController::class);
                     Route::resource('unit', UnitController::class);
+                    Route::resource('type', TypeController::class);
                 });
 
                 Route::prefix('/relation/')->group(function () {
                     Route::resource('customer', CustomerController::class);
                     Route::resource('supplier', SupplierController::class);
                     Route::resource('employee', EmployeeController::class);
+                    Route::resource('position', PositionController::class);
+                    Route::resource('division', DivisionController::class);
                 });
             });
 

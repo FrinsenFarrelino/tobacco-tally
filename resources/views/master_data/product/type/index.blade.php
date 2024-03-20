@@ -32,7 +32,7 @@
                 <div class="card">
                     <div class="d-flex justify-content-between">
                         <div class="card-header">
-                            <h4>{{ __('master_data_business_branch')['list'] }} {{ $title }} - {{ $subtitle }}</h4>
+                            <h4>{{ __('master_data_product_type')['list'] }} {{ $title }} - {{ $subtitle }}</h4>
                         </div>
                         <div class="d-flex justify-content-end align-items-center pr-3">
                             <div class="col-auto">
@@ -51,10 +51,11 @@
                                 <thead>
                                     <tr>
                                         <th></th>
-                                        <th>{{ __('master_data_business_branch')['col_code'] }}</th>
-                                        <th>{{ __('master_data_business_branch')['col_name'] }}</th>
-                                        <th>{{ __('master_data_business_branch')['col_is_active'] }}</th>
-                                        <th>{{ __('master_data_business_branch')['col_action'] }}</th>
+                                        <th>{{ __('master_data_product_type')['col_code'] }}</th>
+                                        <th>{{ __('master_data_product_type')['col_name'] }}</th>
+                                        <th>{{ __('master_data_product_type')['col_remark'] }}</th>
+                                        <th>{{ __('master_data_product_type')['col_is_active'] }}</th>
+                                        <th>{{ __('master_data_product_type')['col_action'] }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -101,6 +102,10 @@
                 {
                     data: 'name',
                     name: 'name'
+                },
+                {
+                    data: 'remark',
+                    name: 'remark'
                 },
                 {
                     data: 'is_active',

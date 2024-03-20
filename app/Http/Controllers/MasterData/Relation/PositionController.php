@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\GlobalVariable;
 
-class CustomerController extends Controller
+class PositionController extends Controller
 {
     private $globalVariable;
 
@@ -16,17 +16,17 @@ class CustomerController extends Controller
     public function __construct(GlobalVariable $globalVariable)
     {
         $this->globalVariable = $globalVariable;
-        $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'customer', subModule: 'master_data_relation_customer', menuRoute: 'customer', menuUrl: 'master-data/business/customer');
+        $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'position', subModule: 'master_data_relation_position', menuRoute: 'position', menuUrl: 'master-data/business/position');
 
-        $this->index_file = 'master_data.relation.customer.index';
-        $this->form_file = 'master_data.relation.customer.form';
+        $this->index_file = 'master_data.relation.position.index';
+        $this->form_file = 'master_data.relation.position.form';
     }
 
     private function computeSetFeatures()
     {
         // You can use the existing logic you have in setPrivButton or modify it as needed
 
-        $code = 'customer';
+        $code = 'position';
         $setValueFeature = $this->setPrivButton($code);
 
         return $setValueFeature;
@@ -44,7 +44,7 @@ class CustomerController extends Controller
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'index');
         
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['action'] = $this->globalVariable->actionGetCustomer;
+        $formData['action'] = $this->globalVariable->actionGetPosition;
         $formData['menu_route'] = $this->globalVariable->menuRoute;
 
         return view($this->index_file,$formData);

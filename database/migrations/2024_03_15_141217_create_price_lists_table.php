@@ -20,7 +20,6 @@ return new class extends Migration
             $table->decimal('selling_price', $precision = 30, $scale = 6);
             $table->text('remark')->nullable();
             $table->boolean('is_active')->default(1);
-            $table->integer('ref_id')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->foreignId('deleted_by')->nullable()->constrained('users');

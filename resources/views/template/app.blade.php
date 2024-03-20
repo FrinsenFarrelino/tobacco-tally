@@ -40,9 +40,9 @@
 
                 </div>
             </footer>
-            @include('template.script')
         </div>
     </div>
+    @include('template.script')
 </body>
 
 </html>

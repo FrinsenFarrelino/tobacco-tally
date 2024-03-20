@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\GlobalVariable;
-use App\Traits\ValidationTrait;
 
 class PurchaseController extends Controller
 {

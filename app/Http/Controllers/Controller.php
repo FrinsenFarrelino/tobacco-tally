@@ -91,11 +91,13 @@ class Controller extends BaseController
         $title = Lang::get('subMenu')[$title];
 
         // Access the "home.dashboard.name" key in the language file
+        $submodule = Lang::get($subtitle)['submodule'] ?? ''; 
         $subtitle = Lang::get($subtitle)['name'];
 
         $objResponse = [
             'title' => $title,
             'subtitle' => $subtitle,
+            'submodule' => $submodule,
             'menu' => $menu,
             'mode' => $mode
         ];

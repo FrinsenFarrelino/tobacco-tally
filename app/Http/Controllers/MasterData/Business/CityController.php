@@ -43,8 +43,8 @@ class CityController extends Controller
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'index');
         
         $formData['list_nav_button'] = $generate_nav_button;
+        $formData['action'] = $this->globalVariable->actionGetCity;
         $formData['menu_route'] = $this->globalVariable->menuRoute;
-        $formData['menu_param'] = $this->globalVariable->menuParam;
 
         return view($this->index_file,$formData);
     }

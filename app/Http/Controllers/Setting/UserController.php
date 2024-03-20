@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\GlobalVariable;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Http;
-use App\Traits\ValidationTrait;
 
 class UserController extends Controller
 {
@@ -78,8 +77,6 @@ class UserController extends Controller
 
         return view($this->form_file, $formData);
     }
-
-    use ValidationTrait;
 
     /**
      * Store a newly created resource in storage.

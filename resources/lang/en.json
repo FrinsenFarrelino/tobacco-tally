@@ -198,6 +198,7 @@
     },
 
     "master_data_business_province": {
+        "submodule": "Business",
         "name": "Province",
         "list": "List",
         "view": "View",
@@ -212,6 +213,7 @@
     },
 
     "master_data_business_city": {
+        "submodule": "Business",
         "name": "City",
         "list": "List",
         "view": "View",
@@ -226,6 +228,7 @@
     },
 
     "master_data_business_subdistrict": {
+        "submodule": "Business",
         "name": "Subdistrict",
         "list": "List",
         "view": "View",
@@ -241,6 +244,7 @@
     },
 
     "master_data_business_warehouse": {
+        "submodule": "Business",
         "name": "Warehouse",
         "list": "List",
         "view": "View",
@@ -256,6 +260,7 @@
     },
 
     "master_data_business_branch": {
+        "submodule": "Business",
         "name": "Branch",
         "list": "List",
         "view": "View",
@@ -266,6 +271,185 @@
         "col_name": "Name",
         "col_address": "Address",
         "col_phone": "Phone",
+        "col_remark": "Remark",
+        "col_is_active": "Status"
+    },
+
+    "master_data_relation_customer": {
+        "submodule": "Relation",
+        "name": "Customer",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Code",
+        "col_name": "Name",
+        "col_title": "Title",
+        "col_address": "Address",
+        "col_subdistrict": "Subdistrict",
+        "col_city": "City",
+        "col_province": "Province",
+        "col_sales": "Sales",
+        "col_office_phone": "Office Phone",
+        "col_fax": "Fax",
+        "col_contact_person": "Contact Person",
+        "col_phone_number": "Phone Number",
+        "col_send_name": "Send Name",
+        "col_send_address": "Send Address",
+        "col_send_city": "Send City",
+        "col_send_phone": "Send Phone",
+        "col_phone": "Phone",
+        "col_remark": "Remark",
+        "col_is_active": "Status"
+    },
+
+    "master_data_relation_supplier": {
+        "submodule": "Relation",
+        "name": "Supplier",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Code",
+        "col_name": "Name",
+        "col_address": "Address",
+        "col_subdistrict": "Subdistrict",
+        "col_city": "City",
+        "col_province": "Province",
+        "col_remark": "Remark",
+        "col_is_active": "Status"
+    },
+
+    "master_data_relation_employee": {
+        "submodule": "Relation",
+        "name": "Employee",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Code",
+        "col_name": "Name",
+        "col_nik": "NIK",
+        "col_address": "Address",
+        "col_subdistrict": "Subdistrict",
+        "col_city": "City",
+        "col_province": "Province",
+        "col_postal_code": "Postal Code",
+        "col_phone_number": "Phone Number",
+        "col_mobile_phone_number": "Mobile Phone Number",
+        "col_whatsapp": "Whatsapp",
+        "col_emai": "Email",
+        "col_telegram": "Telegram",
+        "col_skype": "Skype",
+        "col_division": "Division",
+        "col_position": "Position",
+        "col_remark": "Remark",
+        "col_is_active": "Status"
+    },
+
+    "master_data_relation_position": {
+        "submodule": "Relation",
+        "name": "Position",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Code",
+        "col_name": "Name",
+        "col_remark": "Remark",
+        "col_is_active": "Status"
+    },
+
+    "master_data_relation_division": {
+        "submodule": "Relation",
+        "name": "Division",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Code",
+        "col_name": "Name",
+        "col_remark": "Remark",
+        "col_is_active": "Status"
+    },
+
+    "master_data_product_item": {
+        "submodule": "Product",
+        "name": "Item",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Code",
+        "col_name": "Name",
+        "col_type": "Type",
+        "col_category": "Category",
+        "col_unit": "Unit",
+        "col_remark": "Remark",
+        "col_is_active": "Status"
+    },
+
+    "master_data_product_category": {
+        "submodule": "Product",
+        "name": "Category",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Code",
+        "col_name": "Name",
+        "col_remark": "Remark",
+        "col_is_active": "Status"
+    },
+
+    "master_data_product_type": {
+        "submodule": "Product",
+        "name": "Type",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Code",
+        "col_name": "Name",
+        "col_remark": "Remark",
+        "col_is_active": "Status"
+    },
+
+    "master_data_product_unit": {
+        "submodule": "Product",
+        "name": "Unit",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Code",
+        "col_name": "Name",
+        "col_remark": "Remark",
+        "col_is_active": "Status"
+    },
+
+    "master_data_product_price_list": {
+        "submodule": "Product",
+        "name": "Price List",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Code",
+        "col_name": "Name",
+        "col_item": "Item",
+        "col_unit": "Unit",
+        "col_selling_price": "Selling Price",
         "col_remark": "Remark",
         "col_is_active": "Status"
     }
