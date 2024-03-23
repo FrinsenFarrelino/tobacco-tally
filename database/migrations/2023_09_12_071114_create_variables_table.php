@@ -11,19 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('branches', function (Blueprint $table) {
+        Schema::create('variables', function (Blueprint $table) {
             $table->id();
             $table->string('code', 100)->unique();
-            $table->string('name',200)->nullable();
-            $table->string('address', 200)->nullable();
-            $table->string('phone',50)->nullable();
-            $table->text('remark')->nullable();
+            $table->string('value', 200);
+            $table->string('label', 200)->nullable();
+            $table->text('note')->nullable();
             $table->boolean('is_active')->default(1);
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->foreignId('deleted_by')->nullable()->constrained('users');
-            $table->timestamps();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('branches');
+        Schema::dropIfExists('variables');
     }
 };

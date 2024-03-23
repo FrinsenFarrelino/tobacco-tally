@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('subdistricts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('city_id')->nullable()->constrained('cities');
             $table->string('code', 100)->unique();
-            $table->string('name',200)->unique();
+            $table->string('name',200)->nullable();
+            $table->foreignId('city_id')->nullable()->constrained('cities');
             $table->text('remark')->nullable();
             $table->boolean('is_active')->default(1);
             $table->foreignId('created_by')->nullable()->constrained('users');
