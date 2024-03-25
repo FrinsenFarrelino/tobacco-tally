@@ -9,21 +9,20 @@ use Illuminate\Support\Facades\Http;
 use Session;
 use Illuminate\Support\Facades\Auth;
 use App\Events\LogoutOtherUsers;
+use App\Http\Controllers\GlobalActionController;
+use App\Http\Controllers\GlobalController;
 
-class GroupUserController extends Controller
+class GroupUserController extends GlobalController
 {
     private $globalVariable;
+    protected $globalActionController;
 
     private $index_file;
-
     private $form_file;
 
-    private $select_category;
-
-    private $arrayIsActive;
-
-    public function __construct(GlobalVariable $globalVariable)
+    public function __construct(GlobalVariable $globalVariable, GlobalActionController $globalActionController)
     {
+        $this->globalActionController = $globalActionController;
         $this->globalVariable = $globalVariable;
         $this->globalVariable->ModuleGlobal('setting', 'group_user', 'setting/group-user', 'group-user', 'group_user');
 

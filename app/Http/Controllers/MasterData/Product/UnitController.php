@@ -4,20 +4,21 @@ namespace App\Http\Controllers\MasterData\Product;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\GlobalActionController;
+use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\GlobalVariable;
 
-class UnitController extends Controller
+class UnitController extends GlobalController
 {
     private $globalVariable;
+    protected $globalActionController;
 
     private $index_file;
-
     private $form_file;
 
-    private $arrayIsCenter;
-
-    public function __construct(GlobalVariable $globalVariable)
+    public function __construct(GlobalVariable $globalVariable, GlobalActionController $globalActionController)
     {
+        $this->globalActionController = $globalActionController;
         $this->globalVariable = $globalVariable;
         $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'unit', subModule: 'master_data_product_unit', menuRoute: 'unit', menuUrl: 'master-data/business/unit');
 

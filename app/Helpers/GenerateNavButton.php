@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Route;
                 ';
             }
         }
-        
+
         $field .= $fieldButton;
         $field .= '</div>';
 
@@ -48,7 +48,7 @@ use Illuminate\Support\Facades\Route;
 
         if (strstr($features, "save")) {
             $save_button = trans('save');
-            $navbutton['save'] = renderNavButton(true, class_button:"btn btn-primary btn-xs", class_icon:"fa-regular fa-floppy-disk mr-2", title:"Save");
+            $navbutton['save'] = renderNavButton(true, class_button:"btn btn-primary btn-xs", class_icon:"fas fa-floppy-o mr-2", title:"Save");
         }
 
         if (strstr($features, "edit")) {
@@ -58,7 +58,7 @@ use Illuminate\Support\Facades\Route;
             }
             elseif($page == "show"){
                 $route = route($url.'.edit', [$param => $data['id']]);
-                $navbutton['edit'] = renderNavButton(false, "btn btn-warning btn-xs", $route, "fas fa-pencil mr-2", "Edit");
+                $navbutton['edit'] = renderNavButton(false, "btn btn-warning btn-xs", $route, "fa fa-pencil mr-2", "Edit");
             }
         }
 

@@ -64,6 +64,7 @@
         </div>
     </div>
 </section>
+<?php echo renderBaseModel(); ?>
 
 @endsection
 
@@ -115,7 +116,7 @@
                     render: function(data, type, row) {
                         var showButton = '<a href="' + row.showUrl + '" class="btn btn-secondary btn-sm rounded-circle"><i class="fas fa-eye"></i></a>';
                         var editButton = '<a href="' + row.editUrl + '" class="btn btn-warning btn-sm ml-2 rounded-circle"><i class="fas fa-pencil-alt"></i></a>';
-                        var deleteButton = '<a href="' + row.destroyUrl + '" class="btn btn-danger btn-sm ml-2 rounded-circle"><i class="fas fa-trash-alt"></i></a>';
+                        var deleteButton = '<button class="btn btn-danger btn-sm ml-2 rounded-circle btnDestroy" type="button" data-id="' + row.id + '"><i class="fas fa-trash-alt"></i></button>';
                         
                         return showButton + editButton + deleteButton;
                     }
@@ -123,9 +124,9 @@
             ]
         });
 
-        new $.fn.dataTable.FixedColumns(table, {
-            rightColumns: 1
-        });
+        // untuk pop up delete modal data
+        <?php echo renderOpenModal(); ?>
+        <?php echo renderScriptButtonTable('btnDestroy', 'confirmations', 'fa-solid fa-triangle-exclamation fa-beat-fade', '#FF0000', 'title_delete', 'content_delete', $menu_route, $menu_param); ?>
     });
 </script>
 @endsection
