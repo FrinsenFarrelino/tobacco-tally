@@ -33,7 +33,9 @@
             "app/Helpers/GenerateNavButton.php",
             "app/Helpers/Form.php",
             "app/Helpers/ModalAndAlert.php",
-            "app/Helpers/Script.php"
+            "app/Helpers/Script.php",
+            "app/Helpers/GenerateDataTable.php",
+            "app/Helpers/Formatter.php"
         ]
     },
     "autoload-dev": {

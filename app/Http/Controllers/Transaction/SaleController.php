@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Transaction;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\GlobalVariable;
 
-class SaleController extends Controller
+class SaleController extends GlobalController
 {
     /**
      * Display a listing of the resource.

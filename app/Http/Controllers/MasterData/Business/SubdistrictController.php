@@ -4,18 +4,23 @@ namespace App\Http\Controllers\MasterData\Business;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\GlobalActionController;
+use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\GlobalVariable;
 
-class SubdistrictController extends Controller
+class SubdistrictController extends GlobalController
 {
     private $globalVariable;
+    protected $globalActionController;
 
     private $index_file;
     private $form_file;
 
-    public function __construct(GlobalVariable $globalVariable)
+    public function __construct(GlobalVariable $globalVariable, GlobalActionController $globalActionController)
     {
+        $this->globalActionController = $globalActionController;
         $this->globalVariable = $globalVariable;
+        
         $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'subdistrict', subModule: 'master_data_business_subdistrict', menuRoute: 'subdistrict', menuUrl: 'master-data/business/subdistrict');
 
         $this->index_file = 'master_data.business.subdistrict.index';

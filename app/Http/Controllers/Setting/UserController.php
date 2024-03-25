@@ -4,25 +4,24 @@ namespace App\Http\Controllers\Setting;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\GlobalActionController;
+use App\Http\Controllers\GlobalController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\GlobalVariable;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Http;
 
-class UserController extends Controller
+class UserController extends GlobalController
 {
     private $globalVariable;
+    protected $globalActionController;
 
     private $index_file;
-
     private $form_file;
 
-    private $is_show_all_tickets;
-    private $is_post_cs;
-    private $arrayIsActive;
-
-    public function __construct(GlobalVariable $globalVariable)
+    public function __construct(GlobalVariable $globalVariable, GlobalActionController $globalActionController)
     {
+        $this->globalActionController = $globalActionController;
         $this->globalVariable = $globalVariable;
         $this->globalVariable->ModuleGlobal('setting', 'user', 'setting/user', 'user', 'user');
 

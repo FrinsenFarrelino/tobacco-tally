@@ -216,7 +216,7 @@ ol {
 .custom-select,
 .custom-file-label {
     background-color: #fdfdff;
-    border-color: #fae1e1;
+    border-color: #bfaaaa;
 }
 .form-control:focus,
 .input-group-text:focus,
@@ -390,7 +390,7 @@ select.form-control:not([size]):not([multiple]) {
 
 .selectgroup-button {
     background-color: #fdfdff;
-    border-color: #fae1e1;
+    border-color: #bfaaaa;
     border-width: 1px;
     border-style: solid;
     display: block;
@@ -526,7 +526,7 @@ select.form-control:not([size]):not([multiple]) {
 
 .imagecheck-figure {
     background-color: #fdfdff;
-    border-color: #fae1e1;
+    border-color: #bfaaaa;
     border-width: 1px;
     border-style: solid;
     border-radius: 3px;
@@ -622,7 +622,7 @@ select.form-control:not([size]):not([multiple]) {
 
 .colorinput-color {
     background-color: #fdfdff;
-    border-color: #fae1e1;
+    border-color: #bfaaaa;
     border-width: 1px;
     border-style: solid;
     display: inline-block;
@@ -3979,3 +3979,7 @@ body:not(.sidebar-mini)
 [data-theme-version="dark"] .waviy span {
     color: #fff;
 }
+
+table.dataTable tr.selected {
+    color: var(--primary);
+  }

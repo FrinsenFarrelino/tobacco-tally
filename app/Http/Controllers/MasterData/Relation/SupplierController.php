@@ -4,20 +4,21 @@ namespace App\Http\Controllers\MasterData\Relation;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\GlobalActionController;
+use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\GlobalVariable;
 
-class SupplierController extends Controller
+class SupplierController extends GlobalController
 {
     private $globalVariable;
+    protected $globalActionController;
 
     private $index_file;
-
     private $form_file;
 
-    private $arrayIsCenter;
-
-    public function __construct(GlobalVariable $globalVariable)
+    public function __construct(GlobalVariable $globalVariable, GlobalActionController $globalActionController)
     {
+        $this->globalActionController = $globalActionController;
         $this->globalVariable = $globalVariable;
         $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'supplier', subModule: 'master_data_relation_supplier', menuRoute: 'supplier', menuUrl: 'master-data/business/supplier');
 

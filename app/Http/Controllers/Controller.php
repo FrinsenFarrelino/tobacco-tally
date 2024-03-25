@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Handlers\StatusMessageCode;
+use GlobalActionController;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
@@ -10,10 +11,13 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -91,7 +95,7 @@ class Controller extends BaseController
         $title = Lang::get('subMenu')[$title];
 
         // Access the "home.dashboard.name" key in the language file
-        $submodule = Lang::get($subtitle)['submodule'] ?? ''; 
+        $submodule = Lang::get($subtitle)['submodule'] ?? '';
         $subtitle = Lang::get($subtitle)['name'];
 
         $objResponse = [
@@ -117,21 +121,6 @@ class Controller extends BaseController
                 $setValueFeature .= '|' . 'delete';
                 $setValueFeature .= '|' . 'rollbackdraft';
                 $setValueFeature .= '|' . 'rollbackreqrfq';
-            } elseif ($code == 'bom_eva_material' || $code == 'bom_eva_material_pigment') {
-                $setValueFeature .= '|' . 'add';
-                $setValueFeature .= '|' . 'edit';
-                $setValueFeature .= '|' . 'copy';
-                $setValueFeature .= '|' . 'delete';
-            } elseif ($code == 'marketing_order_closing') {
-                $setValueFeature .= '|' . 'close';
-            } elseif ($code == 'sales_order') {
-                $setValueFeature .= '|' . 'add';
-                $setValueFeature .= '|' . 'edit';
-                $setValueFeature .= '|' . 'delete';
-                $setValueFeature .= '|' . 'approve';
-            } elseif ($code == 'sales_order_closing') {
-                $setValueFeature .= '|' . 'item-cls';
-                $setValueFeature .= '|' . 'invoice-cls';
             } else {
                 $setValueFeature .= '|' . 'add';
                 $setValueFeature .= '|' . 'edit';

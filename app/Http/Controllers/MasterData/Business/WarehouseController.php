@@ -4,17 +4,21 @@ namespace App\Http\Controllers\MasterData\Business;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\GlobalActionController;
+use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\GlobalVariable;
 
-class WarehouseController extends Controller
+class WarehouseController extends GlobalController
 {
     private $globalVariable;
+    protected $globalActionController;
 
     private $index_file;
     private $form_file;
 
-    public function __construct(GlobalVariable $globalVariable)
+    public function __construct(GlobalVariable $globalVariable, GlobalActionController $globalActionController)
     {
+        $this->globalActionController = $globalActionController;
         $this->globalVariable = $globalVariable;
         $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'warehouse', subModule: 'master_data_business_warehouse', menuRoute: 'warehouse', menuUrl: 'master-data/business/warehouse');
 
@@ -39,15 +43,15 @@ class WarehouseController extends Controller
     {
         $setFeatures = $this->computeSetFeatures();
 
-        $generate_nav_button = generateNavbutton([],'reload'.$setFeatures,'index', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
+        $generate_nav_button = generateNavbutton([], 'reload' . $setFeatures, 'index', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'index');
-        
+
         $formData['list_nav_button'] = $generate_nav_button;
         $formData['action'] = $this->globalVariable->actionGetWarehouse;
         $formData['menu_route'] = $this->globalVariable->menuRoute;
 
-        return view($this->index_file,$formData);
+        return view($this->index_file, $formData);
     }
 
     /**
@@ -55,7 +59,7 @@ class WarehouseController extends Controller
      */
     public function create()
     {
-        $generate_nav_button = generateNavbutton([],'back|save','save', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
+        $generate_nav_button = generateNavbutton([], 'back|save', 'save', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'add');
 
@@ -79,22 +83,21 @@ class WarehouseController extends Controller
             return $validationResponse;
         }
 
-        $set_request = SetRequestGlobal('addBranch', collectDeviceInfo(), $request, array('created_at'=>'created_at'), manualCode: $request->code);
+        $set_request = SetRequestGlobal('addBranch', collectDeviceInfo(), $request, array('created_at' => 'created_at'), manualCode: $request->code);
 
         $result = $this->sendApi($set_request, 'post');
 
-        if($result['success'] == false)
-        {
+        if ($result['success'] == false) {
             return redirect()->back()
-                    ->withErrors($result['errors'])
-                    ->with('message', $result['message'])
-                    ->with('status_code', $result['status_code'])
-                    ->withInput();
+                ->withErrors($result['errors'])
+                ->with('message', $result['message'])
+                ->with('status_code', $result['status_code'])
+                ->withInput();
         }
 
         session()->flash('success', 'Add operation was successful.');
 
-        return redirect('/'. $this->globalVariable->menuUrl);
+        return redirect('/' . $this->globalVariable->menuUrl);
     }
 
     /**
@@ -108,12 +111,12 @@ class WarehouseController extends Controller
             'query' => $id
         );
 
-        $set_request = SetRequestGlobal(action:$this->globalVariable->actionGetBranchOffice, deviceInfo:collectDeviceInfo(), search:$search_key);
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetBranchOffice, deviceInfo: collectDeviceInfo(), search: $search_key);
         $result = $this->getApi($set_request);
         $decodedData = removeArrayBracket($result['data']['data']);
 
         $setFeatures = $this->computeSetFeatures();
-        $generate_nav_button = generateNavbutton($decodedData,'back'.$setFeatures,'show', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
+        $generate_nav_button = generateNavbutton($decodedData, 'back' . $setFeatures, 'show', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'view');
 
@@ -124,7 +127,7 @@ class WarehouseController extends Controller
         $formData['action_pic'] = $this->globalVariable->actionGetEmployee;
         $formData['selectActive'] = $this->arrayIsActive;
 
-        return view($this->form_file,$formData);
+        return view($this->form_file, $formData);
     }
 
     /**
@@ -138,11 +141,11 @@ class WarehouseController extends Controller
             'query' => $id
         );
 
-        $set_request = SetRequestGlobal(action:$this->globalVariable->actionGetBranchOffice, deviceInfo:collectDeviceInfo(), search:$search_key);
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetBranchOffice, deviceInfo: collectDeviceInfo(), search: $search_key);
         $result = $this->getApi($set_request);
         $decodedData = removeArrayBracket($result['data']['data']);
 
-        $generate_nav_button = generateNavbutton($decodedData,'back|save','edit', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
+        $generate_nav_button = generateNavbutton($decodedData, 'back|save', 'edit', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'edit');
 
@@ -153,7 +156,7 @@ class WarehouseController extends Controller
         $formData['action_pic'] = $this->globalVariable->actionGetEmployee;
         $formData['selectActive'] = $this->arrayIsActive;
 
-        return view($this->form_file,$formData);
+        return view($this->form_file, $formData);
     }
 
     /**
@@ -167,22 +170,21 @@ class WarehouseController extends Controller
             return $validationResponse;
         }
 
-        $set_request = SetRequestGlobal('updateBranch',collectDeviceInfo(),$request);
+        $set_request = SetRequestGlobal('updateBranch', collectDeviceInfo(), $request);
 
-        $result = $this->sendApi($set_request, 'put',$id);
+        $result = $this->sendApi($set_request, 'put', $id);
 
-        if($result['success'] == false)
-        {
+        if ($result['success'] == false) {
             return redirect()->back()
-                    ->withErrors($result['errors'])
-                    ->with('message', $result['message'])
-                    ->with('status_code', $result['status_code'])
-                    ->withInput();
+                ->withErrors($result['errors'])
+                ->with('message', $result['message'])
+                ->with('status_code', $result['status_code'])
+                ->withInput();
         }
 
         session()->flash('success', 'Update operation was successful.');
 
-        return redirect('/'. $this->globalVariable->menuUrl);
+        return redirect('/' . $this->globalVariable->menuUrl);
     }
 
     /**
@@ -190,21 +192,20 @@ class WarehouseController extends Controller
      */
     public function destroy(string $id)
     {
-        $set_request = SetRequestGlobal('softDeleteBranch',collectDeviceInfo());
+        $set_request = SetRequestGlobal('softDeleteBranch', collectDeviceInfo());
 
         $result = $this->sendApi($set_request, 'delete', $id);
 
-        if($result['success'] == false)
-        {
+        if ($result['success'] == false) {
             return redirect()->back()
-                    ->withErrors($result['errors'])
-                    ->with('message', $result['message'])
-                    ->with('status_code', $result['status_code'])
-                    ->withInput();
+                ->withErrors($result['errors'])
+                ->with('message', $result['message'])
+                ->with('status_code', $result['status_code'])
+                ->withInput();
         }
 
         session()->flash('success', 'Delete operation was successful.');
 
-        return redirect('/'. $this->globalVariable->menuUrl);
+        return redirect('/' . $this->globalVariable->menuUrl);
     }
 }

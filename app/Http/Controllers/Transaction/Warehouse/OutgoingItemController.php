@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Transaction\Warehouse;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\GlobalVariable;
 
-class OutgoingItemController extends Controller
+class OutgoingItemController extends GlobalController
 {
     /**
      * Display a listing of the resource.
