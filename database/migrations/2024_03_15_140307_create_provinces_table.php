@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('provinces', function (Blueprint $table) {
             $table->id();
             $table->string('code', 100)->unique();
-            $table->string('name',200)->unique();
+            $table->string('name',200)->nullable();
             $table->string('country',200)->nullable();
             $table->text('remark')->nullable();
             $table->boolean('is_active')->default(1);

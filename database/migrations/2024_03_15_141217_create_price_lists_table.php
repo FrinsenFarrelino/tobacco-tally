@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('price_lists', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 100);
+            $table->string('code', 100)->unique();
             $table->string('name', 200)->nullable();
             $table->foreignId('item_id')->nullable()->constrained('items');
             $table->foreignId('unit_id')->nullable()->constrained('units');

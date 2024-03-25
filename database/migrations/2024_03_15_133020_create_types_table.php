@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('types', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 100)->nullable();
+            $table->string('code', 100)->unique();
             $table->string('name', 200)->nullable();
             $table->text('remark')->nullable();
             $table->boolean('is_active')->default(1);

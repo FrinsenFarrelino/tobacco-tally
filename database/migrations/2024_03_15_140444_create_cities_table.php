@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('cities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('province_id')->nullable()->constrained('provinces');
             $table->string('code', 100)->unique();
-            $table->string('name',200)->unique();
+            $table->string('name',200)->nullable();
+            $table->foreignId('province_id')->nullable()->constrained('provinces');
             $table->text('remark')->nullable();
             $table->boolean('is_active')->default(1);
             $table->foreignId('created_by')->nullable()->constrained('users');
