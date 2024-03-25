@@ -35,14 +35,10 @@
                             <h4>{{ __('master_data_product_type')['list'] }} {{ $title }} - {{ $subtitle }}</h4>
                         </div>
                         <div class="d-flex justify-content-end align-items-center pr-3">
-                            <div class="col-auto">
-                                {!! $list_nav_button['reload'] !!}
-                            </div>
-                            <div class="col-auto">
-                                @if (isset($list_nav_button['add']))
-                                {!! $list_nav_button['add'] !!}
-                                @endif
-                            </div>
+                            {!! $list_nav_button['reload'] !!}
+                            @if (isset($list_nav_button['add']))
+                            {!! $list_nav_button['add'] !!}
+                            @endif
                         </div>
                     </div>
                     <div class="card-body">

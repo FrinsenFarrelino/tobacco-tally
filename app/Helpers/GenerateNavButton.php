@@ -1,29 +1,38 @@
 <?php
 use Illuminate\Support\Facades\Route;
     function renderNavButton($is_button=false, $class_button="", $href="" , $class_icon="", $title="", $button_id="", $no="", $svg=null, $type='submit') {
-        $field = '
+        $field = '<div class="col-auto">';
+
+        $fieldButton = '
+            <button id="btnSubmitForm" class="'. $class_button .'" type="'.$type.'"><i class="'. $class_icon .'"></i>' . $title .'</button>
+        ';
+
+        $fieldButton = '
             <button id="btnSubmitForm" class="'. $class_button .'" type="'.$type.'"><i class="'. $class_icon .'"></i>' . $title .'</button>
         ';
 
         if($svg != null)
         {
-            $field = '
+            $fieldButton = '
                 <button class="'. $class_button .'" type="submit">'.$svg.'' . $title .'</button>
             ';
         }
 
         if($is_button == false)
         {
-            $field = '
+            $fieldButton = '
                 <a href="'. $href .'" class="'. $class_button .'"><i class="'. $class_icon .'"></i> '. $title .'</a>
             ';
             if($button_id != "")
             {
-                $field = '
+                $fieldButton = '
                     <button class="'. $class_button .' '. $button_id .'" id="'. $button_id .'" type="button" data-id="'. $no .'"><i class="'. $class_icon .'"></i> '. $title .'</button>
                 ';
             }
         }
+        
+        $field .= $fieldButton;
+        $field .= '</div>';
 
         return $field;
      }

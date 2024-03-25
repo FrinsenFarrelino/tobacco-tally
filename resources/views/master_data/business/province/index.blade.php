@@ -35,14 +35,10 @@
                             <h4>{{ __('master_data_business_province')['list'] }} {{ $title }} - {{ $subtitle }}</h4>
                         </div>
                         <div class="d-flex justify-content-end align-items-center pr-3">
-                            <div class="col-auto">
-                                {!! $list_nav_button['reload'] !!}
-                            </div>
-                            <div class="col-auto">
-                                @if (isset($list_nav_button['add']))
-                                {!! $list_nav_button['add'] !!}
-                                @endif
-                            </div>
+                            {!! $list_nav_button['reload'] !!}
+                            @if (isset($list_nav_button['add']))
+                            {!! $list_nav_button['add'] !!}
+                            @endif
                         </div>
                     </div>
                     <div class="card-body">
@@ -75,7 +71,7 @@
 <script>
     $(document).ready(function() {
         setMenuActive();
-        
+
         $('#myTable').DataTable({
             processing: true,
             serverSide: true,
@@ -120,7 +116,7 @@
                         var showButton = '<a href="' + row.showUrl + '" class="btn btn-secondary btn-sm rounded-circle"><i class="fas fa-eye"></i></a>';
                         var editButton = '<a href="' + row.editUrl + '" class="btn btn-warning btn-sm ml-2 rounded-circle"><i class="fas fa-pencil-alt"></i></a>';
                         var deleteButton = '<a href="' + row.destroyUrl + '" class="btn btn-danger btn-sm ml-2 rounded-circle"><i class="fas fa-trash-alt"></i></a>';
-                        
+
                         return showButton + editButton + deleteButton;
                     }
                 }
