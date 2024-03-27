@@ -54,7 +54,7 @@
                                 <div class="col-md-8">
                                     {!! renderInput('mb-3 row', 'col-md-4 col-form-label', 'col-md-8', 'text', 'code', __('master_data_business_subdistrict')['col_code'], $master_data_business_subdistrict['code'] ?? '', $mode, 'disabled placeholder="Auto Generated"') !!}
                                     {!! renderInput('mb-3 row', 'col-md-4 col-form-label', 'col-md-8', 'text', 'name', __('master_data_business_subdistrict')['col_name'], $master_data_business_subdistrict['name'] ?? '', $mode, 'required') !!}
-                                    {!! renderBrowserInput('mb-3 row', 'col-md-4', 'col-8 col-md-5', 'browse_city_name', '', __('master_data_business_subdistrict')['col_city'], $master_data_business_subdistrict['city_name'] ?? '', $mode, 'required', $action_city, ["cities.code|like","cities.name|like","provinces.name|like"], [], array('browse_city_id|id','browse_city_name|name','browse_city_province_name|province_name'), ['code','name','province'], 'city', ['Code','Name','Province'], [['field'=>'code', 'name' => 'cities.code'], ['field'=>'name', 'name' => 'cities.name'], ['field'=>'province_name', 'name' => 'provinces.name']], title_modal:'Get City', id_ajax: 'example') !!}
+                                    {!! renderBrowserInput('mb-3 row', 'col-md-4', 'col-8 col-md-5', 'browse_city_name', '', __('master_data_business_subdistrict')['col_city'], $master_data_business_subdistrict['city_name'] ?? '', $mode, 'required', $action_city, ["cities.code|like","cities.name|like","provinces.name|like"], [], array('browse_city_id|id','browse_city_name|name','browse_city_province_name|province_name'), ['code','name','province_name'], 'city', ['Code','Name','Province'], [['field'=>'code', 'name' => 'cities.code'], ['field'=>'name', 'name' => 'cities.name'], ['field'=>'province_name', 'name' => 'provinces.name']], title_modal:'Get City', id_ajax: 'example') !!}
                                     {!! renderInput('row', 'col-md-4 col-form-label', 'col-md-8', 'hidden', 'city_id', '', $master_data_business_subdistrict['city_id'] ?? '', 'add', '', 'browse_city_id') !!}
                                     {!! renderInput('mb-3 row', 'col-md-4 col-form-label', 'col-md-8', 'text', 'province_name', __('master_data_business_subdistrict')['col_province'], $master_data_business_subdistrict['province_name'] ?? '', $mode, 'disabled', 'browse_city_province_name') !!}
                                     {!! renderTextArea('mb-3 row', 'col-md-4 col-form-label', 'col-md-8', 'remark', __('master_data_business_subdistrict')['col_remark'], 5, $master_data_business_subdistrict["remark"] ?? '', $mode, '') !!}
@@ -73,11 +73,7 @@
 @endsection
 
 @section('scripts')
-<script>
-    function getVal() {
-        console.log($('#browse_province_id').val())
-    }
-    
+<script> 
     $(document).ready(function() {
         setMenuActive();
     });

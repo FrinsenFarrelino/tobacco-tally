@@ -223,6 +223,22 @@ class GlobalController extends Controller
                 'updated_by_user.name as updated_by',
                 'deleted_by_user.name as deleted_by',
             );
+        } elseif ($action == 'getSupplier') {
+            $query->leftJoin('subdistricts', 'subdistricts.id', '=', 'suppliers.subdistrict_id');
+            $query->leftJoin('cities', 'cities.id', '=', 'subdistricts.city_id');
+            $query->leftJoin('provinces', 'provinces.id', '=', 'cities.province_id');
+            $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'suppliers.created_by');
+            $query->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', 'suppliers.updated_by');
+            $query->leftJoin('users as deleted_by_user', 'deleted_by_user.id', '=', 'suppliers.deleted_by');
+            $query->select(
+                'suppliers.*',
+                'subdistricts.name as subdistrict_name',
+                'cities.name as city_name',
+                'provinces.name as province_name',
+                'created_by_user.name as created_by',
+                'updated_by_user.name as updated_by',
+                'deleted_by_user.name as deleted_by',
+            );
         } elseif ($action == 'getItem') {
             $query->leftJoin('types', 'types.id', '=', 'items.type_id');
             $query->leftJoin('categories', 'categories.id', '=', 'items.category_id');
@@ -234,20 +250,6 @@ class GlobalController extends Controller
                 'items.*',
                 'categories.name as category_name',
                 'types.name as type_name',
-                'units.name as unit_name',
-                'created_by_user.name as created_by',
-                'updated_by_user.name as updated_by',
-                'deleted_by_user.name as deleted_by',
-            );
-        } elseif ($action == 'getPriceList') {
-            $query->leftJoin('items', 'items.id', '=', 'price_lists.item_id');
-            $query->leftJoin('units', 'units.id', '=', 'price_lists.unit_id');
-            $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'price_lists.created_by');
-            $query->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', 'price_lists.updated_by');
-            $query->leftJoin('users as deleted_by_user', 'deleted_by_user.id', '=', 'price_lists.deleted_by');
-            $query->select(
-                'price_lists.*',
-                'items.name as item_name',
                 'units.name as unit_name',
                 'created_by_user.name as created_by',
                 'updated_by_user.name as updated_by',
