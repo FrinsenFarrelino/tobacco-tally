@@ -74,7 +74,6 @@ Route::group(['middleware' => ['web']], function () {
                 Route::prefix('/product/')->group(function () {
                     Route::resource('category', CategoryController::class);
                     Route::resource('item', ItemController::class);
-                    Route::resource('price-list', PriceListController::class);
                     Route::resource('unit', UnitController::class);
                     Route::resource('type', TypeController::class);
                 });

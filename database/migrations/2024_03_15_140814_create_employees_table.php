@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('code', 100)->unique();
             $table->string('name', 200)->nullable();
-            $table->bigInteger('NIK')->nullable();
+            $table->bigInteger('nik')->nullable();
             $table->string('address', 255)->nullable();
             $table->foreignId('subdistrict_id')->nullable()->constrained('subdistricts');
             $table->integer('postal_code')->nullable();

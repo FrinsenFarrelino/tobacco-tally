@@ -55,7 +55,7 @@
                                     {!! renderInput('mb-3 row', 'col-md-4 col-form-label', 'col-md-8', 'text', 'code', __('master_data_business_province')['col_code'], $master_data_business_province['code'] ?? '', $mode, 'disabled placeholder="Auto Generated"') !!}
                                     {!! renderInput('mb-3 row', 'col-md-4 col-form-label', 'col-md-8', 'text', 'name', __('master_data_business_province')['col_name'], $master_data_business_province['name'] ?? '', $mode, 'required') !!}
                                     {!! renderInput('mb-3 row', 'col-md-4 col-form-label', 'col-md-8', 'text', 'country', __('master_data_business_province')['col_country'], $master_data_business_province['country'] ?? '', $mode, 'required') !!}
-                                    {!! renderTextArea('mb-3 row', 'col-md-4 col-form-label', 'col-md-8', 'remark', __('master_data_business_province')['col_remark'], 5, $master_data_business_province["remark"] ?? '', $mode, 'required') !!}
+                                    {!! renderTextArea('mb-3 row', 'col-md-4 col-form-label', 'col-md-8', 'remark', __('master_data_business_province')['col_remark'], 5, $master_data_business_province["remark"] ?? '', $mode, '') !!}
                                     {!! renderSelect('mb-3 row', 'col-md-4 mt-2', 'col-md-8 mt-2 mt-lg-0', 'is_active', __('master_data_business_province')['col_is_active'], 'js-data-example-ajax w-100 form-control mb-3', $master_data_business_province['is_active'] ?? '', $selectActive ?? [], $mode) !!}
                                 </div>
                             </div>

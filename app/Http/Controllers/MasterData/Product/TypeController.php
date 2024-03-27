@@ -16,20 +16,23 @@ class TypeController extends GlobalController
     private $index_file;
     private $form_file;
 
+    private $arrayIsActive;
+
     public function __construct(GlobalVariable $globalVariable, GlobalActionController $globalActionController)
     {
         $this->globalActionController = $globalActionController;
         $this->globalVariable = $globalVariable;
-        $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'type', subModule: 'master_data_product_type', menuRoute: 'type', menuUrl: 'master-data/business/type');
+        $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'type', subModule: 'master_data_product_type', menuRoute: 'type', menuUrl: 'master-data/product/type');
 
         $this->index_file = 'master_data.product.type.index';
         $this->form_file = 'master_data.product.type.form';
+
+        $this->arrayIsActive = [['id' => '1', 'name' => 'Active'], ['id' => '0', 'name' => 'Inactive']];
     }
 
     private function computeSetFeatures()
     {
         // You can use the existing logic you have in setPrivButton or modify it as needed
-
         $code = 'type';
         $setValueFeature = $this->setPrivButton($code);
 
@@ -50,6 +53,7 @@ class TypeController extends GlobalController
         $formData['list_nav_button'] = $generate_nav_button;
         $formData['action'] = $this->globalVariable->actionGetType;
         $formData['menu_route'] = $this->globalVariable->menuRoute;
+        $formData['menu_param'] = $this->globalVariable->menuParam;
 
         return view($this->index_file,$formData);
     }
@@ -59,14 +63,11 @@ class TypeController extends GlobalController
      */
     public function create()
     {
-        $generate_nav_button = generateNavbutton([],'back|save','save', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
+        $generate_nav_button = generateNavbutton([], 'back|save', 'save', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'add');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['is_center'] = $this->arrayIsCenter;
-        $formData['action_port'] = $this->globalVariable->actionGetPort;
-        $formData['action_pic'] = $this->globalVariable->actionGetEmployee;
         $formData['selectActive'] = $this->arrayIsActive;
 
         return view($this->form_file, $formData);
@@ -77,28 +78,20 @@ class TypeController extends GlobalController
      */
     public function store(Request $request)
     {
-        $validationResponse = $this->handleValidation($request, 'add');
+        $set_request = SetRequestGlobal('addType', $request, formatCode: 'code_type');
+        $result = $this->addData($set_request);
 
-        if ($validationResponse) {
-            return $validationResponse;
-        }
-
-        $set_request = SetRequestGlobal('addBranch', collectDeviceInfo(), $request, array('created_at'=>'created_at'), manualCode: $request->code);
-
-        $result = $this->sendApi($set_request, 'post');
-
-        if($result['success'] == false)
-        {
+        if ($result['success'] == false) {
             return redirect()->back()
-                    ->withErrors($result['errors'])
-                    ->with('message', $result['message'])
-                    ->with('status_code', $result['status_code'])
-                    ->withInput();
+                ->withErrors($result['errors'])
+                ->with('message', $result['message'])
+                ->with('status_code', $result['status_code'])
+                ->withInput();
         }
 
         session()->flash('success', 'Add operation was successful.');
 
-        return redirect('/'. $this->globalVariable->menuUrl);
+        return redirect('/' . $this->globalVariable->menuUrl);
     }
 
     /**
@@ -107,28 +100,26 @@ class TypeController extends GlobalController
     public function show(string $id)
     {
         $search_key[] = array(
-            'key' => 'branches.id',
+            'key' => 'types.id',
             'term' => 'equal',
             'query' => $id
         );
 
-        $set_request = SetRequestGlobal(action:$this->globalVariable->actionGetBranchOffice, deviceInfo:collectDeviceInfo(), search:$search_key);
-        $result = $this->getApi($set_request);
-        $decodedData = removeArrayBracket($result['data']['data']);
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetType, search: $search_key);
+        $result = $this->getData($set_request);
+        $decodedData = $result['data'][0];
 
         $setFeatures = $this->computeSetFeatures();
-        $generate_nav_button = generateNavbutton($decodedData,'back'.$setFeatures,'show', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
+        $generate_nav_button = generateNavbutton($decodedData, 'back' . $setFeatures, 'show', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'view');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['branch'] = $decodedData;
-        $formData['is_center'] = $this->arrayIsCenter;
-        $formData['action_port'] = $this->globalVariable->actionGetPort;
-        $formData['action_pic'] = $this->globalVariable->actionGetEmployee;
+        $formData['master_data_product_type'] = $decodedData;
         $formData['selectActive'] = $this->arrayIsActive;
 
-        return view($this->form_file,$formData);
+
+        return view($this->form_file, $formData);
     }
 
     /**
@@ -137,27 +128,24 @@ class TypeController extends GlobalController
     public function edit(string $id)
     {
         $search_key[] = array(
-            'key' => 'branches.id',
+            'key' => 'types.id',
             'term' => 'equal',
             'query' => $id
         );
 
-        $set_request = SetRequestGlobal(action:$this->globalVariable->actionGetBranchOffice, deviceInfo:collectDeviceInfo(), search:$search_key);
-        $result = $this->getApi($set_request);
-        $decodedData = removeArrayBracket($result['data']['data']);
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetType, search: $search_key);
+        $result = $this->getData($set_request);
+        $decodedData = $result['data'][0];
 
-        $generate_nav_button = generateNavbutton($decodedData,'back|save','edit', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
+        $generate_nav_button = generateNavbutton($decodedData, 'back|save', 'edit', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'edit');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['branch'] = $decodedData;
-        $formData['is_center'] = $this->arrayIsCenter;
-        $formData['action_port'] = $this->globalVariable->actionGetPort;
-        $formData['action_pic'] = $this->globalVariable->actionGetEmployee;
+        $formData['master_data_product_type'] = $decodedData;
         $formData['selectActive'] = $this->arrayIsActive;
 
-        return view($this->form_file,$formData);
+        return view($this->form_file, $formData);
     }
 
     /**
@@ -165,28 +153,20 @@ class TypeController extends GlobalController
      */
     public function update(Request $request, string $id)
     {
-        $validationResponse = $this->handleValidation($request, 'update');
+        $set_request = SetRequestGlobal('updateType', $request);
+        $result = $this->updateData($set_request, $id);
 
-        if ($validationResponse) {
-            return $validationResponse;
-        }
-
-        $set_request = SetRequestGlobal('updateBranch',collectDeviceInfo(),$request);
-
-        $result = $this->sendApi($set_request, 'put',$id);
-
-        if($result['success'] == false)
-        {
+        if ($result['success'] == false) {
             return redirect()->back()
-                    ->withErrors($result['errors'])
-                    ->with('message', $result['message'])
-                    ->with('status_code', $result['status_code'])
-                    ->withInput();
+                ->withErrors($result['errors'])
+                ->with('message', $result['message'])
+                ->with('status_code', $result['status_code'])
+                ->withInput();
         }
 
         session()->flash('success', 'Update operation was successful.');
 
-        return redirect('/'. $this->globalVariable->menuUrl);
+        return redirect('/' . $this->globalVariable->menuUrl);
     }
 
     /**
@@ -194,21 +174,19 @@ class TypeController extends GlobalController
      */
     public function destroy(string $id)
     {
-        $set_request = SetRequestGlobal('softDeleteBranch',collectDeviceInfo());
+        $set_request = SetRequestGlobal('softDeleteType');
+        $result = $this->softDeleteData($set_request, $id);
 
-        $result = $this->sendApi($set_request, 'delete', $id);
-
-        if($result['success'] == false)
-        {
+        if ($result['success'] == false) {
             return redirect()->back()
-                    ->withErrors($result['errors'])
-                    ->with('message', $result['message'])
-                    ->with('status_code', $result['status_code'])
-                    ->withInput();
+                ->withErrors($result['errors'])
+                ->with('message', $result['message'])
+                ->with('status_code', $result['status_code'])
+                ->withInput();
         }
 
         session()->flash('success', 'Delete operation was successful.');
 
-        return redirect('/'. $this->globalVariable->menuUrl);
+        return redirect('/' . $this->globalVariable->menuUrl);
     }
 }
