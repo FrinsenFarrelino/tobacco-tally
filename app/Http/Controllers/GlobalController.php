@@ -307,14 +307,8 @@ class GlobalController extends Controller
             $formattedCode = $this->formatCode($requestBody['format_code'] ?? '', "", []);
         }
 
-        // custom service category code
-        $serviceCategoryCode = null;
-        if (isset($requestBody['service_category_code'])) {
-            $serviceCategoryCode = $requestBody['service_category_code'];
-        }
-
         // code: formattedCode | manualCode
-        $requestBody['code'] = $formattedCode ?? $serviceCategoryCode ?? $requestBody['manual_code'] ?? '';
+        $requestBody['code'] = $formattedCode ?? $requestBody['manual_code'] ?? '';
         $requestBody['password'] = $password ?? '';
         $requestBody['created_by'] = auth()->id();
 
