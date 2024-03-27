@@ -32,20 +32,20 @@
                             </div>
                             <div class="d-flex justify-content-end align-items-center pr-3">
                                 @if ($mode == 'edit')
-                                {!! $list_nav_button['cancel'] !!}
-                                @if (isset($list_nav_button['save']))
-                                {!! $list_nav_button['save'] !!}
-                                @endif
+                                    {!! $list_nav_button['cancel'] !!}
+                                    @if (isset($list_nav_button['save']))
+                                        {!! $list_nav_button['save'] !!}
+                                    @endif
                                 @elseif ($mode == 'view')
-                                {!! $list_nav_button['back'] !!}
-                                @if (isset($list_nav_button['edit']))
-                                {!! $list_nav_button['edit'] !!}
-                                @endif
+                                    {!! $list_nav_button['back'] !!}
+                                    @if (isset($list_nav_button['edit']))
+                                        {!! $list_nav_button['edit'] !!}
+                                    @endif
                                 @else
-                                {!! $list_nav_button['back'] !!}
-                                @if (isset($list_nav_button['save']))
-                                {!! $list_nav_button['save'] !!}
-                                @endif
+                                    {!! $list_nav_button['back'] !!}
+                                    @if (isset($list_nav_button['save']))
+                                        {!! $list_nav_button['save'] !!}
+                                    @endif
                                 @endif
                             </div>
                         </div>

@@ -52,6 +52,7 @@ class CityController extends GlobalController
         $formData['list_nav_button'] = $generate_nav_button;
         $formData['action'] = $this->globalVariable->actionGetCity;
         $formData['menu_route'] = $this->globalVariable->menuRoute;
+        $formData['menu_param'] = $this->globalVariable->menuParam;
 
         return view($this->index_file,$formData);
     }
@@ -104,7 +105,7 @@ class CityController extends GlobalController
             'query' => $id
         );
 
-        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetProvince, search: $search_key);
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetCity, search: $search_key);
         $result = $this->getData($set_request);
         $decodedData = $result['data'][0];
 
@@ -114,7 +115,7 @@ class CityController extends GlobalController
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'view');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['master_data_business_province'] = $decodedData;
+        $formData['master_data_business_city'] = $decodedData;
         $formData['selectActive'] = $this->arrayIsActive;
         $formData['action_province'] = $this->globalVariable->actionGetProvince;
 
@@ -132,7 +133,7 @@ class CityController extends GlobalController
             'query' => $id
         );
 
-        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetProvince, search: $search_key);
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetCity, search: $search_key);
         $result = $this->getData($set_request);
         $decodedData = $result['data'][0];
 
@@ -141,7 +142,7 @@ class CityController extends GlobalController
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'edit');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['master_data_business_province'] = $decodedData;
+        $formData['master_data_business_city'] = $decodedData;
         $formData['selectActive'] = $this->arrayIsActive;
         $formData['action_province'] = $this->globalVariable->actionGetProvince;
 
