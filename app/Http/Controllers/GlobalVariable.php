@@ -19,6 +19,7 @@ class GlobalVariable
     public $actionGetSubdistrict;
     public $actionGetWarehouse;
     public $actionGetBranch;
+    public $actionGetBank;
     public $actionGetCustomer;
     public $actionGetSupplier;
     public $actionGetEmployee;
@@ -45,6 +46,7 @@ class GlobalVariable
         $this->actionGetPriceList = 'getPriceList';
         $this->actionGetCategory = 'getCategory';
         $this->actionGetType = 'getType';
+        $this->actionGetBank = 'getBank';
         $this->actionGetCustomer = 'getCustomer';
         $this->actionGetSupplier = 'getSupplier';
         $this->actionGetEmployee = 'getEmployee';

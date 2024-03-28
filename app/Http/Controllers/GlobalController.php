@@ -212,6 +212,9 @@ class GlobalController extends Controller
         } elseif ($action == 'getEmployee') {
             $query->leftJoin('positions', 'positions.id', '=', 'employees.position_id');
             $query->leftJoin('divisions', 'divisions.id', '=', 'employees.division_id');
+            $query->leftJoin('subdistricts', 'subdistricts.id', '=', 'employees.subdistrict_id');
+            $query->leftJoin('cities', 'cities.id', '=', 'subdistricts.city_id');
+            $query->leftJoin('provinces', 'provinces.id', '=', 'cities.province_id');
             $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'employees.created_by');
             $query->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', 'employees.updated_by');
             $query->leftJoin('users as deleted_by_user', 'deleted_by_user.id', '=', 'employees.deleted_by');
@@ -219,6 +222,9 @@ class GlobalController extends Controller
                 'employees.*',
                 'positions.name as position_name',
                 'divisions.name as division_name',
+                'subdistricts.name as subdistrict_name',
+                'cities.name as city_name',
+                'provinces.name as province_name',
                 'created_by_user.name as created_by',
                 'updated_by_user.name as updated_by',
                 'deleted_by_user.name as deleted_by',
@@ -235,6 +241,24 @@ class GlobalController extends Controller
                 'subdistricts.name as subdistrict_name',
                 'cities.name as city_name',
                 'provinces.name as province_name',
+                'created_by_user.name as created_by',
+                'updated_by_user.name as updated_by',
+                'deleted_by_user.name as deleted_by',
+            );
+        } elseif ($action == 'getCustomer') {
+            $query->leftJoin('subdistricts', 'subdistricts.id', '=', 'customers.subdistrict_id');
+            $query->leftJoin('cities', 'cities.id', '=', 'subdistricts.city_id');
+            $query->leftJoin('provinces', 'provinces.id', '=', 'cities.province_id');
+            $query->leftJoin('cities as send_city', 'send_city.id', '=', 'customers.send_city_id');
+            $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'customers.created_by');
+            $query->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', 'customers.updated_by');
+            $query->leftJoin('users as deleted_by_user', 'deleted_by_user.id', '=', 'customers.deleted_by');
+            $query->select(
+                'customers.*',
+                'subdistricts.name as subdistrict_name',
+                'cities.name as city_name',
+                'provinces.name as province_name',
+                'send_city.name as send_city_name',
                 'created_by_user.name as created_by',
                 'updated_by_user.name as updated_by',
                 'deleted_by_user.name as deleted_by',
