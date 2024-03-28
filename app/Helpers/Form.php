@@ -292,7 +292,7 @@ function renderFieldCombineSelect($class, $div_class_label, $div_class_input, $l
 
 // Untuk browse input
 
-function renderBrowserInput($div_class, $div_class_label, $div_class_input, $id, $name, $label, $value, $mode, $options, $actions, $search_term, $input_param, $output_param, $concat_value, $route, $button_thead, $button_tbody, $div_class_button = 'col-1 mt-1', $title_error = '', $message_error = '', $min_length = 0, $filter = [], $title_modal = '', $class_label = 'form-label', $class_input = 'form-control', $options_input = 'disabled', $id_ajax = 'example')
+function renderBrowserInput($div_class, $div_class_label, $div_class_input, $id, $name, $label, $value, $mode, $options, $actions, $search_term, $input_param, $output_param, $concat_value, $route, $button_thead, $button_tbody, $div_class_button = 'col-1 mt-1', $title_error = '', $message_error = '', $min_length = 0, $filter = [], $title_modal = '', $class_label = 'form-label', $class_input = 'form-control', $options_input = 'onkeypress="return false;"', $id_ajax = 'example')
 {
     $setRequired = '';
     if (str_contains($options, 'required')) {
