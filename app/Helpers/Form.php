@@ -107,7 +107,7 @@ function renderSelect($class, $div_class_label, $div_class_input, $name, $label,
 {
 
     if ($mode == 'view') {
-        $class_select .= ' readonly-select';
+        $options .= ' disabled';
     }
 
     $setRequired = '';

@@ -275,6 +275,20 @@
         "col_is_active": "Status"
     },
 
+    "master_data_business_bank": {
+        "submodule": "Business",
+        "name": "Bank",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Code",
+        "col_name": "Name",
+        "col_remark": "Remark",
+        "col_is_active": "Status"
+    },
+
     "master_data_relation_customer": {
         "submodule": "Relation",
         "name": "Customer",

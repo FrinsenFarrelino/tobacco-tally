@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\MasterData\Business;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\GlobalActionController;
 use App\Http\Controllers\GlobalController;
-use Illuminate\Http\Request;
 use App\Http\Controllers\GlobalVariable;
 
-class BranchController extends GlobalController
+class BankController extends GlobalController
 {
     private $globalVariable;
     protected $globalActionController;
@@ -21,17 +21,17 @@ class BranchController extends GlobalController
     {
         $this->globalActionController = $globalActionController;
         $this->globalVariable = $globalVariable;
+        $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'bank', subModule: 'master_data_business_bank', menuRoute: 'bank', menuUrl: 'master-data/business/bank');
 
-        $this->globalVariable->ModuleGlobal(module: 'master_data', menuParam: 'branch', subModule: 'master_data_business_branch', menuRoute: 'branch', menuUrl: 'master-data/business/branch');
-        $this->index_file = 'master_data.business.branch.index';
-        $this->form_file = 'master_data.business.branch.form';
+        $this->index_file = 'master_data.business.bank.index';
+        $this->form_file = 'master_data.business.bank.form';
 
         $this->arrayIsActive = [['id' => '1', 'name' => 'Active'], ['id' => '0', 'name' => 'Inactive']];
     }
 
     private function computeSetFeatures()
     {
-        $code = 'branch';
+        $code = 'bank';
         $setValueFeature = $this->setPrivButton($code);
 
         return $setValueFeature;
@@ -44,16 +44,17 @@ class BranchController extends GlobalController
     {
         $setFeatures = $this->computeSetFeatures();
 
-        $generate_nav_button = generateNavbutton([],'reload'.$setFeatures,'index', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
+        $generate_nav_button = generateNavbutton([], 'reload' . $setFeatures, 'index', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'index');
-        
+
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['action'] = $this->globalVariable->actionGetBranch;
+        $formData['action'] = $this->globalVariable->actionGetBank;
         $formData['menu_route'] = $this->globalVariable->menuRoute;
         $formData['menu_param'] = $this->globalVariable->menuParam;
 
-        return view($this->index_file,$formData);
+
+        return view($this->index_file, $formData);
     }
 
     /**
@@ -76,7 +77,7 @@ class BranchController extends GlobalController
      */
     public function store(Request $request)
     {
-        $set_request = SetRequestGlobal('addBranch', $request, formatCode: 'code_branch');
+        $set_request = SetRequestGlobal('addBank', $request, manualCode: $request->code);
         $result = $this->addData($set_request);
 
         if ($result['success'] == false) {
@@ -98,12 +99,12 @@ class BranchController extends GlobalController
     public function show(string $id)
     {
         $search_key[] = array(
-            'key' => 'branches.id',
+            'key' => 'banks.id',
             'term' => 'equal',
             'query' => $id
         );
 
-        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetBranch, search: $search_key);
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetBank, search: $search_key);
         $result = $this->getData($set_request);
         $decodedData = $result['data'][0];
 
@@ -113,7 +114,7 @@ class BranchController extends GlobalController
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'view');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['master_data_business_branch'] = $decodedData;
+        $formData['master_data_business_bank'] = $decodedData;
         $formData['selectActive'] = $this->arrayIsActive;
 
 
@@ -126,12 +127,12 @@ class BranchController extends GlobalController
     public function edit(string $id)
     {
         $search_key[] = array(
-            'key' => 'branches.id',
+            'key' => 'banks.id',
             'term' => 'equal',
             'query' => $id
         );
 
-        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetBranch, search: $search_key);
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetBank, search: $search_key);
         $result = $this->getData($set_request);
         $decodedData = $result['data'][0];
 
@@ -140,7 +141,7 @@ class BranchController extends GlobalController
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'edit');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['master_data_business_branch'] = $decodedData;
+        $formData['master_data_business_bank'] = $decodedData;
         $formData['selectActive'] = $this->arrayIsActive;
 
         return view($this->form_file, $formData);
@@ -151,7 +152,7 @@ class BranchController extends GlobalController
      */
     public function update(Request $request, string $id)
     {
-        $set_request = SetRequestGlobal('updateBranch', $request);
+        $set_request = SetRequestGlobal('updateBank', $request);
         $result = $this->updateData($set_request, $id);
 
         if ($result['success'] == false) {
@@ -172,7 +173,7 @@ class BranchController extends GlobalController
      */
     public function destroy(string $id)
     {
-        $set_request = SetRequestGlobal('softDeleteBranch');
+        $set_request = SetRequestGlobal('softDeleteBank');
         $result = $this->softDeleteData($set_request, $id);
 
         if ($result['success'] == false) {
