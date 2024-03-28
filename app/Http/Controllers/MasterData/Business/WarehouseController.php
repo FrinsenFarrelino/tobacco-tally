@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\MasterData\Business;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\GlobalActionController;
 use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\GlobalVariable;

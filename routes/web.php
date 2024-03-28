@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GlobalController;
+use App\Http\Controllers\MasterData\Business\BankController;
 use App\Http\Controllers\MasterData\Business\BranchController;
 use App\Http\Controllers\MasterData\Business\CityController;
 use App\Http\Controllers\MasterData\Business\ProvinceController;
@@ -69,6 +70,7 @@ Route::group(['middleware' => ['web']], function () {
                     Route::resource('subdistrict', SubdistrictController::class);
                     Route::resource('branch', BranchController::class);
                     Route::resource('warehouse', WarehouseController::class);
+                    Route::resource('bank', BankController::class);
                 });
 
                 Route::prefix('/product/')->group(function () {

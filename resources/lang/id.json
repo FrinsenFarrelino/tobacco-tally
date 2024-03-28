@@ -254,7 +254,21 @@
         "col_name": "Nama",
         "col_address": "Alamat",
         "col_phone": "No. Telp",
-        "col_remark": "Remark",
+        "col_remark": "Keterangan",
+        "col_is_active": "Status"
+    },
+
+    "master_data_business_bank": {
+        "submodule": "Bisnis",
+        "name": "Bank",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Kode",
+        "col_name": "Nama",
+        "col_remark": "Keterangan",
         "col_is_active": "Status"
     },
 
