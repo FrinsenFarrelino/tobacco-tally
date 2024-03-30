@@ -74,7 +74,7 @@
 
         $('#myTable').DataTable({
             processing: true,
-            serverSide: true,
+            serverSide: false,
             responsive: true,
             ajax: {
                 url: "{{ route('ajax-data-table', ['action' => $action]) }}",
@@ -117,6 +117,12 @@
                     }
                 },
             ],
+            language: {
+                paginate: {
+                    next: '<i class="fas fa-angle-double-right" aria-hidden="true"></i>',
+                    previous: '<i class="fas fa-angle-double-left" aria-hidden="true"></i>'
+                },
+            },
             language: {
                 paginate: {
                     next: '<i class="fas fa-angle-double-right" aria-hidden="true"></i>',

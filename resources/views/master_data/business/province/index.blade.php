@@ -75,7 +75,7 @@
 
         $('#myTable').DataTable({
             processing: true,
-            serverSide: true,
+            serverSide: false,
             responsive: true,
             ajax: {
                 url: "{{ route('ajax-data-table', ['action' => $action]) }}",
@@ -84,7 +84,8 @@
                     d.route = "{{ $menu_route }}";
                 }
             },
-            columns: [{
+            columns: [
+                {
                     data: null,
                     render: function(data, type, row, meta) {
                         return meta.row + 1;

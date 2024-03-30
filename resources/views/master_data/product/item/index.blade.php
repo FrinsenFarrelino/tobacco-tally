@@ -76,7 +76,7 @@
         
         $('#myTable').DataTable({
             processing: true,
-            serverSide: true,
+            serverSide: false,
             responsive: true,
             ajax: {
                 url: "{{ route('ajax-data-table', ['action' => $action]) }}",
@@ -126,7 +126,13 @@
                         return showButton + editButton + deleteButton;
                     }
                 }
-            ]
+            ],
+            language: {
+                paginate: {
+                    next: '<i class="fas fa-angle-double-right" aria-hidden="true"></i>',
+                    previous: '<i class="fas fa-angle-double-left" aria-hidden="true"></i>'
+                },
+            }
         });
 
         // untuk pop up delete modal data
