@@ -2563,6 +2563,12 @@ a.dropdown-item.active {
     height: 350px;
     overflow: hidden;
 }
+
+.dropdown-list .dropdown-list-language {
+    height: 52px;
+    overflow: hidden;
+}
+
 .dropdown-list .dropdown-list-content:not(.is-end):after {
     content: " ";
     position: absolute;
@@ -3981,5 +3987,6 @@ body:not(.sidebar-mini)
 }
 
 table.dataTable tr.selected {
-    color: var(--primary);
-  }
+    background-color: #572d0c;
+    color: #fff;
+}
