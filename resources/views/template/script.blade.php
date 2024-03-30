@@ -8,32 +8,22 @@
 <script>
     function setMenuActive() {
         var currentPagePath = window.location.pathname; // Get the current page path
-        console.log('Current page path:', currentPagePath);
-        // var currentPageUrl = window.location.href;
-        if(currentPagePath !== '/') {
-            var urlParts = currentPagePath.split("/");
-            var pathParts = urlParts.slice(3);
-            console.log(pathParts)
-        } else {
-
-        }
 
         // Loop through each menu item
         $('.sidebar-menu a.nav-link').each(function() {
             var menuItemUrl = $(this).attr('href'); // Get the menu item URL
-            console.log('Menu item URL:', menuItemUrl);
 
             // Check if the current page path matches the menu item path
             if (currentPagePath === menuItemUrl) {
-                // Add 'active' class to the parent 'li' element
+                // Add 'active' class to the parent 'li' elements
                 $(this).closest('li').addClass('active');
+                $(this).closest('.dropdown').addClass('active').parent('.dropdown').addClass('active');
 
                 // If the menu item has a dropdown, open it
                 if ($(this).hasClass('has-dropdown')) {
                     $(this).siblings('.dropdown-menu').addClass('show');
                 }
 
-                // Exit the loop
                 return false;
             }
         });
