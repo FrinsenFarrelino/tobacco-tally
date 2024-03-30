@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -23,6 +24,18 @@ class GlobalController extends Controller
     public function __construct()
     {
         $this->globalActionController = new GlobalActionController();
+    }
+
+    public function switchLang($lang, Request $request)
+    {
+        $getUrlPrev = URL::previous();
+
+        if (array_key_exists($lang, Config::get('languages'))) {
+            app()->setLocale($lang);
+            Session::put('applocale', $lang);
+        }
+
+        return redirect($getUrlPrev);
     }
 
     public function modelName($string)
@@ -1701,17 +1714,6 @@ class GlobalController extends Controller
         ];
 
         return json_encode($response);
-    }
-
-    public function switchLang($lang, Request $request)
-    {
-        $getUrlPrev = URL::previous();
-
-        if (array_key_exists($lang, Config::get('languages'))) {
-            Session::put('applocale', $lang);
-        }
-
-        return redirect($getUrlPrev);
     }
 
     public function showWarning()
