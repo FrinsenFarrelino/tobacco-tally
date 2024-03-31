@@ -35,7 +35,8 @@
             "app/Helpers/ModalAndAlert.php",
             "app/Helpers/Script.php",
             "app/Helpers/GenerateDataTable.php",
-            "app/Helpers/Formatter.php"
+            "app/Helpers/Formatter.php",
+            "app/Helpers/Grid.php"
         ]
     },
     "autoload-dev": {

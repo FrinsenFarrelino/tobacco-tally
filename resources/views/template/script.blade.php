@@ -58,4 +58,7 @@
 <!-- DataTables Bootstrap 5 integration -->
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.datatables.net/fixedcolumns/3.3.4/js/dataTables.fixedColumns.min.js"></script>
+<script type="text/javascript" src="{{ asset('vendor/jquery-ui-jqgrid/jquery.jqGrid.src.js') }}"></script>
+<script type="text/javascript" src="{{ asset('vendor/jquery-ui-jqgrid/jQuery.jqGrid.setColWidth.js') }}"></script>
+<script type="text/javascript" src="{{ asset('vendor/jquery-ui-jqgrid/jQuery.jqGrid.autoWidthColumns.js') }}"></script>
 @yield('scripts')

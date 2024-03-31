@@ -10,7 +10,6 @@ use App\Http\Controllers\MasterData\Business\SubdistrictController;
 use App\Http\Controllers\MasterData\Business\WarehouseController;
 use App\Http\Controllers\MasterData\Product\CategoryController;
 use App\Http\Controllers\MasterData\Product\ItemController;
-use App\Http\Controllers\MasterData\Product\PriceListController;
 use App\Http\Controllers\MasterData\Product\TypeController;
 use App\Http\Controllers\MasterData\Product\UnitController;
 use App\Http\Controllers\MasterData\Relation\CustomerController;
@@ -24,7 +23,6 @@ use App\Http\Controllers\Transaction\PurchaseController;
 use App\Http\Controllers\Transaction\SaleController;
 use App\Http\Controllers\Transaction\Warehouse\IncomingItemController;
 use App\Http\Controllers\Transaction\Warehouse\OutgoingItemController;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -44,8 +42,6 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
         Route::controller(GlobalController::class)->group(function () {
-            Route::get('generate-excel', 'generateExcel')->name('generate-excel');
-            Route::get('download-excel', 'downloadExcel')->name('download-excel');
             Route::get('autocomplete', 'autoComplete')->name('autocomplete');
             Route::get('ajax-data-table/{action}', 'getAjaxDataTable')->name('ajax-data-table');
             Route::get('get-browse-data', 'getBrowseData')->name('get-browse-data');
