@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('code', 100)->unique();
             DB::statement("DROP TYPE IF EXISTS customers_title");
             DB::statement("CREATE TYPE customers_title AS ENUM ('PT', 'CV', '-')");
-            $table->enum('title', ['PT', 'CV', '-'])->nullable();
-            $table->string('name', 200)->nullable();
+            $table->enum('title', ['PT', 'CV', '-']);
+            $table->string('name', 200);
             $table->string('address', 255)->nullable();
             $table->foreignId('subdistrict_id')->nullable()->constrained('subdistricts');
             $table->foreignId('sales_id')->nullable()->constrained('employees');
