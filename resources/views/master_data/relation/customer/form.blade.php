@@ -7,11 +7,11 @@
 <section class="section">
     <form action="/{{ $menu }}@if($mode != 'add')/{{ $master_data_relation_customer["id"] }}@endif" method="post" id="myForm">
         @if($mode != 'add')
-        @method('put')
+            @method('put')
         @else
-        @method('post')
+            @method('post')
         @endif
-        @csrf
+            @csrf
         <div class="section-header">
             <h1>{{ $title }} - {{ $subtitle }}</h1>
             <div class="section-header-breadcrumb">
@@ -32,24 +32,82 @@
                             </div>
                             <div class="d-flex justify-content-end align-items-center pr-3">
                                 @if ($mode == 'edit')
-                                {!! $list_nav_button['cancel'] !!}
-                                @if (isset($list_nav_button['save']))
-                                {!! $list_nav_button['save'] !!}
-                                @endif
+                                    {!! $list_nav_button['cancel'] !!}
+                                    @if (isset($list_nav_button['save']))
+                                        {!! $list_nav_button['save'] !!}
+                                    @endif
                                 @elseif ($mode == 'view')
-                                {!! $list_nav_button['back'] !!}
-                                @if (isset($list_nav_button['edit']))
-                                {!! $list_nav_button['edit'] !!}
-                                @endif
+                                    {!! $list_nav_button['back'] !!}
+                                    @if (isset($list_nav_button['edit']))
+                                        {!! $list_nav_button['edit'] !!}
+                                    @endif
                                 @else
-                                {!! $list_nav_button['back'] !!}
-                                @if (isset($list_nav_button['save']))
-                                {!! $list_nav_button['save'] !!}
-                                @endif
+                                    {!! $list_nav_button['back'] !!}
+                                    @if (isset($list_nav_button['save']))
+                                        {!! $list_nav_button['save'] !!}
+                                    @endif
                                 @endif
                             </div>
                         </div>
                         <div class="card-body">
+                        <script language="javascript" type="text/javascript">
+                                var vgrid_comp = [];
+                                var vgrid_load = [];
+                                var vgrid_last = [];
+                                var vgrid_real = [];
+                            </script>
+                            <?php
+                                $gridFormData = gridSetup($mode, "getCustomerBankAccountGrid", $master_data_relation_customer["id"] ?? '', "master_data_relation_customer", "'".__('master_data_relation_customer')['col_bank_account_detail']."'",
+                                "'Id', 'Customer Id', 'Bank Id', '".__('master_data_relation_customer')['col_bank_name']."', '".__('master_data_relation_customer')['col_bank_account_number']."', '".__('master_data_relation_customer')['col_bank_account_name']."'",
+                                [
+                                    "id", "customer_id", "bank_id", "bank_name", "bank_account_number", "bank_account_name"
+                                ],
+                                [
+                                    [
+                                        'name' => "'id'",
+                                        'index' => "'id'",
+                                        'template' => 'coltemplate_general',
+                                        'editable' => 'true',
+                                        'hidden' => 'true'
+                                    ],
+                                    [
+                                        'name' => "'customer_id'",
+                                        'index' => "'customer_id'",
+                                        'template' => 'coltemplate_general',
+                                        'editable' => 'true',
+                                        'hidden' => 'true'
+                                    ],
+                                    [
+                                        'name' => "'bank_id'",
+                                        'index' => "'bank_id'",
+                                        'template' => 'coltemplate_general',
+                                        'editable' => 'true',
+                                        'hidden' => 'true'
+                                    ],
+                                    [
+                                        'name' => "'bank_name'",
+                                        'index' => "'bank_name'",
+                                        'template' => 'coltemplate_general',
+                                        'editable' => 'true',
+                                        'hidden' => 'false',
+                                        'editoptions' => '{ dataInit: autocomplete_master_data_relation_customer }'
+                                    ],
+                                    [
+                                        'name' => "'bank_account_number'",
+                                        'index' => "'bank_account_number'",
+                                        'template' => 'coltemplate_general',
+                                        'editable' => 'true',
+                                        'hidden' => 'false',
+                                    ],
+                                    [
+                                        'name' => "'bank_account_name'",
+                                        'index' => "'bank_account_name'",
+                                        'template' => 'coltemplate_general',
+                                        'editable' => 'true',
+                                        'hidden' => 'false'
+                                    ],
+                                ]);
+                            ?>
                             <div class="row">
                                 <div class="col-md-8">
                                     {!! renderInput('mb-3 row', 'col-md-4 col-form-label', 'col-md-8', 'text', 'code', __('master_data_relation_customer')['col_code'], $master_data_relation_customer['code'] ?? '', $mode, 'disabled placeholder="Auto Generated"') !!}
@@ -74,6 +132,10 @@
                                     {!! renderSelect('mb-3 row', 'col-md-4 mt-2', 'col-md-8 mt-2 mt-lg-0', 'is_active', __('master_data_relation_customer')['col_is_active'], 'js-data-example-ajax w-100 form-control mb-3', $master_data_relation_customer['is_active'] ?? '', $selectActive ?? [], $mode) !!}
                                 </div>
                             </div>
+                            <div class="form-data row">
+                                {!! $gridFormData !!}
+                            </div>
+                            <input type="hidden" name="detail" id="hiddenInput" value="" />
                         </div>
                     </div>
                 </div>
@@ -86,8 +148,19 @@
 
 @section('scripts')
 <script>
+    <?php echo autocomplete_render("master_data_relation_customer",["banks.name|like"],"getBank", ['code','name'], ['name']) ?>
+
     $(document).ready(function() {
         setMenuActive();
+        // set the jqgrid to 100%
+        $(".ui-jqgrid").parents(".form-data").find("div").css("width", "100%");
+    });
+
+    const myForm = document.getElementById('myForm');
+    myForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        <?php echo addToArray(['master_data_relation_customer']) ?>
     });
 </script>
 @endsection

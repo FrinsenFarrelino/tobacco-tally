@@ -65,11 +65,7 @@
     "subMenu": {
         "home": "Beranda",
         "master_data": "Data Master",
-        "pre_booking": "Pemesanan Awal",
-        "pre_order": "Pemesanan Pra-Penjualan",
-        "job_order": "Perintah Kerja",
-        "trucking": "Pengiriman dengan Truk",
-        "invoice": "Faktur",
+        "transaction": "Transaksi",
         "report": "Laporan",
         "setting": "Pengaturan"
     },
@@ -298,7 +294,11 @@
         "col_send_city": "Kota Kirim",
         "col_send_phone": "Nomor Kirim",
         "col_remark": "Keterangan",
-        "col_is_active": "Status"
+        "col_is_active": "Status",
+        "col_bank_account_detail": "Detail Rekening Bank",
+        "col_bank_name": "Nama Bank",
+        "col_bank_account_number": "Nomor Rekening",
+        "col_bank_account_name": "Nama Pemilik Rekening"
     },
 
     "master_data_relation_supplier": {
@@ -448,6 +448,22 @@
         "col_unit": "Satuan",
         "col_selling_price": "Harga Jual",
         "col_remark": "Keterangan",
+        "col_is_active": "Status"
+    },
+
+    "transaction_purchase": {
+        "name": "Purchase",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Code",
+        "col_name": "Name",
+        "col_item": "Item",
+        "col_unit": "Unit",
+        "col_selling_price": "Selling Price",
+        "col_remark": "Remark",
         "col_is_active": "Status"
     }
 }

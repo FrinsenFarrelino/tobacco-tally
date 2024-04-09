@@ -65,11 +65,7 @@
     "subMenu": {
         "home": "Home",
         "master_data": "Master Data",
-        "pre_booking": "Pre Booking",
-        "pre_order": "Pre Order",
-        "job_order": "Job Order",
-        "trucking": "Trucking",
-        "invoice": "Invoice",
+        "transaction": "Transaction",
         "report": "Report",
         "setting": "Setting",
         "warning": "Warning"
@@ -316,7 +312,11 @@
         "col_send_phone": "Send Phone",
         "col_phone": "Phone",
         "col_remark": "Remark",
-        "col_is_active": "Status"
+        "col_is_active": "Status",
+        "col_bank_account_detail": "Bank Account Detail",
+        "col_bank_name": "Bank Name",
+        "col_bank_account_number": "Bank Account Number",
+        "col_bank_account_name": "Bank Account Name"
     },
 
     "master_data_relation_supplier": {
@@ -455,6 +455,22 @@
     "master_data_product_price_list": {
         "submodule": "Product",
         "name": "Price List",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Code",
+        "col_name": "Name",
+        "col_item": "Item",
+        "col_unit": "Unit",
+        "col_selling_price": "Selling Price",
+        "col_remark": "Remark",
+        "col_is_active": "Status"
+    },
+
+    "transaction_purchase": {
+        "name": "Purchase",
         "list": "List",
         "view": "View",
         "add": "Add",
