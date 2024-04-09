@@ -477,11 +477,20 @@
         "edit": "Edit",
         "col_action": "Action",
         "col_code": "Code",
-        "col_name": "Name",
+        "col_date": "Date",
+        "col_supplier": "Supplier",
+        "col_item_detail": "Item Detail",
         "col_item": "Item",
-        "col_unit": "Unit",
-        "col_selling_price": "Selling Price",
+        "col_item_code": "Code",
+        "col_item_name": "Name",
+        "col_qty": "QTY",
+        "col_qty_amount": "Amount",
+        "col_qty_unit": "Unit",
+        "col_price": "Price",
+        "col_subtotal": "Subtotal",
+        "col_ppn": "PPN",
+        "col_total": "Total",
         "col_remark": "Remark",
-        "col_is_active": "Status"
+        "col_is_approve": "Status"
     }
 }

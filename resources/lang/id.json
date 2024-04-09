@@ -458,12 +458,21 @@
         "add": "Add",
         "edit": "Edit",
         "col_action": "Action",
-        "col_code": "Code",
-        "col_name": "Name",
-        "col_item": "Item",
-        "col_unit": "Unit",
-        "col_selling_price": "Selling Price",
-        "col_remark": "Remark",
-        "col_is_active": "Status"
+        "col_code": "Kode",
+        "col_date": "Tanggal",
+        "col_supplier": "Supplier",
+        "col_item_detail": "Detail Barang",
+        "col_item": "Barang",
+        "col_item_code": "Kode",
+        "col_item_name": "Nama",
+        "col_qty": "QTY",
+        "col_qty_amount": "Jumlah",
+        "col_qty_unit": "Satuan",
+        "col_price": "Harga",
+        "col_subtotal": "Subtotal",
+        "col_ppn": "PPN",
+        "col_total": "Total",
+        "col_remark": "Keterangan",
+        "col_is_approve": "Status"
     }
 }
