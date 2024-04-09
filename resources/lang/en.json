@@ -406,6 +406,8 @@
         "col_type": "Type",
         "col_category": "Category",
         "col_unit": "Unit",
+        "col_buy_price": "Buy Price",
+        "col_sell_price": "Sell Price",
         "col_remark": "Remark",
         "col_is_active": "Status"
     },
