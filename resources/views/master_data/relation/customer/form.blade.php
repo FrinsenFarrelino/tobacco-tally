@@ -143,6 +143,9 @@
         </div>
     </form>
 </section>
+@php
+$grid_id = 'master_data_relation_customer';
+@endphp
 <?php echo renderLargeModel(); ?>
 @endsection
 
