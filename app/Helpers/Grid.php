@@ -127,11 +127,17 @@ function gridSetup($mode, $action, $search_query, $id, $caption, $colNames, $col
         $grid_html                  = "";
         $grid_html .= "\n<script language='javascript' type='text/javascript'>";
 
-        $temp_width="width:100";
-        $temp_sortable="sortable:false";
-        $temp_editable="editable:true";
+        $temp_width = "width:100";
+        $temp_right = "align:'right'";
+        $temp_sortable = "sortable:false";
+        $temp_decimalSeparator = "decimalSeparator:','";
+        $temp_thousandsSeparator = "thousandsSeparator:'.'";
+        $temp_defaultValue = "defaultValue:''";
+        $temp_editable = "editable:true";
+        $temp_number = "number:true";
 
         $coltemplate["general"]="{ ".$temp_width.", ".$temp_sortable.", ".$temp_editable."}";
+        $coltemplate["number"] = "{ width:50, " . $temp_right . ", " . $temp_sortable . ", formatter:'number', formatoptions:{ " . $temp_decimalSeparator . ", " . $temp_thousandsSeparator . ", decimalPlaces:0, " . $temp_defaultValue . " }, " . $temp_editable . ", editrules:{ " . $temp_number . " } }";
 
         $coltemplate_date = 'yy-mm-dd';
         $coltemplate["date"] = "{ " . $temp_width . ", " . $temp_sortable . ", " . $temp_editable . ", editoptions:{
