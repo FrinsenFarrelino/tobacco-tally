@@ -12,4 +12,11 @@ class Customer extends Model
 
     protected $guarded = ['id'];
     protected $table = 'customers';
+
+    public function banks()
+    {
+        return $this->belongsToMany(Bank::class, 'customer_bank_account_details', 'customer_id', 'bank_id')
+            ->withPivot('bank_account_number', 'bank_account_name')
+            ->withTimestamps();
+    }
 }

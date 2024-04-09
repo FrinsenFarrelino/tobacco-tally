@@ -76,7 +76,6 @@ class CustomerController extends GlobalController
         $formData['action_send_city'] = $this->globalVariable->actionGetCity;
         $formData['selectTitle'] = $this->arrayTitle;
 
-
         return view($this->form_file, $formData);
     }
 
@@ -85,6 +84,10 @@ class CustomerController extends GlobalController
      */
     public function store(Request $request)
     {
+        $make_detail = $request->input('detail');
+        $detailArray = json_decode($make_detail, true);
+
+        $request->merge(['detail' => $detailArray]);
         $set_request = SetRequestGlobal('addCustomer', $request, formatCode: 'code_customer');
         $result = $this->addData($set_request);
 
@@ -167,6 +170,10 @@ class CustomerController extends GlobalController
      */
     public function update(Request $request, string $id)
     {
+        $make_detail = $request->input('detail');
+        $detailArray = json_decode($make_detail, true);
+
+        $request->merge(['detail' => $detailArray]);
         $set_request = SetRequestGlobal('updateCustomer', $request);
         $result = $this->updateData($set_request, $id);
 
