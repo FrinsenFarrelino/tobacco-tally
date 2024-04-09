@@ -35,5 +35,5 @@
 <!-- <script src="{{ asset('assets/modules/jquery-ui/jquery-ui.min.js') }}"></script> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <link href="{{ asset('vendor/jquery-ui-jqgrid/ui.jqgrid.css') }}" rel="stylesheet">
-<!-- <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script> -->
+{{-- <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script> --}}
 @yield('styles')
