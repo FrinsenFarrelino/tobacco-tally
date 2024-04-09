@@ -13,7 +13,7 @@ class GlobalVariable
 
     public $actionGetMenu;
 
-    // MASTER (PPM)
+    // MASTER
     public $actionGetProvince;
     public $actionGetCity;
     public $actionGetSubdistrict;
@@ -30,6 +30,13 @@ class GlobalVariable
     public $actionGetCategory;
     public $actionGetPriceList;
     public $actionGetUnit;
+
+    // TRANSACTION
+    public $actionGetPurchase;
+    public $actionGetSale;
+
+    // SETTING
+
 
     public function __construct()
     {
@@ -52,6 +59,10 @@ class GlobalVariable
         $this->actionGetEmployee = 'getEmployee';
         $this->actionGetDivision = 'getDivision';
         $this->actionGetPosition = 'getPosition';
+
+        // transaction
+        $this->actionGetPurchase = 'getPurchase';
+        $this->actionGetSale = 'getSale';
     }
 
     public function ModuleGlobal($module, $subModule, $menuUrl, $menuRoute, $menuParam)

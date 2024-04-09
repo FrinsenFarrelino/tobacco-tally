@@ -15,6 +15,7 @@ class GlobalActionController extends Controller
         'getBranch' => 'Branch',
         'getBank' => 'Bank',
         'getCustomer' => 'Customer',
+        'getCustomerBankAccountGrid' => 'Customer',
         'getSupplier' => 'Supplier',
         'getEmployee' => 'Employee',
         'getPosition' => 'Position',
@@ -24,6 +25,9 @@ class GlobalActionController extends Controller
         'getUnit' => 'Unit',
         'getPriceList' => 'PriceList',
         'getType' => 'Type',
+
+        // GET TRANSACTION
+        'getPurchase' => 'Purchase',
 
         // ADD MASTER
         'addProvince' => 'Province',
@@ -43,6 +47,9 @@ class GlobalActionController extends Controller
         'addPriceList' => 'PriceList',
         'addType' => 'Type',
 
+        // ADD TRANSACTION
+        'addPurchase' => 'Purchase',
+
         // UPDATE
         'updateProvince' => 'Province',
         'updateCity' => 'City',
@@ -59,7 +66,10 @@ class GlobalActionController extends Controller
         'updateCategory' => 'Category',
         'updateUnit' => 'Unit',
         'updatePriceList' => 'PriceList',
-        'updateType' => 'Type',       
+        'updateType' => 'Type',
+        
+        // UPDATE TRANSACTION
+        'updatePurchase' => 'Purchase',
 
         // SOFT DELETES
         'softDeleteProvince' => 'Province',
@@ -78,6 +88,9 @@ class GlobalActionController extends Controller
         'softDeleteUnit' => 'Unit',
         'softDeletePriceList' => 'PriceList',
         'softDeleteType' => 'Type',
+
+        // SOFT DELETE TRANSACTION
+        'softDeletePurchase' => 'Purchase',
     ];
 
 

@@ -114,15 +114,8 @@ use Illuminate\Support\Facades\Route;
 
         if (strstr($features, "add")) {
             $add_button = trans('add');
-            if($url == 'pre-order' || $url == 'delivery-note' || $url == 'documentation' || $url == 'order')
-            {
-                $navbutton['add'] = renderNavButton(false, class_button:"btn btn-primary btn-xs ", class_icon:"fas fa-plus mr-2", title:$add_button, button_id:'btnOpenFormRadio');
-            }
-            else
-            {
-                $route = route($url.'.create', []);
-                $navbutton['add'] = renderNavButton(false, "btn btn-primary btn-xs", $route, "fas fa-plus mr-2", $add_button);
-            }
+            $route = route($url.'.create');
+            $navbutton['add'] = renderNavButton(false, "btn btn-primary btn-xs", $route, "fas fa-plus mr-2", $add_button);
         }
 
         if (strstr($features, "approve")) {
