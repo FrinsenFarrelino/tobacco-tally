@@ -137,70 +137,10 @@
 	}
 
 	function actionAddFunc_<?php echo $grid_id ?>() {
-		var checked_header = true;
-		var checked_grid_<?php echo $grid_id ?> = checkGrid_<?php echo $grid_id ?>();
-		var checked_unique_<?php echo $grid_id ?> = checkUnique_<?php echo $grid_id ?>();
-		if (checked_header == true && checked_grid_<?php echo $grid_id ?> == true && checked_unique_<?php echo $grid_id ?> == true && <?php echo $grid_id ?>_navgrid_active == 1) {
-			var selrow = jQuery(<?php echo $grid_id ?>_element).jqGrid('getGridParam', 'selrow');
-			if (selrow && (<?php echo $grid_id ?>_add_row_data_pos == 'after' || <?php echo $grid_id ?>_add_row_data_pos == 'before')) {
-				jQuery(<?php echo $grid_id ?>_element).jqGrid('addRowData', <?php echo $grid_id ?>_new_record, <?php echo $grid_id ?>_default_data, <?php echo $grid_id ?>_add_row_data_pos, selrow);
-			} else if (<?php echo $grid_id ?>_add_row_data_pos == 'first') {
-				jQuery(<?php echo $grid_id ?>_element).jqGrid('addRowData', <?php echo $grid_id ?>_new_record, <?php echo $grid_id ?>_default_data, <?php echo $grid_id ?>_add_row_data_pos);
-			} else {
-				jQuery(<?php echo $grid_id ?>_element).jqGrid('addRowData', <?php echo $grid_id ?>_new_record, <?php echo $grid_id ?>_default_data, 'last');
-				var records = jQuery(<?php echo $grid_id ?>_element).jqGrid('getGridParam', 'records');
-				jQuery(<?php echo $grid_id ?>_element).jqGrid('editCell', records, <?php echo $grid_id ?>_column_focus + 1, true);
-			}
-			<?php echo $grid_id ?>_new_record++;
-		} else if (checked_header == false) { // untuk mengakomodir cara lama
-			$.alert({
-				title: 'ALERT',
-				content: '<?php echo "get_message(712)" ?>',
-				icon: 'fas fa-warning',
-				theme: 'modern',
-				type: 'red'
-			});
-		} else if (checked_header != true && checked_header != false && checked_header != '') { // cara baru sudah spesifik
-			$.alert({
-				title: 'ALERT',
-				content: '<?php echo "get_message(801)" ?><br>' + checked_header + '<?php echo "get_message(805)" ?>',
-				icon: 'fas fa-warning',
-				theme: 'modern',
-				type: 'red'
-			});
-		} else if (checked_grid_<?php echo $grid_id ?> == false) { // untuk mengakomodir cara lama
-			$.alert({
-				title: 'ALERT',
-				content: '<?php echo "get_message(716)" ?>',
-				icon: 'fas fa-warning',
-				theme: 'modern',
-				type: 'red'
-			});
-		} else if (checked_grid_<?php echo $grid_id ?> != true && checked_grid_<?php echo $grid_id ?> != false && checked_grid_<?php echo $grid_id ?> != '') { // cara baru sudah spesifik
-			$.alert({
-				title: 'ALERT',
-				content: checked_grid_<?php echo $grid_id ?>,
-				icon: 'fas fa-warning',
-				theme: 'modern',
-				type: 'red'
-			});
-		} else if (checked_unique_<?php echo $grid_id ?> == false) { // untuk mengakomodir cara lama
-			$.alert({
-				title: 'ALERT',
-				content: '<?php echo "get_message(105)" ?>',
-				icon: 'fas fa-warning',
-				theme: 'modern',
-				type: 'red'
-			});
-		} else if (checked_unique_<?php echo $grid_id ?> != true && checked_unique_<?php echo $grid_id ?> != false && checked_unique_<?php echo $grid_id ?> != '') { // cara baru sudah spesifik
-			$.alert({
-				title: 'ALERT',
-				content: checked_unique_<?php echo $grid_id ?>,
-				icon: 'fas fa-warning',
-				theme: 'modern',
-				type: 'red'
-			});
-		}
+		jQuery(<?php echo $grid_id ?>_element).jqGrid('addRowData', <?php echo $grid_id ?>_new_record, <?php echo $grid_id ?>_default_data, 'last');
+		var records = jQuery(<?php echo $grid_id ?>_element).jqGrid('getGridParam', 'records');
+		jQuery(<?php echo $grid_id ?>_element).jqGrid('editCell', records, <?php echo $grid_id ?>_column_focus + 1, true);
+		<?php echo $grid_id ?>_new_record++;
 	}
 
 	function actionDelFunc_<?php echo $grid_id ?>() {
@@ -215,14 +155,6 @@
 					autoResize_<?php echo $grid_id ?>(this);
 				},
 				reloadAfterSubmit: false
-			});
-		} else {
-			$.alert({
-				title: 'ALERT',
-				content: '<?php echo "get_message(710)" ?>',
-				icon: 'fas fa-warning',
-				theme: 'modern',
-				type: 'red'
 			});
 		}
 	}
@@ -267,8 +199,6 @@
 					}
 				}
 			}
-		} else {
-			valid_grid = true;
 		}
 		if (<?php echo $grid_id ?>_allow_delete != 1) {
 			if (mode > 0) {
