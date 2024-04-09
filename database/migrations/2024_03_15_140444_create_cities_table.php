@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -13,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('cities', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 100)->unique();
+            $table->string('code', 100);
             $table->string('name',200);
             $table->foreignId('province_id')->nullable()->constrained('provinces');
             $table->text('remark')->nullable();
@@ -24,6 +25,9 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        DB::statement('DROP INDEX IF EXISTS cities_code_unique');
+        DB::statement('CREATE UNIQUE INDEX cities_code_unique ON cities (UPPER(code)) WHERE deleted_at IS NULL');
     }
 
     /**

@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 100)->unique();
+            $table->string('code', 100);
             DB::statement("DROP TYPE IF EXISTS customers_title");
             DB::statement("CREATE TYPE customers_title AS ENUM ('PT', 'CV', '-')");
             $table->enum('title', ['PT', 'CV', '-']);
@@ -39,6 +39,9 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        DB::statement('DROP INDEX IF EXISTS customers_code_unique');
+        DB::statement('CREATE UNIQUE INDEX customers_code_unique ON customers (UPPER(code)) WHERE deleted_at IS NULL');
     }
 
     /**
