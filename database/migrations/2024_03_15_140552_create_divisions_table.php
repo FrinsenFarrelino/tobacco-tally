@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('divisions', function (Blueprint $table) {
             $table->id();
             $table->string('code', 100)->unique();
-            $table->string('name', 200)->nullable();
+            $table->string('name', 200);
             $table->text('remark')->nullable();
             $table->boolean('is_active')->default(1);
             $table->foreignId('created_by')->nullable()->constrained('users');

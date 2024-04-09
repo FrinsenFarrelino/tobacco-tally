@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('warehouses', function (Blueprint $table) {
             $table->id();
             $table->string('code', 100)->unique();
-            $table->string('name',200)->nullable();
+            $table->string('name',200);
             $table->integer('capacity')->nullable();
             $table->foreignId('branch_id')->nullable()->constrained('branches');
             $table->text('remark')->nullable();

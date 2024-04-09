@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('cities', function (Blueprint $table) {
             $table->id();
             $table->string('code', 100)->unique();
-            $table->string('name',200)->nullable();
+            $table->string('name',200);
             $table->foreignId('province_id')->nullable()->constrained('provinces');
             $table->text('remark')->nullable();
             $table->boolean('is_active')->default(1);

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
             $table->string('code', 100)->unique();
-            $table->string('name', 200)->nullable();
+            $table->string('name', 200);
             $table->string('address', 255)->nullable();
             $table->foreignId('subdistrict_id')->nullable()->constrained('subdistricts');
             $table->text('remark')->nullable();
