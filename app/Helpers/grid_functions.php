@@ -1,4 +1,3 @@
-<?php ob_start(); ?>
 <script type="text/javascript">
 	function autoResize_<?php echo $grid_id ?>(obj) {
 		var $this = $(obj),
@@ -157,7 +156,7 @@
 			$.alert({
 				title: 'ALERT',
 				content: '<?php echo "get_message(712)" ?>',
-				icon: 'fa fa-warning',
+				icon: 'fas fa-warning',
 				theme: 'modern',
 				type: 'red'
 			});
@@ -165,7 +164,7 @@
 			$.alert({
 				title: 'ALERT',
 				content: '<?php echo "get_message(801)" ?><br>' + checked_header + '<?php echo "get_message(805)" ?>',
-				icon: 'fa fa-warning',
+				icon: 'fas fa-warning',
 				theme: 'modern',
 				type: 'red'
 			});
@@ -173,7 +172,7 @@
 			$.alert({
 				title: 'ALERT',
 				content: '<?php echo "get_message(716)" ?>',
-				icon: 'fa fa-warning',
+				icon: 'fas fa-warning',
 				theme: 'modern',
 				type: 'red'
 			});
@@ -181,7 +180,7 @@
 			$.alert({
 				title: 'ALERT',
 				content: checked_grid_<?php echo $grid_id ?>,
-				icon: 'fa fa-warning',
+				icon: 'fas fa-warning',
 				theme: 'modern',
 				type: 'red'
 			});
@@ -189,7 +188,7 @@
 			$.alert({
 				title: 'ALERT',
 				content: '<?php echo "get_message(105)" ?>',
-				icon: 'fa fa-warning',
+				icon: 'fas fa-warning',
 				theme: 'modern',
 				type: 'red'
 			});
@@ -197,7 +196,7 @@
 			$.alert({
 				title: 'ALERT',
 				content: checked_unique_<?php echo $grid_id ?>,
-				icon: 'fa fa-warning',
+				icon: 'fas fa-warning',
 				theme: 'modern',
 				type: 'red'
 			});
@@ -221,7 +220,7 @@
 			$.alert({
 				title: 'ALERT',
 				content: '<?php echo "get_message(710)" ?>',
-				icon: 'fa fa-warning',
+				icon: 'fas fa-warning',
 				theme: 'modern',
 				type: 'red'
 			});
@@ -367,5 +366,3 @@
 		$(<?php echo $grid_id ?>_grid).trigger('reloadGrid');
 	}
 </script>
-<?php $grid_functions_html = ob_get_contents();
-ob_end_clean(); ?>

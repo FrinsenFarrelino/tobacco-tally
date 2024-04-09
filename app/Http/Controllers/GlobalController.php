@@ -3,143 +3,40 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\GlobalVariable;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\URL;
-use Carbon\Carbon;
+use App\Http\Services\CustomerGridService;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class GlobalController extends Controller
 {
     private $globalVariable;
-    protected $globalActionController;
 
-    public function __construct()
-    {
-        $this->globalActionController = new GlobalActionController();
+    public function __construct(
+        GlobalActionController $globalActionController,
+        CustomerGridService $customerGridService,
+    ) {
+        $this->globalActionController = $globalActionController;
+        $this->customerGridService = $customerGridService;
     }
 
-    public function switchLang($lang, Request $request)
+    public function requestGetData(Request $request)
     {
-        $getUrlPrev = URL::previous();
+        $set_request = SetRequestGlobal(action: $request->action, filter: $request->filters, requestData: $request);
 
-        if (array_key_exists($lang, Config::get('languages'))) {
-            app()->setLocale($lang);
-            Session::put('applocale', $lang);
+        if (isset($set_request['columnHead'])) {
+            unset($set_request['columnHead']);
         }
-
-        return redirect($getUrlPrev);
-    }
-
-    public function modelName($string)
-    {
-        $set = "App\\Models\\" . $string;
-        return $set;
-    }
-
-    function formatCode($stringCode = "", $stringDate = "", $stringBranch = [])
-    {
-        $formatCode = DB::table('variables')
-            ->where('code', $stringCode)
-            ->first();
-
-        $separatorSetting = '/';
-
-        if ($formatCode) {
-            $format = explode("|", $formatCode->value);
-            $initial = $format[0];
-            $maxDigit = $format[1];
-            $dateFormat = $format[2];
-            $header = $format[3];
-            $type = $format[4];
-            // Jika format[7] ada, gunakan nilainya, jika tidak, gunakan setting dari tabel setting
-            $separator = isset($format[5]) ? $format[5] : $separatorSetting;
-            $formattedCode = $initial;
-
-            // Jika $stringDate kosong, gunakan tanggal sekarang
-            $date = empty($stringDate) ? date("Y-m-d") : $stringDate;
-
-            $dateParts = explode("-", $date);
-            $year = $dateParts[0];
-            $month = $dateParts[1];
-            $day = $dateParts[2];
-            $ym = "";
-
-            if ($dateFormat == "ym") {
-                $y = substr($year, 2, 2);
-                $ym = $y . $month;
-            } elseif ($dateFormat == "my") {
-                $y = substr($year, 2, 2);
-                $ym = $month . $y;
-            } elseif ($dateFormat == "Y/m") {
-                $ym = $year . "/" . $month;
-            } elseif ($dateFormat == "y") {
-                $y = substr($year, 2, 2);
-                $ym = $y;
-            }
-
-            $branch = !empty($stringBranch['code']) ? $stringBranch['code'] : null;
-
-            if (!empty($type)) {
-                switch ($type) {
-                    case "str-cab-tgl":
-                        $formattedCode = $initial . $separator . $branch . $separator . $ym . $separator;
-                        break;
-                    case "str-tgl":
-                        $formattedCode = $initial . $separator . $ym . $separator;
-                        break;
-                    case "cab-str":
-                        $formattedCode = $branch . $separator . $initial . $separator;
-                        break;
-                    case "cab-str-tgl":
-                        $formattedCode = $branch . $separator . $initial . $separator . $ym . $separator;
-                        break;
-                    case "cab-str-tgl2":
-                        $formattedCode = $branch . $initial . $ym;
-                        break;
-                    case "cab":
-                        $formattedCode = $branch . $separator;
-                        break;
-                    case "str":
-                        $formattedCode = $initial . $separator;
-                        break;
-                    default:
-                        $formattedCode = ''; // Handle jika tipe tidak cocok
-                        break;
-                }
-            } elseif (!empty($date_format)) {
-                $formattedCode = $branch . $separator . $initial . $separator . $ym . $separator;
-            }
-
-            $lastNumber = DB::table($header)
-                ->where('id', '<>', 0)
-                ->count();
-
-            $newNumber = $lastNumber + 1;
-            $newNumberDigit = strlen($newNumber);
-            if ($newNumberDigit == 0) {
-                $newNumberDigit = 1;
-            }
-            $number = "";
-            for ($i = $newNumberDigit; $i < $maxDigit; $i++) {
-                $number .= "0";
-            }
-
-            $formattedCode .= $number . $newNumber;
-
-            return $formattedCode;
-        } else {
-            return null;
+        if (isset($set_request['requestData']['action'])) {
+            unset($set_request['requestData']['action']);
         }
+        $result = $this->getData($set_request);
+        return response()->json($result);
     }
-
 
     public function getData($request)
     {
@@ -147,6 +44,13 @@ class GlobalController extends Controller
         $actionsToModel = $this->globalActionController->getActionsToModel();
         if (!array_key_exists($action, $actionsToModel)) {
             return response()->json(['success' => false, 'message' => 'Action not found'], 404);
+        }
+
+        $filters = $request['filters'];
+
+        // untuk grid
+        if (isset($request['requestData']['columnHead'])) {
+            $columnHead = $request['requestData']['columnHead'];
         }
 
         $query = $this->modelName($actionsToModel[$action])::query();
@@ -276,6 +180,19 @@ class GlobalController extends Controller
                 'updated_by_user.name as updated_by',
                 'deleted_by_user.name as deleted_by',
             );
+        } elseif ($action == 'getCustomerBankAccountGrid') {
+            // Must be filtered by customer id.
+            if (isset($filters['id'])) {
+                if (isset($columnHead)) {
+                    $result = $this->customerGridService->getCustomerBankAccountGrid($filters['id'], $columnHead);
+
+                    return $result;
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Column head is required!'], 400);
+                }
+            } else {
+                return response()->json(['success' => false, 'message' => 'Filter by Customer Id is required!'], 400);
+            }
         } elseif ($action == 'getItem') {
             $query->leftJoin('types', 'types.id', '=', 'items.type_id');
             $query->leftJoin('categories', 'categories.id', '=', 'items.category_id');
@@ -352,13 +269,26 @@ class GlobalController extends Controller
         $requestBody['created_by'] = auth()->id();
 
         try {
-
-            // Save $detailPayload in a variable for use inside the closure '$result'
-
             $result = DB::transaction(function () use ($actionsToModel, $action, $requestBody, $detailPayload) {
 
                 $data = $this->modelName($actionsToModel[$action])::create($requestBody);
 
+                if ($action == 'addCustomer') {
+                    if ($detailPayload != '') {
+                        $customerBankAccounts = $detailPayload[0]['master_data_relation_customer'];
+
+                        if ($customerBankAccounts != []) {
+                            foreach ($customerBankAccounts as $i => $item) {
+                                $customerBankAccount = [
+                                    'bank_id' => $item['bank_id'] ?? null,
+                                    'bank_account_number' => $item['bank_account_number'] ?? '-',
+                                    'bank_account_name' => $item['bank_account_name'] ?? '-',
+                                ];
+                                $data->banks()->attach($customerBankAccount['bank_id'], $customerBankAccount);
+                            }
+                        }
+                    }
+                }
                 // if ($action == 'addUser') {
                 //     $lastInsertedId = $data->id;
                 //     // insert detail payload 'user_branch' into user_branches
@@ -990,637 +920,41 @@ class GlobalController extends Controller
 
         $result = DB::transaction(function () use ($actionsToModel, $action, $requestBody, $id) {
 
-            if ($action == 'updateNotification') {
-                for ($i = 0; $i < $requestBody['notification_ids']; ++$i) {
-                    $data = $this->modelName($actionsToModel[$action])::where('id', $requestBody['notification_ids'][$i])->update(['is_read' => 1]);
+            if ($action == 'updateCustomer') {
+                // update grid
+                $data = $this->modelName($actionsToModel[$action])::where('id', $id)->first();
+
+                if ($data) {
+                    $data->update($requestBody);
+                    $customerBankAccounts = [];
+
+                    if (isset($requestBody['detail'])) {
+                        $customerBankAccounts = $requestBody['detail'][0]['master_data_relation_customer'];
+                    }
+
+                    if (empty($customerBankAccounts)) {
+                        $data->banks()->detach();
+                    } else {
+                        $data->banks()->detach();
+
+                        if ($customerBankAccounts != []) {
+                            foreach ($customerBankAccounts as $i => $item) {
+                                $customerBankAccount = [
+                                    'bank_id' => $item['bank_id'] ?? null,
+                                    'bank_account_number' => $item['bank_account_number'] ?? '-',
+                                    'bank_account_name' => $item['bank_account_name'] ?? '-',
+                                ];
+                                $data->banks()->attach($customerBankAccount['bank_id'], $customerBankAccount);
+                            }
+                        }
+                    }
                 }
-                // } elseif ($action == 'updateUser') {
-                //     // update grid
-                //     $branchIds = [];
-                //     $userGroupIds = [];
-                //     $companyIds = [];
-
-                //     foreach ($requestBody['detail'][0]['user_branch'] as $item) {
-                //         if (isset($item['branch_id'])) {
-                //             $branchIds[] = $item['branch_id'];
-                //         }
-                //     }
-
-                //     foreach ($requestBody['detail'][1]['user_group'] as $item) {
-                //         if (isset($item['user_group_id'])) {
-                //             $userGroupIds[] = $item['user_group_id'];
-                //         }
-                //     }
-
-                //     foreach ($requestBody['detail'][2]['user_company'] as $item) {
-                //         if (isset($item['company_id'])) {
-                //             $companyIds[] = $item['company_id'];
-                //         }
-                //     }
-
-                //     $data = $this->modelName($actionsToModel[$action])::where('id', $id)->first();
-
-                //     if ($data) {
-                //         $data->update($requestBody);
-
-                //         // Update payload branch Ids to user_branches
-                //         if (empty($branchIds)) {
-                //             $data->branches()->detach();
-                //         } else {
-                //             $data->branches()->sync($branchIds);
-                //         }
-
-                //         // Update payload company Ids to user_companies
-                //         if (empty($companyIds)) {
-                //             $data->companies()->detach();
-                //         } else {
-                //             $data->companies()->sync($companyIds);
-                //         }
-
-                //         // Update payload user group Ids to user_group_users
-                //         if (empty($userGroupIds)) {
-                //             $data->user_groups()->detach();
-                //         } else {
-                //             $data->user_groups()->sync($userGroupIds);
-                //         }
-                //     }
-                // } elseif ($action == 'updateUserTeam') {
-                //     // update grid
-                //     $details = [];
-
-                //     if (isset($requestBody['detail']) && $requestBody['detail'] != []) {
-                //         foreach ($requestBody['detail'][0]['users'] as $item) {
-                //             // IF not form LNJ 2 then use ID, else use ref_id
-                //             if (!$isFromLNJ2) {
-                //                 $details[] = [
-                //                     'id' => $item['detail_id'] ?? 0,
-                //                     'user_id' => $item['user_id'],
-                //                     'remark' => $item['remark'] ?? '-',
-                //                 ];
-                //             } else {
-                //                 $details[] = [
-                //                     'user_id' => $item['user_id'],
-                //                     'remark' => $item['remark'] ?? '-',
-                //                     'ref_id' => $item['ref_id'],
-                //                 ];
-                //             }
-                //         }
-                //     }
-
-                //     $data = $this->modelName($actionsToModel[$action])::where('id', $id)->first();
-
-                //     if ($data) {
-                //         $data->update($requestBody);
-
-                //         if (empty($details)) {
-                //             $data->userTeamDetails()->delete();
-                //         } else {
-                //             // To delete data if id or ref_id not in payload
-                //             if (!$isFromLNJ2) {
-                //                 $existingIds = collect($details)->pluck('id')->filter();
-                //                 $data->userTeamDetails()->whereNotIn('id', $existingIds)->delete();
-                //             } else {
-                //                 $existingIds = collect($details)->pluck('ref_id')->filter();
-                //                 $data->userTeamDetails()->whereNotIn('ref_id', $existingIds)->delete();
-                //             }
-
-                //             foreach ($details as $detail) {
-                //                 if (!$isFromLNJ2) {
-                //                     // If id exist then update if not then create new
-                //                     if ($detail['id'] != 0) {
-                //                         $data->userTeamDetails()->where('id', $detail['id'])->update($detail);
-                //                     } else {
-                //                         $newUserTeamDetail = $data->userTeamDetails()->create($detail);
-                //                         $newUserTeamDetailIds[] = $newUserTeamDetail->id;
-                //                     }
-                //                 } else {
-                //                     $affectedRows = $data->userTeamDetails()->where('ref_id', $detail['ref_id'])->update($detail);
-                //                     if ($affectedRows === 0) {
-                //                         // If no rows were affected, the ref_id was not found, so create a new record
-                //                         $data->userTeamDetails()->create($detail);
-                //                     }
-                //                 }
-                //             }
-                //         }
-                //     }
-                // } elseif ($action == 'updatePrincipal') {
-                //     // update grid
-                //     $detailComodities = [];
-                //     $detailPics = [];
-                //     $detailCategories = [];
-                //     $detailAddresses = [];
-
-                //     if (isset($requestBody['detail'])) {
-                //         foreach ($requestBody['detail'][0]['principal_commodity'] as $item) {
-                //             $detailComodities[] = [
-                //                 'id' => $item['id'],
-                //                 'name' => $item['name'] ?? '-',
-                //                 'imo' => $item['imo'] ?? '-',
-                //                 'un' => $item['un'] ?? '-',
-                //                 'pck_grp' => $item['pck_grp'] ?? '-',
-                //                 'fi_pt' => $item['fi_pt'] ?? '-',
-                //                 'remark' => $item['remark'] ?? '-',
-                //             ];
-                //         }
-
-                //         foreach ($requestBody['detail'][1]['principal_pic'] as $item) {
-                //             $detailPics[] = [
-                //                 'id' => $item['id'],
-                //                 'name' => $item['name'] ?? '-',
-                //                 'phone' => $item['phone'] ?? '-',
-                //                 'remark' => $item['remark'] ?? '-',
-                //             ];
-                //         }
-
-                //         foreach ($requestBody['detail'][2]['principal_category'] as $item) {
-                //             $detailCategories[] = [
-                //                 'id' => $item['id'],
-                //                 'principal_category_id' => $item['principal_category_id'],
-                //                 'remark' => $item['remark'] ?? '-',
-                //             ];
-                //         }
-
-                //         foreach ($requestBody['detail'][4]['address'] as $item) {
-                //             $detailAddresses[] = [
-                //                 'id' => $item['id'],
-                //                 'address' => $item['address'] ?? '-',
-                //                 'pic' => $item['pic'] ?? '-',
-                //                 'phone' => $item['phone'] ?? '-',
-                //                 'email' => $item['email'] ?? '-',
-                //                 'contact' => $item['contact'] ?? '-',
-                //                 'remark' => $item['remark'] ?? '-',
-                //                 'note' => $item['note'] ?? '-',
-                //                 'is_visible' => $item['is_visible'],
-                //             ];
-                //         }
-                //     }
-
-                //     // principals banks
-                //     $bankNo = '';
-                //     $bankName = '';
-                //     if (isset($requestBody['bank_no']) && isset($requestBody['bank_name'])) {
-                //         $bankNo = $requestBody['bank_no'];
-                //         $bankName = $requestBody['bank_name'];
-                //         unset($requestBody['bank_no']);
-                //         unset($requestBody['bank_name']);
-                //     }
-
-                //     $data = $this->modelName($actionsToModel[$action])::where('id', $id)->first();
-
-                //     if ($data) {
-                //         $data->update($requestBody);
-
-                //         if ($bankNo != '' && $bankName != '') {
-                //             $bankAccountPayload = [
-                //                 'number' => $bankNo,
-                //                 'name' => $bankName,
-                //             ];
-
-                //             $data->bankAccounts()->where('principal_id', $id)->update($bankAccountPayload);
-                //         }
-
-                //         if (empty($detailComodities)) {
-                //             $data->principalCommodities()->delete();
-                //         } else {
-                //             $existingIds = collect($detailComodities)->pluck('id')->filter();
-                //             $data->principalCommodities()->whereNotIn('id', $existingIds)->delete();
-                //             foreach ($detailComodities as $detail) {
-                //                 if ($detail['id'] != 0 && $detail['id'] !== null) {
-                //                     $data->principalCommodities()->where('id', $detail['id'])->update($detail);
-                //                 } else {
-                //                     $detail['code'] = FormattingCodeHelper::formatCode('principal_commodity_category', '', [], [], [], null);
-                //                     unset($detail['id']);
-                //                     // dd($detail);
-                //                     $newPrincipalCommodities = $data->principalCommodities()->create($detail);
-                //                 }
-                //             }
-                //         }
-
-                //         if (empty($detailPics)) {
-                //             $data->principalPics()->delete();
-                //         } else {
-                //             $existingIds = collect($detailPics)->pluck('id')->filter();
-                //             $data->principalPics()->whereNotIn('id', $existingIds)->delete();
-                //             foreach ($detailPics as $detail) {
-                //                 if ($detail['id'] != 0 && $detail['id'] !== null) {
-                //                     $data->principalPics()->where('id', $detail['id'])->update($detail);
-                //                 } else {
-                //                     $newPrincipalPics = $data->principalPics()->create($detail);
-                //                 }
-                //             }
-                //         }
-
-                //         if (empty($detailCategories)) {
-                //             $data->principalCategoryDetails()->delete();
-                //         } else {
-                //             $existingIds = collect($detailCategories)->pluck('id')->filter();
-                //             $data->principalCategoryDetails()->whereNotIn('id', $existingIds)->delete();
-                //             foreach ($detailCategories as $detail) {
-                //                 if ($detail['id'] != 0 && $detail['id'] !== null) {
-                //                     $data->principalCategoryDetails()->where('id', $detail['id'])->update($detail);
-                //                 } else {
-                //                     $newPrincipalCategoryDetails = $data->principalCategoryDetails()->create($detail);
-                //                 }
-                //             }
-                //         }
-
-                //         if (empty($detailAddresses)) {
-                //             $data->principalAddresses()->delete();
-                //         } else {
-                //             $existingIds = collect($detailAddresses)->pluck('id')->filter();
-                //             $data->principalAddresses()->whereNotIn('id', $existingIds)->delete();
-                //             foreach ($detailAddresses as $detail) {
-                //                 if ($detail['id'] != 0 && $detail['id'] !== null) {
-                //                     $data->principalAddresses()->where('id', $detail['id'])->update($detail);
-                //                 } else {
-                //                     $newPrincipalAddresses = $data->principalAddresses()->create($detail);
-                //                 }
-                //             }
-                //         }
-                //     }
-                // } elseif ($action == 'updateQuotation') {
-                //     // update grid
-                //     $detailCargo = [];
-                //     $detailBuy = [];
-                //     $detailSell = [];
-
-                //     // dd($requestBody['detail']);
-                //     if (isset($requestBody['detail']) && $requestBody['detail'] != []) {
-                //         if ($requestBody['detail'][0]['cargo_details']) {
-                //             foreach ($requestBody['detail'][0]['cargo_details'] as $item) {
-                //                 if (!$isFromLNJ2) {
-                //                     $detailCargo[] = [
-                //                         'id' => $item['detail_id'] ?? 0,
-                //                         'package_length' => isset($item['package_length']) && $item['package_length'] !== '' ? $item['package_length'] : 0,
-                //                         'package_width' => isset($item['package_width']) && $item['package_width'] !== '' ? $item['package_width'] : 0,
-                //                         'package_height' => isset($item['package_height']) && $item['package_height'] !== '' ? $item['package_height'] : 0,
-                //                         'package_weight' => isset($item['package_weight']) && $item['package_weight'] !== '' ? $item['package_weight'] : 0,
-                //                         'volume' => isset($item['volume']) && $item['volume'] !== '' ? $item['volume'] : 0,
-                //                         'gross_weight' => isset($item['gross_weight']) && $item['gross_weight'] !== '' ? $item['gross_weight'] : 0,
-                //                         'quantity' => isset($item['quantity']) && $item['quantity'] !== '' ? $item['quantity'] : 0,
-                //                         'total' => $item['total'] ?? '-',
-                //                         'remark' => $item['remark'] ?? '-',
-                //                         'container_type_id' => $item['container_type_id'] ?? null,
-                //                         'container_size_id' => $item['container_size_id'] ?? null,
-                //                     ];
-                //                 } else {
-                //                     $detailCargo[] = [
-                //                         'ref_id' => $item['ref_id'] ?? 0,
-                //                         'package_length' => isset($item['package_length']) && $item['package_length'] !== '' ? $item['package_length'] : 0,
-                //                         'package_width' => isset($item['package_width']) && $item['package_width'] !== '' ? $item['package_width'] : 0,
-                //                         'package_height' => isset($item['package_height']) && $item['package_height'] !== '' ? $item['package_height'] : 0,
-                //                         'package_weight' => isset($item['package_weight']) && $item['package_weight'] !== '' ? $item['package_weight'] : 0,
-                //                         'volume' => isset($item['volume']) && $item['volume'] !== '' ? $item['volume'] : 0,
-                //                         'gross_weight' => isset($item['gross_weight']) && $item['gross_weight'] !== '' ? $item['gross_weight'] : 0,
-                //                         'quantity' => isset($item['quantity']) && $item['quantity'] !== '' ? $item['quantity'] : 0,
-                //                         'total' => $item['total'] ?? '-',
-                //                         'remark' => $item['remark'] ?? '-',
-                //                         'container_type_id' => $item['container_type_id'] ?? null,
-                //                         'container_size_id' => $item['container_size_id'] ?? null,
-                //                     ];
-                //                 }
-                //             }
-                //         }
-                //         if ($requestBody['detail'][1]['service_buy']) {
-                //             foreach ($requestBody['detail'][1]['service_buy'] as $item) {
-                //                 if (!$isFromLNJ2) {
-                //                     $detailBuy[] = [
-                //                         'id' => $item['detail_id'],
-                //                         'service_desc' => $item['service_desc'] ?? '-',
-                //                         'service_price_desc' => $item['service_price_desc'] ?? '-',
-                //                         'supplier_service_id' => isset($item['supplier_service_id']) && $item['supplier_service_id'] !== '' ? $item['supplier_service_id'] : 0,
-                //                         'transaction_date' => $item['transaction_date'] ?? date('Y-m-d'),
-                //                         'valid_until' => $item['valid_until'] ?? date('Y-m-d'),
-                //                         'remark' => $item['remark'] ?? '-',
-                //                         'charge_segment' => $item['charge_segment'] ?? '-',
-                //                         'service_category' => $item['service_category'] ?? 'BUY',
-                //                         'service_group_id' => $item['service_group_id'] ?? null,
-                //                         'service_price_id' => $item['service_price_id'] ?? null,
-                //                         'currency_id' => $item['currency_id'] ?? null,
-                //                         'costing_currency_id' => $item['costing_currency_id'] ?? null,
-                //                         'base_price' => isset($item['base_price']) && $item['base_price'] !== '' ? $item['base_price'] : 0,
-                //                     ];
-                //                 } else {
-                //                     $detailBuy[] = [
-                //                         'ref_id' => $item['ref_id'],
-                //                         'service_desc' => $item['service_desc'] ?? '-',
-                //                         'service_price_desc' => $item['service_price_desc'] ?? '-',
-                //                         'supplier_service_id' => isset($item['supplier_service_id']) && $item['supplier_service_id'] !== '' ? $item['supplier_service_id'] : 0,
-                //                         'transaction_date' => $item['transaction_date'] ?? date('Y-m-d'),
-                //                         'valid_until' => $item['valid_until'] ?? date('Y-m-d'),
-                //                         'remark' => $item['remark'] ?? '-',
-                //                         'charge_segment' => $item['charge_segment'] ?? '-',
-                //                         'service_category' => $item['service_category'] ?? 'BUY',
-                //                         'service_group_id' => $item['service_group_id'] ?? null,
-                //                         'service_price_id' => $item['service_price_id'] ?? null,
-                //                         'currency_id' => $item['currency_id'] ?? null,
-                //                         'costing_currency_id' => $item['costing_currency_id'] ?? null,
-                //                         'base_price' => isset($item['base_price']) && $item['base_price'] !== '' ? $item['base_price'] : 0,
-                //                     ];
-                //                 }
-                //             }
-                //         }
-                //         if ($requestBody['detail'][2]['service_sell']) {
-                //             foreach ($requestBody['detail'][2]['service_sell'] as $item) {
-                //                 if (!$isFromLNJ2) {
-                //                     $detailSell[] = [
-                //                         'id' => $item['detail_id'],
-                //                         'service_desc' => $item['service_desc'] ?? '-',
-                //                         'service_price_desc' => $item['service_price_desc'] ?? '-',
-                //                         'supplier_service_id' => isset($item['supplier_service_id']) && $item['supplier_service_id'] !== '' ? $item['supplier_service_id'] : 0,
-                //                         'transaction_date' => $item['transaction_date'] ?? date('Y-m-d'),
-                //                         'valid_until' => $item['valid_until'] ?? date('Y-m-d'),
-                //                         'remark' => $item['remark'] ?? '-',
-                //                         'charge_segment' => $item['charge_segment'] ?? '-',
-                //                         'service_category' => $item['service_category'] ?? 'SELL',
-                //                         'service_id' => $item['service_id'] ?? null,
-                //                         'service_group_id' => $item['service_group_id'] ?? null,
-                //                         'measurement_unit_id' => $item['measurement_unit_id'] ?? null,
-                //                         'principal_id' => $item['principal_id'] ?? null,
-                //                         'currency_id' => $item['currency_id'] ?? null,
-                //                         'qty' => isset($item['qty']) && $item['qty'] !== '' ? $item['qty'] : 0,
-                //                         'sales_price' => isset($item['sales_price']) && $item['sales_price'] !== '' ? $item['sales_price'] : 0,
-                //                         'total_amount' => isset($item['total_amount']) && $item['total_amount'] !== '' ? $item['total_amount'] : 0,
-                //                     ];
-                //                 } else {
-                //                     $detailSell[] = [
-                //                         'ref_id' => $item['ref_id'],
-                //                         'service_desc' => $item['service_desc'] ?? '-',
-                //                         'service_price_desc' => $item['service_price_desc'] ?? '-',
-                //                         'supplier_service_id' => isset($item['supplier_service_id']) && $item['supplier_service_id'] !== '' ? $item['supplier_service_id'] : 0,
-                //                         'transaction_date' => $item['transaction_date'] ?? date('Y-m-d'),
-                //                         'valid_until' => $item['valid_until'] ?? date('Y-m-d'),
-                //                         'remark' => $item['remark'] ?? '-',
-                //                         'charge_segment' => $item['charge_segment'] ?? '-',
-                //                         'service_category' => $item['service_category'] ?? 'SELL',
-                //                         'service_id' => $item['service_id'] ?? null,
-                //                         'service_group_id' => $item['service_group_id'] ?? null,
-                //                         'measurement_unit_id' => $item['measurement_unit_id'] ?? null,
-                //                         'principal_id' => $item['principal_id'] ?? null,
-                //                         'currency_id' => $item['currency_id'] ?? null,
-                //                         'qty' => isset($item['qty']) && $item['qty'] !== '' ? $item['qty'] : 0,
-                //                         'sales_price' => isset($item['sales_price']) && $item['sales_price'] !== '' ? $item['sales_price'] : 0,
-                //                         'total_amount' => isset($item['total_amount']) && $item['total_amount'] !== '' ? $item['total_amount'] : 0,
-                //                     ];
-                //                 }
-                //             }
-                //         }
-                //     }
-
-                //     $data = $this->modelName($actionsToModel[$action])::where('id', $id)->first();
-
-                //     if ($data) {
-                //         $data->update($requestBody);
-
-                //         // To delete data if id or ref_id not in payload
-                //         if (!$isFromLNJ2) {
-                //             $existingIds = collect($detailCargo)->pluck('id')->filter();
-                //             $data->rfqCargoes()->whereNotIn('id', $existingIds)->delete();
-                //         } else {
-                //             $existingIds = collect($detailCargo)->pluck('ref_id')->filter();
-                //             $data->rfqCargoes()->whereNotIn('ref_id', $existingIds)->delete();
-                //         }
-
-                //         foreach ($detailCargo as $detail) {
-                //             if (!$isFromLNJ2) {
-                //                 // If id exist then update if not then create new
-                //                 if ($detail['id'] != 0) {
-                //                     $data->rfqCargoes()->where('id', $detail['id'])->update($detail);
-                //                 } else {
-                //                     $newCargoDetail = $data->rfqCargoes()->create($detail);
-                //                     $newCargoDetailIds[] = $newCargoDetail->id;
-                //                 }
-                //             } else {
-                //                 $affectedRows = $data->rfqCargoes()->where('ref_id', $detail['ref_id'])->update($detail);
-                //                 if ($affectedRows === 0) {
-                //                     // If no rows were affected, the ref_id was not found, so create a new record
-                //                     $data->rfqCargoes()->create($detail);
-                //                 }
-                //             }
-                //         }
-
-                //         // To delete data from service buy if id or ref_id not in payload
-                //         if (!$isFromLNJ2) {
-                //             $existingIds = collect($detailBuy)->pluck('id')->filter();
-                //             $data->rfqDetails()->whereNotIn('id', $existingIds)->where('service_category', '=', 'BUY')->delete();
-                //         } else {
-                //             $existingIds = collect($detailBuy)->pluck('ref_id')->filter();
-                //             $data->rfqDetails()->whereNotIn('ref_id', $existingIds)->where('service_category', '=', 'BUY')->delete();
-                //         }
-
-                //         foreach ($detailBuy as $detail) {
-                //             if (!$isFromLNJ2) {
-                //                 // If id exist then update if not then create new
-                //                 if ($detail['id'] != 0) {
-                //                     $data->rfqDetails()->where('id', $detail['id'])->update($detail);
-                //                 } else {
-                //                     $newBuyDetail = $data->rfqDetails()->create($detail);
-                //                     $newBuyDetailIds[] = $newBuyDetail->id;
-                //                 }
-                //             } else {
-                //                 $affectedRows = $data->rfqDetails()->where('ref_id', $detail['ref_id'])->update($detail);
-                //                 if ($affectedRows === 0) {
-                //                     // If no rows were affected, the ref_id was not found, so create a new record
-                //                     $data->rfqDetails()->create($detail);
-                //                 }
-                //             }
-                //         }
-
-                //         // To delete data from service sell if id or ref_id not in payload
-                //         if (!$isFromLNJ2) {
-                //             $existingIds = collect($detailSell)->pluck('id')->filter();
-                //             $data->rfqDetails()->whereNotIn('id', $existingIds)->where('service_category', '=', 'SELL')->delete();
-                //         } else {
-                //             $existingIds = collect($detailSell)->pluck('ref_id')->filter();
-                //             $data->rfqDetails()->whereNotIn('ref_id', $existingIds)->where('service_category', '=', 'SELL')->delete();
-                //         }
-
-                //         foreach ($detailSell as $detail) {
-                //             if (!$isFromLNJ2) {
-                //                 // If id exist then update if not then create new
-                //                 if ($detail['id'] != 0) {
-                //                     $data->rfqDetails()->where('id', $detail['id'])->update($detail);
-                //                 } else {
-                //                     $newSellDetail = $data->rfqDetails()->create($detail);
-                //                     $newSellDetailIds[] = $newSellDetail->id;
-                //                 }
-                //             } else {
-                //                 $affectedRows = $data->rfqDetails()->where('ref_id', $detail['ref_id'])->update($detail);
-                //                 if ($affectedRows === 0) {
-                //                     // If no rows were affected, the ref_id was not found, so create a new record
-                //                     $data->rfqDetails()->create($detail);
-                //                 }
-                //             }
-                //         }
-                //     }
-                // } elseif ($action == 'updateStatusQuotation') {
-                //     if (isset($requestBody['is_approve'])) {
-                //         if ($requestBody['is_approve'] == 1) {
-                //             $newData = [
-                //                 'approved_by' => auth()->id(),
-                //                 'is_approve' => true,
-                //                 'approved_at' => now(),
-                //             ];
-                //         } else {
-                //             $newData = [
-                //                 'approved_by' => auth()->id(),
-                //                 'is_approve' => false,
-                //                 'approved_at' => now(),
-                //             ];
-                //         }
-                //     } elseif (isset($requestBody['is_finish_quot'])) {
-                //         if ($requestBody['is_finish_quot'] == 1) {
-                //             $newData = [
-                //                 'is_finish_quot' => true,
-                //             ];
-                //         } else {
-                //             $newData = [
-                //                 'is_finish_quot' => false,
-                //             ];
-                //         }
-                //     }
-                //     $data = $this->modelName($actionsToModel[$action])::where('id', $id)
-                //         ->update($newData);
-                // } elseif ($action == 'updatePreOrder') {
-                //     // update grid
-                //     $detailParties = [];
-                //     $detailPackings = [];
-                //     $detailItemShipment = [];
-
-                //     if (isset($requestBody['detail']) && $requestBody['detail'] != []) {
-                //         if ($requestBody['detail'][0]['detail_party']) {
-                //             foreach ($requestBody['detail'][0]['detail_party'] as $item) {
-                //                 $detailParties[] = [
-                //                     'id' => $item['id'],
-                //                     'container_type_id' => $item['container_type_id'] ?? 0,
-                //                     'container_size_id' => $item['container_size_id'] ?? 0,
-                //                     'qty' => $item['qty'] ?? 4,
-                //                     'remark' => $item['remark'] ?? '-',
-                //                 ];
-                //             }
-                //         }
-                //         if ($requestBody['detail'][1]['detail_packing']) {
-                //             foreach ($requestBody['detail'][1]['detail_packing'] as $item) {
-                //                 $detailPackings[] = [
-                //                     'id' => $item['id'],
-                //                     'packing_detail_id' => $item['packing_detail_id'],
-                //                     'container_size_id' => $item['container_size_id'] ?? 0,
-                //                     'package_type' => $item['package_type'],
-                //                     'packing_no' => $item['packing_no'],
-                //                     'packing_size' => $item['packing_size'],
-                //                     'packing_type' => $item['packing_type'] ?? '',
-                //                     'uom' => $item['uom'] ?? '',
-                //                     'qty' => $item['qty'] ?? '',
-                //                     'seal_no' => $item['seal_no'] ?? '',
-                //                     'etd_factory' => $item['etd_factory'] ?? '',
-                //                     'parent_id' => $item['parent_id'] ?? null,
-                //                     'shipment_item_id' => $item['shipment_item_id'] ?? null,
-                //                     'is_in_container' => $item['is_in_container'] ?? false,
-                //                     'remark' => $item['remark'] ?? '-',
-                //                 ];
-                //             }
-                //         }
-                //         if ($requestBody['detail'][2]['detail_item_shipment']) {
-                //             foreach ($requestBody['detail'][2]['detail_item_shipment'] as $item) {
-                //                 $detailItemShipment[] = [
-                //                     'id' => $item['id'],
-                //                     'item_shipment_id' => $item['item_shipment_id'] ?? null,
-                //                     'po_number' => $item['po_number'] ?? '',
-                //                     'po_item_line' => $item['po_item_line'] ?? 0,
-                //                     'po_item_code' => $item['po_item_code'] ?? '',
-                //                     'material_description' => $item['material_description'] ?? '',
-                //                     'quantity_confirmed' => $item['quantity_confirmed'] ?? 0,
-                //                     'quantity_shipped' => $item['quantity_shipped'] ?? 0,
-                //                     'quantity_arrived' => $item['quantity_arrived'] ?? 0,
-                //                     'quantity_balance' => $item['quantity_balance'] ?? 0,
-                //                     'unit_qty_id' => $item['unit_qty_id'] ?? 0,
-                //                     'cargo_readiness' => $item['cargo_readiness'] ?? '',
-                //                     'delivery_address_id' => $item['delivery_address_id'] ?? 0,
-                //                     'remark' => $item['remark'] ?? '-',
-                //                 ];
-                //             }
-                //         }
-                //     }
-
-                //     $data = $this->modelName($actionsToModel[$action])::where('id', $id)->first();
-
-                //     if ($data) {
-                //         $data->update($requestBody);
-
-                //         if (empty($detailParties)) {
-                //             $data->preOrderParty()->delete();
-                //         } else {
-                //             $existingIds = collect($detailParties)->pluck('id')->filter();
-                //             $data->preOrderParty()->whereNotIn('id', $existingIds)->delete();
-                //             foreach ($detailParties as $detail) {
-                //                 if ($detail['id'] != 0) {
-                //                     $data->preOrderParty()->where('id', $detail['id'])->update($detail);
-                //                 } else {
-                //                     $newDetailParties = $data->preOrderParty()->create($detail);
-                //                     // $newDetailParties[] = $newDetailParties->id;
-                //                 }
-                //             }
-                //         }
-
-                //         if (empty($detailPackings)) {
-                //             $data->posPackingDetail()->delete();
-                //         } else {
-                //             $existingIds = collect($detailPackings)->pluck('id')->filter();
-                //             $data->posPackingDetail()->whereNotIn('id', $existingIds)->delete();
-                //             foreach ($detailPackings as $detail) {
-                //                 if ($detail['id'] != 0) {
-                //                     $data->posPackingDetail()->where('id', $detail['id'])->update($detail);
-                //                 } else {
-                //                     $newDetailPackings = $data->posPackingDetail()->create($detail);
-                //                     // $newDetailPackings[] = $newDetailPackings->id;
-                //                 }
-                //             }
-                //         }
-
-                //         if (empty($detailItemShipment)) {
-                //             $data->posShipmentItem()->delete();
-                //         } else {
-                //             $existingIds = collect($detailItemShipment)->pluck('id')->filter();
-                //             $data->posShipmentItem()->whereNotIn('id', $existingIds)->delete();
-                //             foreach ($detailItemShipment as $detail) {
-                //                 if ($detail['id'] != 0) {
-                //                     $data->posShipmentItem()->where('id', $detail['id'])->update($detail);
-                //                 } else {
-                //                     $newDetailItemShipment = $data->posShipmentItem()->create($detail);
-                //                     // $newDetailItemShipment[] = $newDetailItemShipment->id;
-                //                 }
-                //             }
-                //         }
-                //     }
-                // } elseif ($action == 'approvePreOrder') {
-                //     $data = $this->modelName($actionsToModel[$action])::where('id', $id)->update([
-                //         'approved_by' => auth()->id(),
-                //         'is_approve' => true,
-                //         'approved_at' => now(),
-                //     ]);
-                // } elseif ($action == 'dissaprovePreOrder') {
-                $data = $this->modelName($actionsToModel[$action])::where('id', $id)->update([
-                    'rejected_by' => auth()->id(),
-                    'is_approve' => false,
-                    'rejected_at' => now(),
-                ]);
             } else {
                 $data = $this->modelName($actionsToModel[$action])::where('id', $id)->update($requestBody);
             }
 
             return $data;
         });
-
-        // Get id dari yang baru dicreate buat dikirim ke lnj 2 sebagai ref_id
-        if ($action == 'updateUserTeam') {
-            $newUserTeamDetailIds = $data->userTeamDetails()->pluck('id')->toArray();
-        } elseif ($action == 'updateQuotation') {
-            $newCargoDetailIds = $data->rfqCargoes()->pluck('id')->toArray();
-            $newBuyDetailIds = $data->rfqDetails()->where('service_category', '=', 'BUY')->pluck('id')->toArray();
-            $newSellDetailIds = $data->rfqDetails()->where('service_category', '=', 'SELL')->pluck('id')->toArray();
-        } elseif ($action == 'updatePreOrder') {
-            // TODO:buat ketika syncronisasi
-        }
 
         $data = $this->modelName($actionsToModel[$action])::where('id', $id)->get();
         $result = array('success' => true, 'data' => $data);
@@ -1644,6 +978,18 @@ class GlobalController extends Controller
         $result = array('success' => true, 'data' => $data);
 
         return $result;
+    }
+
+    public function switchLang($lang, Request $request)
+    {
+        $getUrlPrev = URL::previous();
+
+        if (array_key_exists($lang, Config::get('languages'))) {
+            app()->setLocale($lang);
+            Session::put('applocale', $lang);
+        }
+
+        return redirect($getUrlPrev);
     }
 
     public function getAjaxDataTable(Request $request, $action)
@@ -1698,11 +1044,9 @@ class GlobalController extends Controller
         $input_param = [];
         if ($request->get('filter')) {
             $filter = json_decode($request->get('filter'), true);
-            // $filter = $request->get('filter');
         }
         if ($request->get('input_param')) {
             $input_param = json_decode($request->get('filter'), true);
-            // $input_param = $request->get('filter');
         }
 
         $initTableModal = initializeDataTableModal($request->get('action'), $request->get('field_table'), $request->get('output_param'), $filter, $input_param, $request->get('id_ajax'));
@@ -1712,6 +1056,147 @@ class GlobalController extends Controller
             'footer' => '',
             'init_table_modal' => $initTableModal,
         ];
+
+        return json_encode($response);
+    }
+
+    public function autoComplete(Request $request)
+    {
+        $query = '';
+        $input_param = '';
+        $filter = [];
+        $get_data = '';
+        $search_key = [];
+        $custom_filter = [];
+
+        if ($request->get('search') != null) {
+            $query = $request->get('search');
+        }
+        if ($request->get('input_param') != null) {
+            $input_param = $request->get('input_param');
+        }
+        if ($request->get('get_data') != '') {
+            $get_data = $request->get('get_data');
+        }
+
+        $arrayFilter = array('skip' => 0, 'take' => 50);
+
+        if (!empty($request->get('search_term')) || $request->get('search_term') != null) {
+            foreach ($request->get('search_term') as $value) {
+                $param = explode("|", $value);
+                if (count($param) > 2) {
+                    $search_key[] = array(
+                        'key' => $param[0],
+                        'term' => $param[1],
+                        'query' => $param[2]
+                    );
+                } else {
+                    $search_key[] = array(
+                        'key' => $param[0],
+                        'term' => $param[1],
+                        'query' => $query
+                    );
+                }
+            }
+        }
+
+        $set_request = SetRequestGlobal(action: $request->get('action'), search: $search_key, filter: $arrayFilter, get_data: $get_data);
+
+        if (!empty($request->get('filter')) || $request->get('filter') != null) {
+            $filter = json_decode($request->get('filter'), true);
+            // custom filter
+
+            if (!empty($filter)) {
+                foreach ($filter as $key => $value) {
+                    $val = $value;
+                    $custom_filter[] = array(
+                        'key' => $key,
+                        'term' => 'equal',
+                        'query' => $val
+                    );
+                }
+            }
+        }
+
+        if (!empty($input_param)) {
+            $set_input_param = json_decode($input_param, true);
+
+            // custom filter
+            if (!empty($set_input_param)) {
+
+                foreach ($set_input_param as $key => $value) {
+                    $set_value = $value['query'];
+                    if ($value['query'] == 'on') {
+                        $set_value = 'true';
+                    }
+                    $custom_filter[] = array(
+                        'key' => $value['key'],
+                        'term' => $value['term'],
+                        'query' => $set_value,
+                    );
+                }
+            }
+        }
+
+        if (!empty($custom_filter)) {
+            $set_request = SetRequestGlobal(action: $request->get('action'), search: $search_key, filter: $arrayFilter, get_data: $get_data, custom_filters: $custom_filter);
+        }
+        $result = $this->getData($set_request);
+
+        if ($result['success'] == false) {
+            return json_encode($result);
+        }
+
+        $temp_response = [];
+        $response = [];
+
+        if ($request->get('is_grid') != null) {
+            foreach ($result['data'] as $data) {
+                $temp_label = '';
+                $show_value = $request->get('show_value');
+
+                for ($i = 0; $i < count($show_value); $i++) {
+                    if ($i > 0) {
+                        $temp_label .= " - " . $data[$show_value[$i]];
+                    } else {
+                        $temp_label .= $data[$show_value[$i]];
+                    }
+                }
+
+                $temp_result = '';
+                $result_show = $request->get('result_show');
+
+                for ($i = 0; $i < count($result_show); $i++) {
+                    if ($i > 0) {
+                        $temp_result .= " - " . $data[$result_show[$i]];
+                    } else {
+                        $temp_result .= $data[$result_show[$i]];
+                    }
+                }
+                $data['visible'] = $temp_label;
+                $data['result'] = $temp_result;
+                array_push($temp_response, $data);
+            }
+            $response = [
+                'items' => $temp_response
+            ];
+        } else {
+            foreach ($result['data'] as $data) {
+                $temp_label = '';
+                $decode = json_decode($request->get('show_value'));
+
+                for ($i = 0; $i < count($decode); $i++) {
+                    if ($i > 0) {
+                        $temp_label .= " - " . $data[$decode[$i]];
+                    } else {
+                        $temp_label .= $data[$decode[$i]];
+                    }
+                }
+                $data['label'] = $temp_label;
+
+                $response[] = array("value" => $data['id'], "label" => $data['label'], "data" => $data);
+            }
+        }
 
         return json_encode($response);
     }

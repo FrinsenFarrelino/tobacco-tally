@@ -41,7 +41,7 @@
             {
                 if($requestData->get('columnHead') != '' || $requestData->get('columnHead') != null)
                 {
-                    $set_request['columnHead'] = json_decode($requestData->get('columnHead'));
+                    $set_request['columnHead'] = $requestData->get('columnHead');
                 }
                 $set_request['requestData'] = $requestData->all();
             }

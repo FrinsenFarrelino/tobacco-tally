@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Session;
+
 function gridSetup($mode, $action, $search_query, $id, $caption, $colNames, $column, $colModel, $defaultData = "{ }", $columnUnique = "[ ]", $isAdd = "true", $isDelete = "true", $columnAutoAddRow = 0, $mergedHeaders = null, $useFooter = false){
 
         $grid["var"]["load"]               = 0;
@@ -39,8 +41,12 @@ function gridSetup($mode, $action, $search_query, $id, $caption, $colNames, $col
         $grid["var"]["before_edit_cell"]   = 0;
         $grid["var"]["add_row_data_pos"]   = "'last'";
 
-        $controllerBase = new \App\Http\Controllers\Controller();
-        $coltemplate_date_1 = 'yy-mm-dd';
+        // Generate CSRF token
+        $csrfToken = Session::token();
+        
+        $grid["option"]["loadBeforeSend"]  = "function (jqXHR) {
+            jqXHR.setRequestHeader('X-CSRF-TOKEN', '$csrfToken');
+        }";
 
         $filter_id = array('id' => $search_query);
         $grid["option"]["mtype"]           = "'POST'";
@@ -81,7 +87,7 @@ function gridSetup($mode, $action, $search_query, $id, $caption, $colNames, $col
         $grid["option"]["pgbuttons"]       = "false";
         $grid["option"]["viewrecords"]     = "false";
 
-        $new_url = $controllerBase->getUrlBase('getData');
+        $new_url = route('requestGetData');
 
         if ($mode != "add"){
             $grid["option"]["url"] = "'$new_url'";
@@ -122,34 +128,16 @@ function gridSetup($mode, $action, $search_query, $id, $caption, $colNames, $col
         $grid_html .= "\n<script language='javascript' type='text/javascript'>";
 
         $temp_width="width:100";
-        $temp_right="align:'right'";
         $temp_sortable="sortable:false";
-        $temp_decimalSeparator="decimalSeparator:','";
-        $temp_thousandsSeparator="thousandsSeparator:'.'";
-        $temp_defaultValue="defaultValue:''";
         $temp_editable="editable:true";
-        $temp_number="number:true";
 
         $coltemplate["general"]="{ ".$temp_width.", ".$temp_sortable.", ".$temp_editable."}";
-        $coltemplate["integer"]="{ width:50, ".$temp_right.", ".$temp_sortable.", formatter:'number', formatoptions:{ ".$temp_decimalSeparator.", ".$temp_thousandsSeparator.", decimalPlaces:0, ".$temp_defaultValue." }, ".$temp_editable.", editrules:{ ".$temp_number." } }";
-        $coltemplate["number"]="{ width:50, ".$temp_right.", ".$temp_sortable.", formatter:'number', formatoptions:{ ".$temp_decimalSeparator.", ".$temp_thousandsSeparator.", decimalPlaces:0, ".$temp_defaultValue." }, ".$temp_editable.", editrules:{ ".$temp_number." } }";
-        $coltemplate["number1"]="{ width:50, ".$temp_right.", ".$temp_sortable.", formatter:'number', formatoptions:{ ".$temp_decimalSeparator.", ".$temp_thousandsSeparator.", decimalPlaces:1, ".$temp_defaultValue." }, ".$temp_editable.", editrules:{ ".$temp_number." } }";
-        $coltemplate["number2"]="{ width:50, ".$temp_right.", ".$temp_sortable.", formatter:'number', formatoptions:{ ".$temp_decimalSeparator.", ".$temp_thousandsSeparator.", decimalPlaces:2, ".$temp_defaultValue." }, ".$temp_editable.", editrules:{ ".$temp_number." } }";
-        $coltemplate["number3"]="{ width:50, ".$temp_right.", ".$temp_sortable.", formatter:'number', formatoptions:{ ".$temp_decimalSeparator.", ".$temp_thousandsSeparator.", decimalPlaces:3, ".$temp_defaultValue." }, ".$temp_editable.", editrules:{ ".$temp_number." } }";
-        $coltemplate["number4"]="{ width:50, ".$temp_right.", ".$temp_sortable.", formatter:'number', formatoptions:{ ".$temp_decimalSeparator.", ".$temp_thousandsSeparator.", decimalPlaces:4, ".$temp_defaultValue." }, ".$temp_editable.", editrules:{ ".$temp_number." } }";
-        $coltemplate["number5"]="{ width:50, ".$temp_right.", ".$temp_sortable.", formatter:'number', formatoptions:{ ".$temp_decimalSeparator.", ".$temp_thousandsSeparator.", decimalPlaces:5, ".$temp_defaultValue." }, ".$temp_editable.", editrules:{ ".$temp_number." } }";
-        $coltemplate["number6"]="{ width:50, ".$temp_right.", ".$temp_sortable.", formatter:'number', formatoptions:{ ".$temp_decimalSeparator.", ".$temp_thousandsSeparator.", decimalPlaces:6, ".$temp_defaultValue." }, ".$temp_editable.", editrules:{ ".$temp_number." } }";
-        $coltemplate["percent"]="{ width:50, ".$temp_right.", ".$temp_sortable.", formatter:'number', formatoptions:{ ".$temp_decimalSeparator.", ".$temp_thousandsSeparator.", decimalPlaces:2 }, ".$temp_editable.", editrules:{ ".$temp_number." } }";
-        $coltemplate["currency"]="{ ".$temp_width.", ".$temp_right.", ".$temp_sortable.", formatter:'currency', formatoptions:{ ".$temp_decimalSeparator.", ".$temp_thousandsSeparator.", decimalPlaces:2, ".$temp_defaultValue." }, ".$temp_editable.", editrules: { ".$temp_number." } }";
-        $coltemplate["currency2"]="{ ".$temp_width.", ".$temp_right.", ".$temp_sortable.", formatter:'currency', formatoptions:{ ".$temp_decimalSeparator.", ".$temp_thousandsSeparator.", decimalPlaces:0, ".$temp_defaultValue." }, ".$temp_editable.", editrules: { ".$temp_number." } }";
-        $coltemplate["number_integer"]="{ width:50, ".$temp_right.", ".$temp_sortable.", formatter:'number', formatoptions:{ thousandsSeparator:'', decimalPlaces:0, ".$temp_defaultValue." }, ".$temp_editable.", editrules:{ ".$temp_number." } }";
-        $coltemplate["number_integer_2"]="{ width:50, ".$temp_right.", ".$temp_sortable.", formatter:'number', formatoptions:{ thousandsSeparator:'', decimalPlaces:0, defaultValue:0 }, ".$temp_editable.", editrules:{ ".$temp_number." } }";
-        $coltemplate["number2_default_0"] = "{ width:50, " . $temp_right . ", " . $temp_sortable . ", formatter:'number', formatoptions:{ " . $temp_decimalSeparator . ", " . $temp_thousandsSeparator . ", decimalPlaces:2, defaultValue:'0,00' }, " . $temp_editable . ", editrules:{ " . $temp_number . " } }";
 
-        $coltemplate["date_1"] = "{ " . $temp_width . ", " . $temp_sortable . ", " . $temp_editable . ", editoptions:{
+        $coltemplate_date = 'yy-mm-dd';
+        $coltemplate["date"] = "{ " . $temp_width . ", " . $temp_sortable . ", " . $temp_editable . ", editoptions:{
             size: 18, maxlengh: 10, dataInit: function(element) {
                 $(element).datepicker({
-                    dateFormat:'" . $coltemplate_date_1 . "',
+                    dateFormat:'" . $coltemplate_date . "',
                     changeMonth: true,
                     changeYear: true,
                     onClose: function () { this.focus(); }
@@ -159,7 +147,6 @@ function gridSetup($mode, $action, $search_query, $id, $caption, $colNames, $col
             }
         },formatoptions:{ newformat: 'Y-m-d' } }";
 
-        $coltemplate["browsedefault"]="{ searchoptions:{sopt:['eq','bw','bn','cn','nc','ew','en']} }";
 		foreach($coltemplate as $key => $val){
 			$grid_html .= "\nvar coltemplate_".$key." = ".$val."; ";
         }
@@ -205,9 +192,6 @@ function gridSetup($mode, $action, $search_query, $id, $caption, $colNames, $col
             $i++;
         }
         $grid_html .= "\n\t});";
-        if ($grid["filtertoolbar"] == 1){
-            $grid_html .= "jQuery(" . $grid_id . "_element).jqGrid('filterToolbar',{searchOperators:true});";
-        }
         if ($grid["navgrid"] == 1) {
             $grid_html .= "\n\tjQuery(" . $grid_id . "_element).jqGrid('navGrid'," . $grid_id . "_navgrid,\n\t{";
             $i = 0;
@@ -285,14 +269,9 @@ function gridSetup($mode, $action, $search_query, $id, $caption, $colNames, $col
         $grid_html .= "\n</div>";
         if ($grid["functions_script"] == 1) {
             include(app_path().'/Helpers/grid_functions.php');
-            $grid_html .= $grid_functions_html;
         }
         if (!empty($grid["others_script"])) {
-            ob_start();
             include(app_path().'/Helpers/grid_scripts.php');
-            $gridjs_html = ob_get_contents();
-            ob_end_clean();
-            $grid_html .= $gridjs_html;
         }
 
         return $grid_html;
