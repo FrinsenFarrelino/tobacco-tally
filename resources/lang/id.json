@@ -388,6 +388,8 @@
         "col_type": "Jenis",
         "col_category": "Kategori",
         "col_unit": "Satuan",
+        "col_buy_price": "Harga Beli",
+        "col_sell_price": "Harga Jual",
         "col_remark": "Keterangan",
         "col_is_active": "Status"
     },
