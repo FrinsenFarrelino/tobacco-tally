@@ -67,7 +67,7 @@ class PurchaseController extends GlobalController
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'add');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['selectActive'] = $this->arrayIsActive;
+        $formData['action_supplier'] = $this->globalVariable->actionGetSupplier;
 
         return view($this->form_file, $formData);
     }

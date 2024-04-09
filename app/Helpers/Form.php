@@ -394,3 +394,21 @@ function renderButton($div_class, $class, $icon_class, $label, $button_id, $is_d
 
     return $field;
 }
+
+function renderFieldCombineInput($class = '', $div_class_label = '', $div_class_input = '', $label = '', $div_class_input1 = '', $div_class_input2 = '', $div_class_input3 = '', $name_input1 = '', $value_input1 = '', $name_input2 = '', $value_input2 = '', $name_input3 = '', $value_input3 = '', $options_input1 = '', $options_input2 = '', $options_input3 = '', $id1 = '', $id2 = '', $id3 = '', $mode = '', $type_input1 = 'text', $type_input2 = 'text', $type_input3 = 'text')
+{
+    $field = '<div class="' . $class . '">';
+    $field .= '<label class="' . $div_class_label . ' col-form-label">' . $label . '</label>';
+    $field .= '<div class="' . $div_class_input . '">';
+    $field .= '<div class="input-group">';
+    $field .= renderInput($div_class_input1, '', '', $type_input1, $name_input1, '', $value_input1 ?? '', $mode, $options_input1, $id1);
+    $field .= renderInput($div_class_input2, '', '', $type_input2, $name_input2, '', $value_input2 ?? '', $mode, $options_input2, $id2);
+    if ($div_class_input3 != '') {
+        $field .= renderInput($div_class_input3, '', '', $type_input3, $name_input3, '', $value_input3 ?? '', $mode, $options_input3, $id3);
+    }
+    $field .= '</div>';
+    $field .= '</div>';
+    $field .= '</div>';
+
+    return $field;
+};
