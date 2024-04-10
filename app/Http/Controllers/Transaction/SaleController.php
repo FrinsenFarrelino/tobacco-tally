@@ -17,8 +17,6 @@ class SaleController extends GlobalController
     private $index_file;
     private $form_file;
 
-    private $arrayIsActive;
-
     public function __construct(GlobalVariable $globalVariable, GlobalActionController $globalActionController)
     {
         $this->globalActionController = $globalActionController;
@@ -27,8 +25,6 @@ class SaleController extends GlobalController
 
         $this->index_file = 'transaction.sale.index';
         $this->form_file = 'transaction.sale.form';
-
-        $this->arrayIsActive = [['id' => '1', 'name' => 'Active'], ['id' => '0', 'name' => 'Inactive']];
     }
 
     private function computeSetFeatures()
@@ -69,7 +65,7 @@ class SaleController extends GlobalController
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'add');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['action_supplier'] = $this->globalVariable->actionGetSupplier;
+        $formData['action_customer'] = $this->globalVariable->actionGetCustomer;
         $today = Carbon::today();
         $formData['today'] = Carbon::parse($today)->toDateString();
 
@@ -89,7 +85,7 @@ class SaleController extends GlobalController
         $branch_id = Session::get('user')['branch_id'];
         $request->merge(['branch_id' => $branch_id]);
 
-        $set_request = SetRequestGlobal('addPurchase', $request, formatCode: 'code_purchase');
+        $set_request = SetRequestGlobal('addSale', $request, formatCode: 'code_sale');
         $result = $this->addData($set_request);
 
         if ($result['success'] == false) {
@@ -119,12 +115,12 @@ class SaleController extends GlobalController
         }
 
         $search_key[] = array(
-            'key' => 'purchases.id',
+            'key' => 'sales.id',
             'term' => 'equal',
             'query' => $getId
         );
 
-        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetPurchase, search: $search_key);
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetSale, search: $search_key);
         $result = $this->getData($set_request);
         $decodedData = $result['data'][0];
 
@@ -134,8 +130,8 @@ class SaleController extends GlobalController
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'view');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['transaction_purchase'] = $decodedData;
-        $formData['action_supplier'] = $this->globalVariable->actionGetSupplier;
+        $formData['transaction_sale'] = $decodedData;
+        $formData['action_customer'] = $this->globalVariable->actionGetCustomer;
         $today = Carbon::today();
         $formData['today'] = Carbon::parse($today)->toDateString();
         $formData['show_button'] = $show_button;
@@ -149,12 +145,12 @@ class SaleController extends GlobalController
     public function edit(string $id)
     {
         $search_key[] = array(
-            'key' => 'purchases.id',
+            'key' => 'customers.id',
             'term' => 'equal',
             'query' => $id
         );
 
-        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetPurchase, search: $search_key);
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetCustomer, search: $search_key);
         $result = $this->getData($set_request);
         $decodedData = $result['data'][0];
 
@@ -163,8 +159,8 @@ class SaleController extends GlobalController
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'edit');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['transaction_purchase'] = $decodedData;
-        $formData['action_supplier'] = $this->globalVariable->actionGetSupplier;
+        $formData['transaction_sale'] = $decodedData;
+        $formData['action_customer'] = $this->globalVariable->actionGetCustomer;
         $today = Carbon::today();
         $formData['today'] = Carbon::parse($today)->toDateString();
 
@@ -176,7 +172,7 @@ class SaleController extends GlobalController
      */
     public function update(Request $request, string $id)
     {
-        $set_request = SetRequestGlobal('updatePurchase', $request);
+        $set_request = SetRequestGlobal('updateSale', $request);
         $result = $this->updateData($set_request, $id);
 
         if ($result['success'] == false) {
@@ -197,7 +193,7 @@ class SaleController extends GlobalController
      */
     public function destroy(string $id)
     {
-        $set_request = SetRequestGlobal('softDeletePurchase');
+        $set_request = SetRequestGlobal('softDeleteSale');
         $result = $this->softDeleteData($set_request, $id);
 
         if ($result['success'] == false) {
@@ -215,7 +211,7 @@ class SaleController extends GlobalController
 
     public function updateStatus(Request $request, string $id)
     {
-        $set_request = SetRequestGlobal('updateStatusPurchase', $request);
+        $set_request = SetRequestGlobal('updateStatusSale', $request);
         $result = $this->updateData($set_request, $id);
 
         return $result;

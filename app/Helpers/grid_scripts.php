@@ -14,7 +14,7 @@ echo $autogrid_html;
             case 'item_code':
                 if (<?= $grid_id ?>_selected_suggest) {
                     // untuk assign ke kolom mana aja
-                    <?php echo grid_selected_suggest($grid_id, [array('field' => 'id', 'input' => 'item_id'), array('field' => 'name', 'input' => 'item_name'), array('field' => 'unit_name', 'input' => 'unit'), array('field' => 'buy_price', 'input' => 'price')]) ?>
+                    <?php echo grid_selected_suggest($grid_id, [array('field' => 'id', 'input' => 'item_id'), array('field' => 'name', 'input' => 'item_name'), array('field' => 'unit_name', 'input' => 'unit'), array('field' => 'buy_price', 'input' => 'buy_price'), array('field' => 'sell_price', 'input' => 'sell_price')]) ?>
                 }
                 break;
             case 'item_name':
@@ -42,7 +42,7 @@ echo $autogrid_html;
 
         var grid_id = '<?= $grid_id ?>';
 
-        if (grid_id == 'transaction_purchase_item') {
+        if (grid_id == 'transaction_purchase_item' || grid_id == 'transaction_sale_item') {
             setSubtotalPerItem(rowid);
             setSubtotal();
         }
@@ -53,7 +53,7 @@ echo $autogrid_html;
         // NO FUNCTION
         var grid_id = '<?= $grid_id ?>';
 
-        if (grid_id == 'transaction_purchase_item') {
+        if (grid_id == 'transaction_purchase_item' || grid_id == 'transaction_sale_item') {
             setSubtotalPerItem(rowid);
             setSubtotal();
         }
@@ -64,7 +64,7 @@ echo $autogrid_html;
         // NO FUNCTION
         var grid_id = '<?= $grid_id ?>';
 
-        if (grid_id == 'transaction_purchase_item') {
+        if (grid_id == 'transaction_purchase_item' || grid_id == 'transaction_sale_item') {
             setSubtotalPerItem(rowid);
             setSubtotal();
         }
