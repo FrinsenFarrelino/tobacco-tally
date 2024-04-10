@@ -12,4 +12,11 @@ class Purchase extends Model
 
     protected $guarded = ['id'];
     protected $table = 'purchases';
+
+    public function items()
+    {
+        return $this->belongsToMany(Item::class, 'purchase_item_details', 'purchase_id', 'item_id')
+            ->withPivot('amount', 'subtotal')
+            ->withTimestamps();
+    }
 }

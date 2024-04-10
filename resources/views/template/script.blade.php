@@ -28,6 +28,32 @@
             }
         });
     }
+
+    function formatRupiah(number = 0, prefix) {
+        var numberString = Number(number).toFixed(2),
+            split = numberString.split('.'),
+            integerPart = split[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.'), // Add commas to the integer part
+            decimalPart = split[1] || '00';
+
+        var rupiah = decimalPart !== '00' ? integerPart + ',' + decimalPart : integerPart;
+
+        return prefix === undefined ? rupiah : (rupiah ? prefix + ' ' + rupiah : '');
+    }
+
+    function parseNumberWithDots(numberString) {
+        // Remove all dots from the string and convert it to a number
+        return Number(numberString.replace(/\./g, ''));
+    }
+
+    function showLoadingOverlay() {
+        // Create the loading overlay and spinner
+        $('<div id="loading-overlay"><div id="loading-spinner"></div></div>').appendTo('body');
+    }
+
+    function hideLoadingOverlay() {
+        // Remove the loading overlay
+        $('#loading-overlay').remove();
+    }
 </script>
 <script src="{{ asset('assets/modules/jquery.min.js') }}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -45,6 +71,7 @@
 <script src="{{ asset('assets/modules/jqvmap/dist/maps/jquery.vmap.world.js') }}"></script>
 <script src="{{ asset('assets/modules/summernote/summernote-bs4.js') }}"></script>
 <script src="{{ asset('assets/modules/chocolat/dist/js/jquery.chocolat.min.js') }}"></script>
+<script src="{{ asset('vendor/sweetalert2/dist/sweetalert2.min.js') }}"></script>
 
 <!-- Page Specific JS File -->
 <!-- <script src="{{ asset('assets/js/page/index-0.js') }}"></script> -->

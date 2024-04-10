@@ -307,8 +307,8 @@ function renderBrowserInput($div_class, $div_class_label, $div_class_input, $id,
 
     if ($mode == 'view') {
         $options = $options . ' readonly';
-        $div_class_label = "col-sm-4";
-        $div_class_input = "col-sm-7";
+        $div_class_label = "col-md-4";
+        $div_class_input = "col-md-7";
     }
 
     $button_search_id = $id . '_search';

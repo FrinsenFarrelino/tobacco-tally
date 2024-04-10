@@ -102,8 +102,8 @@
                     name: 'date'
                 },
                 {
-                    data: 'supplier',
-                    name: 'supplier'
+                    data: 'supplier_name',
+                    name: 'suppliers.name'
                 },
                 {
                     data: 'total',
@@ -119,12 +119,18 @@
                     orderable: false,
                     searchable: false,
                     render: function(data, type, row) {
-                        console.log(data);
                         var showButton = '<a href="' + row.showUrl + '" class="btn btn-secondary btn-sm rounded-circle"><i class="fas fa-eye"></i></a>';
                         var editButton = '<a href="' + row.editUrl + '" class="btn btn-warning btn-sm ml-2 rounded-circle"><i class="fas fa-pencil-alt"></i></a>';
                         var deleteButton = '<button class="btn btn-danger btn-sm ml-2 rounded-circle btnDestroy" type="button" data-id="' + row.id + '"><i class="fas fa-trash-alt"></i></button>';
+                        var approveButton = '<a href="' + row.approveUrl + '" class="btn btn-success btn-sm ml-2 rounded-circle"><i class="fas fa-check"></i></a>';
+                        var disapproveButton = '<a href="' + row.disapproveUrl + '" class="btn btn-danger btn-sm ml-2 rounded-circle"><i class="fas fa-ban"></i></a>';
+                        var printButton = '<a href="' + row.printUrl + '" class="btn btn-info btn-sm ml-2 rounded-circle"><i class="fas fa-print"></i></a>';
                         
-                        return showButton + editButton + deleteButton;
+                        if (row.is_approve == 'Not Approved') {
+                            return showButton + editButton + deleteButton + approveButton;
+                        } else {
+                            return showButton + disapproveButton + printButton;
+                        }
                     }
                 }
             ],

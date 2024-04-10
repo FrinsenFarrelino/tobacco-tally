@@ -86,7 +86,11 @@ Route::group(['middleware' => ['web']], function () {
             });
 
             Route::prefix('/transaction/')->group(function () {
-                Route::resource('purchase', PurchaseController::class);
+                Route::controller(PurchaseController::class)->group(function () {
+                    Route::resource('purchase', PurchaseController::class);
+                    Route::post('purchase/update-status/{id}', [PurchaseController::class, 'updateStatus'])->name('update-status-purchase');
+                    Route::get('purchase/print/{purchase}', [PurchaseController::class, 'createPDF'])->name('purchase.print');
+                });
                 Route::resource('sale', SaleController::class);
                 Route::prefix('/warehouse/')->group(function () {
                     Route::resource('incoming-item', IncomingItemController::class);
