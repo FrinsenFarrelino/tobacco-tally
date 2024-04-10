@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\GlobalVariable;
 use App\Http\Services\CustomerGridService;
 use App\Http\Services\PurchaseGridService;
+use App\Http\Services\SaleGridService;
 use App\Models\Branch;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
@@ -19,15 +19,18 @@ class GlobalController extends Controller
     private $globalVariable;
     protected $customerGridService;
     protected $purchaseGridService;
+    protected $saleGridService;
 
     public function __construct(
         GlobalActionController $globalActionController,
         CustomerGridService $customerGridService,
         PurchaseGridService $purchaseGridService,
+        SaleGridService $saleGridService,
     ) {
         $this->globalActionController = $globalActionController;
         $this->customerGridService = $customerGridService;
         $this->purchaseGridService = $purchaseGridService;
+        $this->saleGridService = $saleGridService;
     }
 
     public function requestGetData(Request $request)
@@ -216,6 +219,7 @@ class GlobalController extends Controller
                 'deleted_by_user.name as deleted_by',
             );
         } 
+
         // Transaction
         elseif ($action == 'getPurchase') {
             $query->leftJoin('suppliers', 'suppliers.id', '=', 'purchases.supplier_id');
@@ -241,6 +245,32 @@ class GlobalController extends Controller
                 }
             } else {
                 return response()->json(['success' => false, 'message' => 'Filter by Purchase Id is required!'], 400);
+            }
+        }
+        elseif ($action == 'getSale') {
+            $query->leftJoin('customers', 'customers.id', '=', 'sales.customer_id');
+            $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'sales.created_by');
+            $query->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', 'sales.updated_by');
+            $query->leftJoin('users as deleted_by_user', 'deleted_by_user.id', '=', 'sales.deleted_by');
+            $query->select(
+                'sales.*',
+                'customers.name as customer_name',
+                'created_by_user.name as created_by',
+                'updated_by_user.name as updated_by',
+                'deleted_by_user.name as deleted_by',
+            );
+        } elseif ($action == 'getSaleItemGrid') {
+            // Must be filtered by sale id.
+            if (isset($filters['id'])) {
+                if (isset($columnHead)) {
+                    $result = $this->saleGridService->getSaleItemGrid($filters['id'], $columnHead);
+
+                    return $result;
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Column head is required!'], 400);
+                }
+            } else {
+                return response()->json(['success' => false, 'message' => 'Filter by Sale Id is required!'], 400);
             }
         }
 
@@ -294,7 +324,7 @@ class GlobalController extends Controller
             $requestBody['company_id'] = $detailPayload[3]['user_company'][0]['company_id'] ?? null;
             $requestBody['user_group_id'] = $detailPayload[2]['user_group'][0]['user_group_id'] ?? null;
         } else {
-            if($action == 'addPurchase') {
+            if($action == 'addPurchase' || $action == 'addSale') {
                 $requestBody['branch_code'] = Branch::where('id', $requestBody['branch_id'])->first();
                 $stringBranch = ['code' => $requestBody['branch_code']['code']];
             } else {
@@ -328,7 +358,9 @@ class GlobalController extends Controller
                             }
                         }
                     }
-                } elseif ($action == 'addPurchase') {
+                } 
+                // Transaction
+                elseif ($action == 'addPurchase') {
                     if ($detailPayload != '') {
                         $purchaseItems = $detailPayload[0]['transaction_purchase_item'];
 
@@ -340,6 +372,21 @@ class GlobalController extends Controller
                                     'subtotal' => $item['subtotal'] ?? 0,
                                 ];
                                 $data->items()->attach($purchaseItem['item_id'], $purchaseItem);
+                            }
+                        }
+                    }
+                } elseif ($action == 'addSale') {
+                    if ($detailPayload != '') {
+                        $saleItems = $detailPayload[0]['transaction_sale_item'];
+
+                        if ($saleItems != []) {
+                            foreach ($saleItems as $i => $item) {
+                                $saleItem = [
+                                    'item_id' => $item['item_id'] ?? null,
+                                    'amount' => $item['amount'] ?? 0,
+                                    'subtotal' => $item['subtotal'] ?? 0,
+                                ];
+                                $data->items()->attach($saleItem['item_id'], $saleItem);
                             }
                         }
                     }
@@ -427,7 +474,9 @@ class GlobalController extends Controller
                         }
                     }
                 }
-            } elseif ($action == 'updatePurchase') {
+            } 
+            // Transaction
+            elseif ($action == 'updatePurchase') {
                 // update grid
                 $data = $this->modelName($actionsToModel[$action])::where('id', $id)->first();
 
@@ -457,9 +506,59 @@ class GlobalController extends Controller
                     }
                 }
             } 
-            
             // Approval
             elseif($action == 'updateStatusPurchase') {
+                if (isset($requestBody['is_approve'])) {
+                    if ($requestBody['is_approve'] == 1) {
+                        $newData = [
+                            'approved_by' => auth()->id(),
+                            'is_approve' => true,
+                            'approved_at' => now(),
+                        ];
+                    } else {
+                        $newData = [
+                            'approved_by' => auth()->id(),
+                            'is_approve' => false,
+                            'approved_at' => now(),
+                        ];
+                    }
+                }
+                $data = $this->modelName($actionsToModel[$action])::where('id', $id)
+                    ->update($newData);
+            }
+            // Transaction
+            elseif ($action == 'updateSale') {
+                // update grid
+                $data = $this->modelName($actionsToModel[$action])::where('id', $id)->first();
+
+                if ($data) {
+                    $data->update($requestBody);
+                    $saleItems = [];
+
+                    if (isset($requestBody['detail'])) {
+                        $saleItems = $requestBody['detail'][0]['transaction_sale_item'];
+                    }
+
+                    if (empty($saleItems)) {
+                        $data->items()->detach();
+                    } else {
+                        $data->items()->detach();
+
+                        if ($saleItems != []) {
+                            foreach ($saleItems as $i => $item) {
+                                $saleItem = [
+                                    'item_id' => $item['item_id'] ?? null,
+                                    'amount' => $item['amount'] ?? 0,
+                                    'subtotal' => $item['subtotal'] ?? 0,
+                                ];
+                                $data->items()->attach($saleItem['item_id'], $saleItem);
+                            }
+                        }
+                    }
+                }
+            } 
+            // Approval
+            elseif($action == 'updateStatusSale') {
                 if (isset($requestBody['is_approve'])) {
                     if ($requestBody['is_approve'] == 1) {
                         $newData = [
