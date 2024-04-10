@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('code', 100);
             $table->string('name',200);
             $table->integer('capacity')->nullable();
+            $table->foreignId('item_id')->nullable()->constrained('items');
             $table->foreignId('branch_id')->nullable()->constrained('branches');
             $table->text('remark')->nullable();
             $table->boolean('is_active')->default(1);
