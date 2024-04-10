@@ -17,8 +17,6 @@ class PurchaseController extends GlobalController
     private $index_file;
     private $form_file;
 
-    private $arrayIsActive;
-
     public function __construct(GlobalVariable $globalVariable, GlobalActionController $globalActionController)
     {
         $this->globalActionController = $globalActionController;
@@ -27,8 +25,6 @@ class PurchaseController extends GlobalController
 
         $this->index_file = 'transaction.purchase.index';
         $this->form_file = 'transaction.purchase.form';
-
-        $this->arrayIsActive = [['id' => '1', 'name' => 'Active'], ['id' => '0', 'name' => 'Inactive']];
     }
 
     private function computeSetFeatures()

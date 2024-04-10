@@ -91,7 +91,11 @@ Route::group(['middleware' => ['web']], function () {
                     Route::post('purchase/update-status/{id}', [PurchaseController::class, 'updateStatus'])->name('update-status-purchase');
                     Route::get('purchase/print/{purchase}', [PurchaseController::class, 'createPDF'])->name('purchase.print');
                 });
-                Route::resource('sale', SaleController::class);
+                Route::controller(SaleController::class)->group(function () {
+                    Route::resource('sale', SaleController::class);
+                    Route::post('sale/update-status/{id}', [SaleController::class, 'updateStatus'])->name('update-status-sale');
+                    Route::get('sale/print/{sale}', [SaleController::class, 'createPDF'])->name('sale.print');
+                });
                 Route::prefix('/warehouse/')->group(function () {
                     Route::resource('incoming-item', IncomingItemController::class);
                     Route::resource('outgoing-item', OutgoingItemController::class);
