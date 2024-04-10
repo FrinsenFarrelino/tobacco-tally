@@ -40,6 +40,7 @@ class Controller extends BaseController
             $type = $format[4];
             // Jika format[7] ada, gunakan nilainya, jika tidak, gunakan setting dari tabel setting
             $separator = isset($format[5]) ? $format[5] : $separatorSetting;
+            $menu_mode = (isset($format[6]) && !empty($format[6])) ? $format[6] : null;
             $formattedCode = $initial;
 
             // Jika $stringDate kosong, gunakan tanggal sekarang
@@ -89,6 +90,9 @@ class Controller extends BaseController
                     case "str":
                         $formattedCode = $initial . $separator;
                         break;
+                    case "str-cab-tgl-transaction":
+                        $formattedCode = $initial . $separator . $branch . $separator . $ym . $separator;
+                        break;
                     default:
                         $formattedCode = ''; // Handle jika tipe tidak cocok
                         break;
@@ -97,9 +101,27 @@ class Controller extends BaseController
                 $formattedCode = $branch . $separator . $initial . $separator . $ym . $separator;
             }
 
-            $lastNumber = DB::table($header)
-                ->where('id', '<>', 0)
-                ->count();
+            
+            $lastNumber = null;
+            if($menu_mode === "transaction") {
+                $latestData = DB::table($header)
+                    ->latest()->first();
+                if($latestData) {
+                    $codeFormat = explode("/", $latestData->code);
+                    if(count($codeFormat) > 2) {
+                        if ($codeFormat[2] !== $ym) {
+                            $lastNumber = 0;
+                        } else {
+                            $lastDigit = explode("0",end($codeFormat));
+                            $lastNumber = end($lastDigit);
+                        }
+                    }
+                }
+            } else {
+                $lastNumber = DB::table($header)
+                    ->where('id', '<>', 0)
+                    ->count();
+            }
 
             $newNumber = $lastNumber + 1;
             $newNumberDigit = strlen($newNumber);

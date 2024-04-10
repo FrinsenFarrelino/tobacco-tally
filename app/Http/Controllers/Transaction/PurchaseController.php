@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\GlobalActionController;
 use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\GlobalVariable;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
 
 class PurchaseController extends GlobalController
 {
@@ -68,6 +70,8 @@ class PurchaseController extends GlobalController
 
         $formData['list_nav_button'] = $generate_nav_button;
         $formData['action_supplier'] = $this->globalVariable->actionGetSupplier;
+        $today = Carbon::today();
+        $formData['today'] = Carbon::parse($today)->toDateString();
 
         return view($this->form_file, $formData);
     }
@@ -77,7 +81,15 @@ class PurchaseController extends GlobalController
      */
     public function store(Request $request)
     {
-        $set_request = SetRequestGlobal('addUnit', $request, manualCode: $request->code);
+        $make_detail = $request->input('detail');
+        $detailArray = json_decode($make_detail, true);
+
+        $request->merge(['detail' => $detailArray]);
+
+        $branch_id = Session::get('user')['branch_id'];
+        $request->merge(['branch_id' => $branch_id]);
+
+        $set_request = SetRequestGlobal('addPurchase', $request, formatCode: 'code_purchase');
         $result = $this->addData($set_request);
 
         if ($result['success'] == false) {
@@ -98,24 +110,35 @@ class PurchaseController extends GlobalController
      */
     public function show(string $id)
     {
+        $getId = $id;
+        $show_button = '';
+        if(str_contains($id,',')){
+            $resultExplode = explode(',',$id);
+            $show_button = $resultExplode[1];
+            $getId = $resultExplode[0];
+        }
+
         $search_key[] = array(
-            'key' => 'units.id',
+            'key' => 'purchases.id',
             'term' => 'equal',
-            'query' => $id
+            'query' => $getId
         );
 
-        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetUnit, search: $search_key);
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetPurchase, search: $search_key);
         $result = $this->getData($set_request);
         $decodedData = $result['data'][0];
 
         $setFeatures = $this->computeSetFeatures();
-        $generate_nav_button = generateNavbutton($decodedData, 'back' . $setFeatures, 'show', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
+        $generate_nav_button = generateNavbutton($decodedData, 'back|approve|disapprove|print' . $setFeatures, 'show', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'view');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['transaction_product_unit'] = $decodedData;
-        $formData['selectActive'] = $this->arrayIsActive;
+        $formData['transaction_purchase'] = $decodedData;
+        $formData['action_supplier'] = $this->globalVariable->actionGetSupplier;
+        $today = Carbon::today();
+        $formData['today'] = Carbon::parse($today)->toDateString();
+        $formData['show_button'] = $show_button;
 
         return view($this->form_file, $formData);
     }
@@ -126,12 +149,12 @@ class PurchaseController extends GlobalController
     public function edit(string $id)
     {
         $search_key[] = array(
-            'key' => 'units.id',
+            'key' => 'purchases.id',
             'term' => 'equal',
             'query' => $id
         );
 
-        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetUnit, search: $search_key);
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetPurchase, search: $search_key);
         $result = $this->getData($set_request);
         $decodedData = $result['data'][0];
 
@@ -140,8 +163,10 @@ class PurchaseController extends GlobalController
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'edit');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['transaction_product_unit'] = $decodedData;
-        $formData['selectActive'] = $this->arrayIsActive;
+        $formData['transaction_purchase'] = $decodedData;
+        $formData['action_supplier'] = $this->globalVariable->actionGetSupplier;
+        $today = Carbon::today();
+        $formData['today'] = Carbon::parse($today)->toDateString();
 
         return view($this->form_file, $formData);
     }
@@ -151,7 +176,7 @@ class PurchaseController extends GlobalController
      */
     public function update(Request $request, string $id)
     {
-        $set_request = SetRequestGlobal('updateUnit', $request);
+        $set_request = SetRequestGlobal('updatePurchase', $request);
         $result = $this->updateData($set_request, $id);
 
         if ($result['success'] == false) {
@@ -172,7 +197,7 @@ class PurchaseController extends GlobalController
      */
     public function destroy(string $id)
     {
-        $set_request = SetRequestGlobal('softDeleteUnit');
+        $set_request = SetRequestGlobal('softDeletePurchase');
         $result = $this->softDeleteData($set_request, $id);
 
         if ($result['success'] == false) {
@@ -186,5 +211,56 @@ class PurchaseController extends GlobalController
         session()->flash('success', 'Delete operation was successful.');
 
         return redirect('/' . $this->globalVariable->menuUrl);
+    }
+
+    public function updateStatus(Request $request, string $id)
+    {
+        $set_request = SetRequestGlobal('updateStatusPurchase', $request);
+        $result = $this->updateData($set_request, $id);
+
+        return $result;
+    }
+
+    public function createPDF(string $id) {
+        dd($id);
+        // // retreive all records from db
+        // $search_key[] = array(
+        //     'key' => 'marketing_orders.id',
+        //     'term' => 'equal',
+        //     'query' => $id
+        // );
+
+        // $set_request = SetRequestGlobal(action:$this->globalVariable->actionGetMarketingOrder, deviceInfo:collectDeviceInfo(), search:$search_key);
+        // $result = $this->getApi($set_request);
+        // $decodedData = removeArrayBracket($result['data']['data']);
+
+        // $search_key_detail[] = array(
+        //     'key' => 'marketing_order_item_details.marketing_order_id',
+        //     'term' => 'equal',
+        //     'query' => $id
+        // );
+
+        // $set_request_grid = SetRequestGlobal(action:'getMarketingOrderDetail', deviceInfo:collectDeviceInfo(), search:$search_key_detail);
+
+        // $result_grid = $this->getApi($set_request_grid);
+
+        // $formData['data'] = $decodedData;
+        // $formData['data_grid'] = $result_grid['data']['data'];
+
+        // // load blade / html content to pdf
+        // $pdf = PDF::loadView($this->print_file, $formData)->setPaper('A4','landscape');
+
+        // $pdf->output();
+        // $domPdf = $pdf->getDomPDF();
+        // $canvas = $domPdf->get_canvas();
+
+        // // another way to define footer. but if there using page then use this.
+        // $canvas->page_text($canvas->get_width() - 60, $canvas->get_height() - 42, "Hal {PAGE_NUM} / {PAGE_COUNT}", null, 11, [0, 0, 0]);
+        // // $canvas->page_text(180, $canvas->get_height() - 42, "    Hal {PAGE_NUM} / {PAGE_COUNT}", null, 11, [0, 0, 0]);
+
+        // return $pdf->stream();
+
+        // // download PDF file with download method
+        // // return $pdf->download('pdf_file.pdf');
     }
 }

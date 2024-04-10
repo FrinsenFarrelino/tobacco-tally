@@ -28,6 +28,7 @@ class GlobalActionController extends Controller
 
         // GET TRANSACTION
         'getPurchase' => 'Purchase',
+        'getPurchaseItemGrid' => 'Purchase',
 
         // ADD MASTER
         'addProvince' => 'Province',
@@ -70,6 +71,7 @@ class GlobalActionController extends Controller
         
         // UPDATE TRANSACTION
         'updatePurchase' => 'Purchase',
+        'updateStatusPurchase' => 'Purchase',
 
         // SOFT DELETES
         'softDeleteProvince' => 'Province',

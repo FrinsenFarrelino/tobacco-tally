@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function($table) {
             $table->foreignId('user_group_id')->nullable()->constrained('user_groups');
+            $table->foreignId('branch_id')->nullable()->constrained('branches');
         });
     }
 

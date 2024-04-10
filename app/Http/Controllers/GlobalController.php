@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\GlobalVariable;
 use App\Http\Services\CustomerGridService;
+use App\Http\Services\PurchaseGridService;
+use App\Models\Branch;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Route;
@@ -15,13 +17,17 @@ use Illuminate\Support\Str;
 class GlobalController extends Controller
 {
     private $globalVariable;
+    protected $customerGridService;
+    protected $purchaseGridService;
 
     public function __construct(
         GlobalActionController $globalActionController,
         CustomerGridService $customerGridService,
+        PurchaseGridService $purchaseGridService,
     ) {
         $this->globalActionController = $globalActionController;
         $this->customerGridService = $customerGridService;
+        $this->purchaseGridService = $purchaseGridService;
     }
 
     public function requestGetData(Request $request)
@@ -209,7 +215,36 @@ class GlobalController extends Controller
                 'updated_by_user.name as updated_by',
                 'deleted_by_user.name as deleted_by',
             );
-        } else {
+        } 
+        // Transaction
+        elseif ($action == 'getPurchase') {
+            $query->leftJoin('suppliers', 'suppliers.id', '=', 'purchases.supplier_id');
+            $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'purchases.created_by');
+            $query->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', 'purchases.updated_by');
+            $query->leftJoin('users as deleted_by_user', 'deleted_by_user.id', '=', 'purchases.deleted_by');
+            $query->select(
+                'purchases.*',
+                'suppliers.name as supplier_name',
+                'created_by_user.name as created_by',
+                'updated_by_user.name as updated_by',
+                'deleted_by_user.name as deleted_by',
+            );
+        } elseif ($action == 'getPurchaseItemGrid') {
+            // Must be filtered by purchase id.
+            if (isset($filters['id'])) {
+                if (isset($columnHead)) {
+                    $result = $this->purchaseGridService->getPurchaseItemGrid($filters['id'], $columnHead);
+
+                    return $result;
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Column head is required!'], 400);
+                }
+            } else {
+                return response()->json(['success' => false, 'message' => 'Filter by Purchase Id is required!'], 400);
+            }
+        }
+
+        else {
             $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', $tableName . '.created_by')
                 ->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', $tableName . '.updated_by')
                 ->leftJoin('users as deleted_by_user', 'deleted_by_user.id', '=', $tableName . '.deleted_by')
@@ -259,11 +294,16 @@ class GlobalController extends Controller
             $requestBody['company_id'] = $detailPayload[3]['user_company'][0]['company_id'] ?? null;
             $requestBody['user_group_id'] = $detailPayload[2]['user_group'][0]['user_group_id'] ?? null;
         } else {
-            // generate code
-            $formattedCode = $this->formatCode($requestBody['format_code'] ?? '', "", []);
+            if($action == 'addPurchase') {
+                $requestBody['branch_code'] = Branch::where('id', $requestBody['branch_id'])->first();
+                $stringBranch = ['code' => $requestBody['branch_code']['code']];
+            } else {
+                $stringBranch = [];
+            }
+
+            $formattedCode = $this->formatCode($requestBody['format_code'] ?? '', "", $stringBranch);
         }
 
-        // code: formattedCode | manualCode
         $requestBody['code'] = $formattedCode ?? $requestBody['manual_code'] ?? '';
         $requestBody['password'] = $password ?? '';
         $requestBody['created_by'] = auth()->id();
@@ -288,584 +328,22 @@ class GlobalController extends Controller
                             }
                         }
                     }
+                } elseif ($action == 'addPurchase') {
+                    if ($detailPayload != '') {
+                        $purchaseItems = $detailPayload[0]['transaction_purchase_item'];
+
+                        if ($purchaseItems != []) {
+                            foreach ($purchaseItems as $i => $item) {
+                                $purchaseItem = [
+                                    'item_id' => $item['item_id'] ?? null,
+                                    'amount' => $item['amount'] ?? 0,
+                                    'subtotal' => $item['subtotal'] ?? 0,
+                                ];
+                                $data->items()->attach($purchaseItem['item_id'], $purchaseItem);
+                            }
+                        }
+                    }
                 }
-                // if ($action == 'addUser') {
-                //     $lastInsertedId = $data->id;
-                //     // insert detail payload 'user_branch' into user_branches
-                //     if (!empty($detailPayload[0]['user_branch'])) {
-                //         $branchIds = [];
-
-                //         foreach ($detailPayload[0]['user_branch'] as $item) {
-                //             if (isset($item['branch_id'])) {
-                //                 $branchIds[] = $item['branch_id'];
-                //             }
-
-                //             AccessMaster::create([
-                //                 'user_id' => $lastInsertedId,
-                //                 'relation_id' => $item['branch_id'],
-                //                 'relation_type' => 'master_branch',
-                //                 'relation_table' => 'branches',
-                //                 'remark' => $item['remark'],
-                //             ]);
-                //         }
-
-                //         $data->branches()->attach($branchIds);
-                //     }
-
-                //     if (!empty($detailPayload[1]['user_branch_report'])) {
-                //         $branchReportIds = [];
-
-                //         foreach ($detailPayload[1]['user_branch_report'] as $item) {
-
-                //             if (isset($item['branch_id'])) {
-                //                 $branchReportIds[] = $item['branch_id'];
-                //             }
-
-                //             AccessMaster::create([
-                //                 'user_id' => $lastInsertedId,
-                //                 'relation_id' => $item['branch_id'],
-                //                 'relation_type' => 'master_branch_report',
-                //                 'relation_table' => 'branches',
-                //                 'remark' => $item['remark'],
-                //             ]);
-                //         }
-                //     }
-
-                //     if (!empty($detailPayload[2]['user_group'])) {
-                //         $userGroupIds = [];
-
-                //         foreach ($detailPayload[2]['user_group'] as $item) {
-                //             if (isset($item['user_group_id'])) {
-                //                 $userGroupIds[] = $item['user_group_id'];
-                //             }
-                //         }
-
-                //         $data->user_groups()->attach($userGroupIds);
-                //     }
-
-                //     if (!empty($detailPayload[3]['user_company'])) {
-                //         $companyIds = [];
-
-                //         foreach ($detailPayload[3]['user_company'] as $item) {
-                //             if (isset($item['company_id'])) {
-                //                 $companyIds[] = $item['company_id'];
-                //             }
-                //         }
-
-                //         $data->companies()->attach($companyIds);
-                //     }
-
-                //     if (!empty($detailPayload[4]['access_application'])) {
-
-                //         $accessApplicationIds = [];
-
-                //         foreach ($detailPayload[4]['access_application'] as $item) {
-                //             if (isset($item['webstite_access_id'])) {
-                //                 $accessApplicationIds[] = $item['webstite_access_id'];
-                //             }
-
-                //             AccessMaster::create([
-                //                 'user_id' => $lastInsertedId,
-                //                 'relation_id' => $item['webstite_access_id'],
-                //                 'relation_type' => 'master_website',
-                //                 'relation_table' => 'websites',
-                //                 'remark' => $item['remark'],
-                //             ]);
-                //         }
-                //     }
-
-                //     if (!empty($detailPayload[5]['access_file_principal'])) {
-                //         $accessPrincipalFileIds = [];
-
-                //         foreach ($detailPayload[5]['access_file_principal'] as $item) {
-                //             if (isset($item['principal_file_access_id'])) {
-                //                 $accessPrincipalFileIds[] = $item['principal_file_access_id'];
-                //             }
-
-                //             AccessMaster::create([
-                //                 'user_id' => $lastInsertedId,
-                //                 'relation_id' => $item['principal_file_access_id'],
-                //                 'relation_type' => 'master_principal_file',
-                //                 'relation_table' => 'principals',
-                //                 'remark' => $item['remark'],
-                //             ]);
-                //         }
-                //     }
-
-                //     if (!empty($detailPayload[6]['access_file_principal_group'])) {
-                //         $accessPrincipalGroupFileIds = [];
-
-                //         foreach ($detailPayload[6]['access_file_principal_group'] as $item) {
-                //             if (isset($item['principal_group_access_file_id'])) {
-                //                 $accessPrincipalGroupFileIds[] = $item['principal_group_access_file_id'];
-                //             }
-
-                //             AccessMaster::create([
-                //                 'user_id' => $lastInsertedId,
-                //                 'relation_id' => $item['principal_group_access_file_id'],
-                //                 'relation_type' => 'master_principal_group_file',
-                //                 'relation_table' => 'principal_groups',
-                //                 'remark' => $item['remark'],
-                //             ]);
-                //         }
-                //     }
-
-                //     if (!empty($detailPayload[7]['access_webbooking_principal_group'])) {
-                //         $accessPrincipalGroupIds = [];
-
-                //         foreach ($detailPayload[7]['access_webbooking_principal_group'] as $item) {
-                //             if (isset($item['principal_group_web_access_id'])) {
-                //                 $accessPrincipalGroupIds[] = $item['principal_group_web_access_id'];
-                //             }
-
-                //             AccessMaster::create([
-                //                 'user_id' => $lastInsertedId,
-                //                 'relation_id' => $item['principal_group_web_access_id'],
-                //                 'relation_type' => 'master_principal_group',
-                //                 'relation_table' => 'principal_groups',
-                //                 'remark' => $item['remark'],
-                //             ]);
-                //         }
-                //     }
-
-                //     if (!empty($detailPayload[8]['access_doc_dist'])) {
-                //         $accessDocumentDistributionIds = [];
-
-                //         foreach ($detailPayload[8]['access_doc_dist'] as $item) {
-                //             if (isset($item['doc_access_id'])) {
-                //                 $accessDocumentDistributionIds[] = $item['doc_access_id'];
-                //             }
-
-                //             AccessMaster::create([
-                //                 'user_id' => $lastInsertedId,
-                //                 'relation_id' => $item['doc_access_id'],
-                //                 'relation_type' => 'master_document_distribution',
-                //                 'relation_table' => 'document_distributions',
-                //                 'remark' => $item['remark'],
-                //             ]);
-                //         }
-                //     }
-                // } else if ($action == 'addUserTeam') {
-                //     // dd($detailPayload);
-                //     if ($detailPayload != '' && $detailPayload != []) {
-                //         foreach ($detailPayload[0]['users'] as $item) {
-                //             if (isset($requestBody['is_lnj2'])) {
-                //                 $details[] = [
-                //                     'user_id' => $item['user_id'],
-                //                     'remark' => $item['remark'] ?? '-',
-                //                     'ref_id' => $item['ref_id']
-                //                 ];
-                //             } else {
-                //                 $details[] = [
-                //                     'user_id' => $item['user_id'],
-                //                     'remark' => $item['remark'] ?? '-'
-                //                 ];
-                //             }
-                //         }
-                //         $createdDetails = $data->userTeamDetails()->createMany($details);
-                //         // Collect IDs of the inserted records
-                //         $UserTeamDetailIds = $createdDetails->pluck('id')->toArray();
-                //     }
-                // } else if ($action == 'addPrincipal') {
-                //     try {
-                //         try {
-                //             $principalBlacklistPayload = [
-                //                 'is_active' => true,
-                //             ];
-
-                //             $data->principalBlacklists()->create($principalBlacklistPayload);
-                //         } catch (\Exception $e) {
-                //             $timestamp = date('Y-m-d H:i:s');
-                //             $errorMessage = $e->getMessage();
-                //             $logEntry = "$timestamp - $errorMessage\n";
-                //             File::append(storage_path('logs/error.log'), $logEntry);
-                //         }
-
-                //         if (isset($requestBody["bank_no"]) && isset($requestBody["bank_name"])) {
-                //             if ($requestBody["bank_no"] != "" && $requestBody["bank_name"] != null) {
-                //                 $bankAccountPayload = [
-                //                     'number' => $requestBody["bank_no"],
-                //                     'name' => $requestBody["bank_name"],
-                //                 ];
-                //                 $data->bankAccounts()->create($bankAccountPayload);
-                //             }
-                //         }
-
-
-                //         if ($detailPayload != '' && $detailPayload != []) {
-                //             $detailCommodities = [];
-
-                //             $detailPayloadCommodities = $detailPayload[0]['principal_commodity'];
-                //             $formattedCode = FormattingCodeHelper::formatCode('principal_commodity_category', "", [], [], [], null);
-
-
-                //             if ($detailPayloadCommodities != []) {
-                //                 foreach ($detailPayloadCommodities as $i => $item) {
-
-                //                     $detailCommodities[] = [
-                //                         'name' => $item['name'] ?? '-',
-                //                         'imo' => $item['imo'] ?? '-',
-                //                         'un' => $item['un'] ?? '-',
-                //                         'pck_grp' => $item['pck_grp'] ?? '-',
-                //                         'fi_pt' => $item['fi_pt'] ?? '-',
-                //                         'remark' => $item['remark'] ?? '-',
-                //                         'code' =>  $formattedCode,
-                //                     ];
-                //                 }
-
-                //                 $createdPrincipalCommodities = $data->principalCommodities()->createMany($detailCommodities);
-                //                 $principalCommoditiesDetailIds = $createdPrincipalCommodities->pluck('id')->toArray();
-                //             }
-
-                //             if ($detailPayload[1]['principal_pic'] != []) {
-                //                 foreach ($detailPayload[1]['principal_pic'] as $item) {
-                //                     $detailPics[] = [
-                //                         'name' => $item['name'] ?? '-',
-                //                         'phone' => $item['phone'] ?? '-',
-                //                         'remark' => $item['remark'] ?? '-',
-                //                     ];
-                //                 }
-                //                 $createdPrincipalPics = $data->principalPics()->createMany($detailPics);
-                //                 $principalPicsIds = $createdPrincipalPics->pluck('id')->toArray();
-                //             }
-
-                //             if ($detailPayload[2]['principal_category'] != []) {
-                //                 foreach ($detailPayload[2]['principal_category'] as $item) {
-                //                     $detailCategories[] = [
-                //                         'principal_category_id' => $item['principal_category_id'],
-                //                         'remark' => $item['remark'] ?? '-',
-                //                     ];
-                //                 }
-                //                 $createdPrincipalCategories = $data->principalCategoryDetails()->createMany($detailCategories);
-                //                 $principalCategoriesIds = $createdPrincipalCategories->pluck('id')->toArray();
-                //             }
-
-
-                //             // //TODO add service from supplier [3]
-
-                //             if ($detailPayload[4]['address'] != []) {
-                //                 foreach ($detailPayload[4]['address'] as $item) {
-                //                     $detailAddresses[] = [
-                //                         'address' => $item['address']  ?? '-',
-                //                         'pic' => $item['pic']  ?? '-',
-                //                         'phone' => $item['phone']  ?? '-',
-                //                         'email' => $item['email']  ?? '-',
-                //                         'contact' => $item['contact'] ?? '-',
-                //                         'remark' => $item['remark'] ?? '-',
-                //                         'note' => $item['note'] ?? '-',
-                //                         'is_visible' => $item['is_visible'],
-                //                         'district_id' => $item['district_id'],
-                //                     ];
-                //                 }
-                //                 $createdPrincipalAddresses = $data->principalAddresses()->createMany($detailAddresses);
-                //                 $principalAddressesIds = $createdPrincipalAddresses->pluck('id')->toArray();
-                //             }
-                //         }
-                //     } catch (\Exception $e) {
-                //         $timestamp = date('Y-m-d H:i:s');
-                //         $errorMessage = $e->getMessage();
-                //         $logEntry = "$timestamp - $errorMessage\n";
-                //         File::append(storage_path('logs/error.log'), $logEntry);
-                //     }
-                // } else if ($action == 'addQuotation') {
-                //     if ($detailPayload != '' && $detailPayload != []) {
-                //         if ($detailPayload[0]['cargo_details']) {
-                //             if (isset($requestBody['is_lnj2'])) {
-                //                 foreach ($detailPayload[0]['cargo_details'] as $item) {
-                //                     $detailCargo[] = [
-                //                         'package_length' => isset($item['package_length']) && $item['package_length'] !== '' ? $item['package_length'] : 0,
-                //                         'package_width' => isset($item['package_width']) && $item['package_width'] !== '' ? $item['package_width'] : 0,
-                //                         'package_height' => isset($item['package_height']) && $item['package_height'] !== '' ? $item['package_height'] : 0,
-                //                         'package_weight' => isset($item['package_weight']) && $item['package_weight'] !== '' ? $item['package_weight'] : 0,
-                //                         'volume' => isset($item['volume']) && $item['volume'] !== '' ? $item['volume'] : 0,
-                //                         'gross_weight' => isset($item['gross_weight']) && $item['gross_weight'] !== '' ? $item['gross_weight'] : 0,
-                //                         'quantity' =>  isset($item['quantity']) && $item['quantity'] !== '' ? $item['quantity'] : 0,
-                //                         'total' => $item['total'] ?? '-',
-                //                         'remark' => $item['remark'] ?? '-',
-                //                         'container_type_id' => $item['container_type_id'] ?? null,
-                //                         'container_size_id' => $item['container_size_id'] ?? null,
-                //                         'ref_id' => $item['ref_id']
-                //                     ];
-                //                 }
-                //             } else {
-                //                 foreach ($detailPayload[0]['cargo_details'] as $item) {
-                //                     $detailCargo[] = [
-                //                         'package_length' => isset($item['package_length']) && $item['package_length'] !== '' ? $item['package_length'] : 0,
-                //                         'package_width' => isset($item['package_width']) && $item['package_width'] !== '' ? $item['package_width'] : 0,
-                //                         'package_height' => isset($item['package_height']) && $item['package_height'] !== '' ? $item['package_height'] : 0,
-                //                         'package_weight' => isset($item['package_weight']) && $item['package_weight'] !== '' ? $item['package_weight'] : 0,
-                //                         'volume' => isset($item['volume']) && $item['volume'] !== '' ? $item['volume'] : 0,
-                //                         'gross_weight' => isset($item['gross_weight']) && $item['gross_weight'] !== '' ? $item['gross_weight'] : 0,
-                //                         'quantity' =>  isset($item['quantity']) && $item['quantity'] !== '' ? $item['quantity'] : 0,
-                //                         'total' => $item['total'] ?? '-',
-                //                         'remark' => $item['remark'] ?? '-',
-                //                         'container_type_id' => $item['container_type_id'] ?? null,
-                //                         'container_size_id' => $item['container_size_id'] ?? null
-                //                     ];
-                //                 }
-                //             }
-
-                //             $createdCargoDetails = $data->rfqCargoes()->createMany($detailCargo);
-                //             // Collect IDs of the inserted records
-                //             $rfqCargoDetailIds = $createdCargoDetails->pluck('id')->toArray();
-                //         }
-
-                //         if ($detailPayload[1]['service_buy']) {
-                //             if (isset($requestBody['is_lnj2'])) {
-                //                 foreach ($detailPayload[1]['service_buy'] as $item) {
-                //                     $detailBuy[] = [
-                //                         'service_desc' => $item['service_desc'] ?? '-',
-                //                         'service_price_desc' => $item['service_price_desc'] ?? '-',
-                //                         'supplier_service_id' => isset($item['supplier_service_id']) ?? null,
-                //                         'transaction_date' => $item['transaction_date'] ?? date("Y-m-d"),
-                //                         'valid_until' => $item['valid_until'] ?? date("Y-m-d"),
-                //                         'remark' => $item['remark'] ?? '-',
-                //                         'charge_segment' => $item['charge_segment'] ?? '-',
-                //                         'service_category' => $item['service_category'] ?? 'BUY',
-                //                         'service_group_id' => $item['service_group_id'] ?? null,
-                //                         'principal_id' => $item['principal_id'] ?? null,
-                //                         'service_price_id' => $item['service_price_id'] ?? null,
-                //                         'currency_id' => $item['currency_id'] ?? null,
-                //                         'costing_currency_id' => $item['costing_currency_id'] ?? null,
-                //                         'service_id' => $item['service_id'] ?? null,
-                //                         'base_price' => isset($item['base_price']) && $item['base_price'] !== '' ? $item['base_price'] : 0,
-                //                         'ref_id' => $item['ref_id']
-                //                     ];
-                //                 }
-                //             } else {
-                //                 foreach ($detailPayload[1]['service_buy'] as $item) {
-                //                     $detailBuy[] = [
-                //                         'service_desc' => $item['service_desc'] ?? '-',
-                //                         'service_price_desc' => $item['service_price_desc'] ?? '-',
-                //                         'supplier_service_id' => isset($item['supplier_service_id']) ?? null,
-                //                         'transaction_date' => $item['transaction_date'] ?? date("Y-m-d"),
-                //                         'valid_until' => $item['valid_until'] ?? date("Y-m-d"),
-                //                         'remark' => $item['remark'] ?? '-',
-                //                         'charge_segment' => $item['charge_segment'] ?? '-',
-                //                         'service_category' => $item['service_category'] ?? 'BUY',
-                //                         'service_group_id' => $item['service_group_id'] ?? null,
-                //                         'service_price_id' => $item['service_price_id'] ?? null,
-                //                         'principal_id' => $item['principal_id'] ?? null,
-                //                         'currency_id' => $item['currency_id'] ?? null,
-                //                         'service_id' => $item['service_id'] ?? null,
-                //                         'costing_currency_id' => $item['costing_currency_id'] ?? null,
-                //                         'base_price' => isset($item['base_price']) && $item['base_price'] !== '' ? $item['base_price'] : 0,
-                //                     ];
-                //                 }
-                //             }
-                //             $createdServiceBuyDetails = $data->rfqDetails()->createMany($detailBuy);
-                //             // Collect IDs of the inserted records
-                //             $rfqServiceBuyDetailIds = $createdServiceBuyDetails->pluck('id')->toArray();
-                //         }
-
-                //         if ($detailPayload[2]['service_sell']) {
-                //             if (isset($requestBody['is_lnj2'])) {
-                //                 foreach ($detailPayload[2]['service_sell'] as $item) {
-                //                     $detailSell[] = [
-                //                         'service_desc' => $item['service_desc'] ?? '-',
-                //                         'service_price_desc' => $item['service_price_desc'] ?? '-',
-                //                         'supplier_service_id' => isset($item['supplier_service_id']) ?? null,
-                //                         'transaction_date' => $item['transaction_date'] ?? date("Y-m-d"),
-                //                         'service_group_id' => $item['service_group_id'] ?? null,
-                //                         'service_price_id' => $item['service_price_id'] ?? null,
-                //                         'valid_until' => $item['valid_until'] ?? date("Y-m-d"),
-                //                         'remark' => $item['remark'] ?? '-',
-                //                         'charge_segment' => $item['charge_segment'] ?? '-',
-                //                         'service_category' => $item['service_category'] ?? 'SELL',
-                //                         'service_id' => $item['service_id'] ?? null,
-                //                         'principal_id' => $item['principal_id'] ?? null,
-                //                         'currency_id' => $item['currency_id'] ?? null,
-                //                         'qty' => isset($item['qty']) && $item['qty'] !== '' ? $item['qty'] : 0,
-                //                         'sales_price' => isset($item['sales_price']) && $item['sales_price'] !== '' ? $item['sales_price'] : 0,
-                //                         'total_amount' => isset($item['total_amount']) && $item['total_amount'] !== '' ? $item['total_amount'] : 0,
-                //                         'measurement_unit_id' => $item['measurement_unit_id'] ?? null,
-                //                         'ref_id' => $item['ref_id']
-                //                     ];
-                //                 }
-                //             } else {
-                //                 foreach ($detailPayload[2]['service_sell'] as $item) {
-                //                     $detailSell[] = [
-                //                         'service_desc' => $item['service_desc'] ?? '-',
-                //                         'service_price_desc' => $item['service_price_desc'] ?? '-',
-                //                         'supplier_service_id' => isset($item['supplier_service_id']) ?? null,
-                //                         'service_group_id' => $item['service_group_id'] ?? null,
-                //                         'service_price_id' => $item['service_price_id'] ?? null,
-                //                         'transaction_date' => $item['transaction_date'] ?? date("Y-m-d"),
-                //                         'valid_until' => $item['valid_until'] ?? date("Y-m-d"),
-                //                         'remark' => $item['remark'] ?? '-',
-                //                         'charge_segment' => $item['charge_segment'] ?? '-',
-                //                         'service_category' => $item['service_category'] ?? 'SELL',
-                //                         'service_id' => $item['service_id'] ?? null,
-                //                         'principal_id' => $item['principal_id'] ?? null,
-                //                         'currency_id' => $item['currency_id'] ?? null,
-                //                         'qty' => isset($item['qty']) && $item['qty'] !== '' ? $item['qty'] : 0,
-                //                         'sales_price' => isset($item['sales_price']) && $item['sales_price'] !== '' ? $item['sales_price'] : 0,
-                //                         'total_amount' => isset($item['total_amount']) && $item['total_amount'] !== '' ? $item['total_amount'] : 0,
-                //                         'measurement_unit_id' => $item['measurement_unit_id'] ?? null,
-                //                     ];
-                //                 }
-                //             }
-
-                //             $createdServiceSellDetails = $data->rfqDetails()->createMany($detailSell);
-                //             // Collect IDs of the inserted records
-                //             $rfqServiceSellDetailIds = $createdServiceSellDetails->pluck('id')->toArray();
-                //         }
-                //     }
-                // } else if ($action == 'addPreOrder') {
-                //     if ($detailPayload != '') {
-
-                //         $detailParties = [];
-                //         $detailPackings = [];
-                //         $detailItemShipment = [];
-                //         $detailContainer = [];
-
-                //         foreach ($detailPayload as $value) {
-
-                //             if (array_key_exists('detail_party', $value)) {
-
-                //                 if (!empty($value)) {
-                //                     foreach ($detailPayload[0]['detail_party'] as $item) {
-                //                         $detailParties[] = [
-                //                             'container_type_id' => $item['container_type_id'] ?? 0,
-                //                             'container_size_id' => $item['container_size_id'] ?? 0,
-                //                             'qty' => $item['qty'] ?? 4,
-                //                             'remark' => $item['remark'] ?? '-'
-                //                         ];
-                //                     }
-                //                     $data->preOrderParty()->createMany($detailParties);
-                //                 }
-                //             } elseif (array_key_exists('detail_packing', $value)) {
-                //                 if (!empty($value)) {
-                //                     foreach ($detailPayload[1]['detail_packing'] as $item) {
-                //                         $detailPackings[] = [
-                //                             'packing_detail_id' => $item['packing_detail_id'] ?? null,
-                //                             'container_size_id' => $item['container_size_id'] ?? null,
-                //                             'package_type' => $item['package_type'] ?? 'C',
-                //                             'packing_no' => $item['packing_no'] ?? '',
-                //                             'packing_size' => $item['packing_size'] ?? '',
-                //                             'packing_type' => $item['packing_type'] ?? '',
-                //                             'uom' => $item['uom'] ?? '',
-                //                             'qty' => $item['qty'] ?? null,
-                //                             'seal_no' => $item['seal_no'] ?? '',
-                //                             'etd_factory' => $item['etd_factory'] ?? now(),
-                //                             'parent_id' => $item['parent_id'] ?? null,
-                //                             'shipment_item_id' => $item['shipment_item_id'] ?? null,
-                //                             'is_in_container' => $item['is_in_container'] ?? false,
-                //                             'remark' => $item['remark'] ?? '-'
-                //                         ];
-                //                     }
-                //                     $data->posPackingDetail()->createMany($detailPackings);
-                //                 }
-                //             } elseif (array_key_exists('detail_item_shipment', $value)) {
-                //                 if (!empty($value)) {
-                //                     foreach ($detailPayload[2]['detail_item_shipment'] as $item) {
-                //                         $detailItemShipment[] = [
-                //                             'item_shipment_id' => $item['item_shipment_id'] ?? null,
-                //                             'po_number' => $item['po_number'] ?? '',
-                //                             'po_item_line' => $item['po_item_line'] ?? 0,
-                //                             'po_item_code' => $item['po_item_code'] ?? '',
-                //                             'material_description' => $item['material_description'] ?? '',
-                //                             'quantity_confirmed' => $item['quantity_confirmed'] ?? 0,
-                //                             'quantity_shipped' => $item['quantity_shipped'] ?? 0,
-                //                             'quantity_arrived' => $item['quantity_arrived'] ?? 0,
-                //                             'quantity_balance' => $item['quantity_balance'] ?? 0,
-                //                             'unit_qty_id' => $item['unit_qty_id'] ?? null,
-                //                             'cargo_readiness' => $item['cargo_readiness'] ?? null,
-                //                             'delivery_address_id' => $item['delivery_address_id'] ?? 0,
-                //                             'remark' => $item['remark'] ?? '-'
-                //                         ];
-                //                     }
-                //                     $data->posShipmentItem()->createMany($detailItemShipment);
-                //                 }
-                //             } else {
-                //                 if (!empty($value)) {
-                //                     foreach ($detailPayload[3]['detail_container'] as $item) {
-                //                         $detailContainer[] = [
-                //                             'container_id' => $item['container_id'] ?? null,
-                //                             'container_type_id' => $item['container_type_id'] ?? null,
-                //                             'container_size_id' => $item['container_size_id'] ?? null,
-                //                             'port_id' => $item['port_id'] ?? null,
-                //                             'job_order_detail_id' => $item['job_order_detail_id'] ?? null,
-                //                             'principal_depot_id' => $item['principal_depot_id'] ?? null,
-                //                             'container_code' => $item['container_code'] ?? null,
-                //                             'container_seal' => $item['container_seal'] ?? null,
-                //                             'fmgs_start_date' => $item['fmgs_start_date'] ?? null,
-                //                             'fmgs_finish_date' => $item['fmgs_finish_date'] ?? null,
-                //                             'depo_in_date' => $item['depo_in_date'] ?? null,
-                //                             'depo_out_date' => $item['depo_out_date'] ?? null,
-                //                             'port_date' => $item['port_date'] ?? null,
-                //                             'disassemble_date' => $item['disassemble_date'] ?? null,
-                //                             'return_depo_date' => $item['return_depo_date'] ?? null,
-                //                             'pickup_date' => $item['pickup_date'] ?? null,
-                //                             'port_gatein_gate' => $item['port_gatein_gate'] ?? null,
-                //                             'total_pkg' => $item['total_pkg'] ?? null,
-                //                             'grossweight' => $item['grossweight'] ?? null,
-                //                             'netweight' => $item['netweight'] ?? null,
-                //                             'measurement' => $item['measurement'] ?? null,
-                //                             'dem' => $item['dem'] ?? null,
-                //                             'currency_dem_id' => $item['currency_dem_id'] ?? null,
-                //                             'rep' => $item['rep'] ?? null,
-                //                             'currency_rep_id' => $item['currency_rep_id'] ?? null,
-
-
-                //                         ];
-                //                     }
-
-                //                     $data->preOrderContainer()->createMany($detailContainer);
-                //                 }
-                //             }
-                //         }
-                //     }
-                // } else if ($action == 'addUserGroup') {
-
-                //     if (isset($requestBody['group_user_template_id'])) {
-                //         $userGroupTemplate = UserGroup::where('id', $requestBody['group_user_template_id'])->first();
-                //         if ($userGroupTemplate) {
-                //             $copyAccessMenu = AccessMenu::where('user_group_id', $userGroupTemplate->id)->get();
-                //             $newAccessMenus = [];
-                //             foreach ($copyAccessMenu as $accessMenu) {
-                //                 $newAccessMenus[] = [
-                //                     'user_group_id' => $data->id,
-                //                     'menu_id' => $accessMenu->menu_id,
-                //                     'open' => $accessMenu->open,
-                //                     'add' => $accessMenu->add,
-                //                     'edit' => $accessMenu->edit,
-                //                     'delete' => $accessMenu->delete,
-                //                     'print' => $accessMenu->print,
-                //                     'approve' => $accessMenu->approve,
-                //                     'disapprove' => $accessMenu->disapprove,
-                //                     'reject' => $accessMenu->reject,
-                //                     'close' => $accessMenu->close,
-                //                 ];
-                //             }
-                //             // Simpan array sementara sebagai entitas baru di basis data
-                //             AccessMenu::insert($newAccessMenus);
-
-                //             //TODO: lepas remark, untuk copy dan update nama user group
-                //             // $userGroupUpdate = UserGroup::find($data->id);
-                //             // if ($userGroupUpdate) {
-                //             //     $newName = $data->name . ' [' . $userGroupTemplate->name . ']';
-
-                //             //     // Update nama UserGroup dengan nama baru
-                //             //     $userGroupUpdate->update(['name' => $newName]);
-                //             // }
-
-                //         }
-                //     }
-                // }
-
-                // INSERT NOTIFICATION
-
-                $notificationPayload = [
-                    'user_id' => auth()->user()->id,
-                    'user_group_id' => auth()->user()->user_group_id,
-                    'module' => 'master-data',
-                    'link' => 'master-data' . '/' . $actionsToModel[$action] . '/' . $data->id,
-                    'message' => 'Data' . ' ' . $actionsToModel[$action] . ' ' .  'has been added successfully',
-                    'title' => 'Add data success',
-                ];
-
-                // Notification::create($notificationPayload);
 
                 return $data;
             });
@@ -949,7 +427,59 @@ class GlobalController extends Controller
                         }
                     }
                 }
-            } else {
+            } elseif ($action == 'updatePurchase') {
+                // update grid
+                $data = $this->modelName($actionsToModel[$action])::where('id', $id)->first();
+
+                if ($data) {
+                    $data->update($requestBody);
+                    $purchaseItems = [];
+
+                    if (isset($requestBody['detail'])) {
+                        $purchaseItems = $requestBody['detail'][0]['transaction_purchase_item'];
+                    }
+
+                    if (empty($purchaseItems)) {
+                        $data->items()->detach();
+                    } else {
+                        $data->items()->detach();
+
+                        if ($purchaseItems != []) {
+                            foreach ($purchaseItems as $i => $item) {
+                                $purchaseItem = [
+                                    'item_id' => $item['item_id'] ?? null,
+                                    'amount' => $item['amount'] ?? 0,
+                                    'subtotal' => $item['subtotal'] ?? 0,
+                                ];
+                                $data->items()->attach($purchaseItem['item_id'], $purchaseItem);
+                            }
+                        }
+                    }
+                }
+            } 
+            
+            // Approval
+            elseif($action == 'updateStatusPurchase') {
+                if (isset($requestBody['is_approve'])) {
+                    if ($requestBody['is_approve'] == 1) {
+                        $newData = [
+                            'approved_by' => auth()->id(),
+                            'is_approve' => true,
+                            'approved_at' => now(),
+                        ];
+                    } else {
+                        $newData = [
+                            'approved_by' => auth()->id(),
+                            'is_approve' => false,
+                            'approved_at' => now(),
+                        ];
+                    }
+                }
+                $data = $this->modelName($actionsToModel[$action])::where('id', $id)
+                    ->update($newData);
+            }
+            
+            else {
                 $data = $this->modelName($actionsToModel[$action])::where('id', $id)->update($requestBody);
             }
 
@@ -1018,14 +548,29 @@ class GlobalController extends Controller
                     if (Route::has($request->route . '.show')) {
                         $row->showUrl = route($request->route . '.show', [$request->route => $row->id]);
                     }
+                    if (isset($row->is_approve)) {
+                        $row->approveUrl = route($request->route . '.show', [$request->route => $row->id . ',approve']);
+                    }
+                    if (isset($row->is_approve)) {
+                        $row->disapproveUrl = route($request->route . '.show', [$request->route => $row->id . ',disapprove']);
+                    }
+                    if (isset($row->is_approve)) {
+                        $row->printUrl = route($request->route . '.show', [$request->route => $row->id . ',print']);
+                    }
 
-                    // Remove the 'id' column from the row
+                    // change is active status
                     if ($row->is_active || $row->is_active === 1) {
                         $row->is_active = 'Active';
                     } elseif (!$row->is_active || $row->is_active === 0) {
                         $row->is_active = 'Inactive';
                     }
-                    // unset($row->id);
+
+                    // change is approve status
+                    if ($row->is_approve || $row->is_approve === 1) {
+                        $row->is_approve = 'Approved';
+                    } elseif (!$row->is_approve || $row->is_approve === 0) {
+                        $row->is_approve = 'Not Approved';
+                    }
                 }
 
                 return response()->json($data);

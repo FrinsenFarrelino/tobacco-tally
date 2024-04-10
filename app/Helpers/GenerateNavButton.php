@@ -65,16 +65,9 @@ use Illuminate\Support\Facades\Route;
         if (strstr($features, "print")) {
             if (Route::has($url.'.print')) {
                 $print_button = trans('print');
-                if ($page == "edit") {
-                    $navbutton['print'] = renderNavButton(true, class_button:"btn btn-primary btn-xs", title:$print_button);
-                }elseif ($page == "show") {
-                    if ($url != 'quotation') {
-                        $route = route($url . '.print', [$param => $data['id']]);
-                        $navbutton['print'] = renderNavButton(false, class_button:"btn btn-warning btn-xs", href:$route, title:$print_button);
-                    }
-                } elseif ($page == "print") {
-                    $navbutton['print'] = renderNavButton(false, class_button:"btn btn-rounded btn-primary btn-xs", class_icon:"fas fa-print mr-2", title: $print_button, button_id:"btnPrint");
-                }
+                $route = route($url . '.print', [$param => $data['id']]);
+                $navbutton['print'] = renderNavButton(false, class_button:"btn btn-info btn-xs", href:$route, class_icon:"fa fa-print mr-2", title:$print_button);
+                
             }
         }
 
@@ -128,7 +121,7 @@ use Illuminate\Support\Facades\Route;
         if (strstr($features, "disapprove")) {
             if ($page == "show") {
                 $disapprove = trans('disapprove');
-                $navbutton['disapprove'] = renderNavButton(false, class_button:"btn btn-rounded btn-primary btn-xs", class_icon:"fas fa-xmark mr-2", title: $disapprove, button_id:"btnDisapprove");
+                $navbutton['disapprove'] = renderNavButton(false, class_button:"btn btn-rounded btn-danger btn-xs", class_icon:"fas fa-times mr-2", title: $disapprove, button_id:"btnDisapprove");
             }
         }
 

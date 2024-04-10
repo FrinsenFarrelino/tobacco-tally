@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('purchase_item_details', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('purchase_id')->nullable()->constrained('purchases');
             $table->foreignId('item_id')->nullable()->constrained('items');
-            $table->bigInteger('qty_amount')->nullable();
+            $table->bigInteger('amount')->nullable();
             $table->bigInteger('subtotal')->nullable();
             $table->timestamps();
         });
