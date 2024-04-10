@@ -240,7 +240,7 @@
         "col_action": "Action",
         "col_code": "Code",
         "col_name": "Name",
-        "col_capacity": "Capacity",
+        "col_item": "Item",
         "col_branch": "Branch",
         "col_remark": "Remark",
         "col_is_active": "Status"

@@ -223,7 +223,7 @@
         "col_action": "Aksi",
         "col_code": "Kode",
         "col_name": "Nama",
-        "col_capacity": "Kapasitas",
+        "col_item": "Barang",
         "col_branch": "Cabang",
         "col_remark": "Keterangan",
         "col_is_active": "Status"
