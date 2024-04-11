@@ -13,6 +13,8 @@
     "approve": "Menyetujui",
     "disapprove": "Tidak Menyetujui",
     "error_supporting_data": "Data pendukung tidak lengkap",
+    "warehouse_not_found": "Warehouse tidak ditemukan",
+    "item_not_found": "Barang tidak ditemukan",
 
     "profile": "Profil",
     "logout": "Keluar",
@@ -500,7 +502,8 @@
         "col_item": "Barang",
         "col_unit": "Satuan",
         "col_amount": "Jumlah",
-        "col_date": "Tanggal"
+        "col_date": "Tanggal",
+        "col_remark": "Keterangan"
     },
 
     "report_stock_balance": {

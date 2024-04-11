@@ -13,6 +13,8 @@
     "approve": "Approve",
     "disapprove": "Disapprove",
     "error_supporting_data": "Supporting data is incomplete",
+    "warehouse_not_found": "Warehouse Not Found",
+    "item_not_found": "Item Not Found",
 
     "profile": "Profile",
     "logout": "Logout",
@@ -518,7 +520,8 @@
         "col_item": "Item",
         "col_unit": "Unit",
         "col_amount": "Amount",
-        "col_date": "Date"
+        "col_date": "Date",
+        "col_remark": "Remark"
     },
 
     "report_stock_balance": {

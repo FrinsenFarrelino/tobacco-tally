@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('transaction_code', 255);
             $table->foreignId('warehouse_id')->nullable()->constrained('warehouses');
-            $table->bigInteger('amount');
+            $table->string('amount', 255);
+            $table->text('remark')->nullable();
             $table->timestamps();
+            $table->dateTime('date')->nullable();
         });
     }
 
