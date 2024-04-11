@@ -49,7 +49,6 @@
                                         <th></th>
                                         <th>{{ __('master_data_product_item')['col_code'] }}</th>
                                         <th>{{ __('master_data_product_item')['col_name'] }}</th>
-                                        <th>{{ __('master_data_product_item')['col_type'] }}</th>
                                         <th>{{ __('master_data_product_item')['col_category'] }}</th>
                                         <th>{{ __('master_data_product_item')['col_is_active'] }}</th>
                                         <th>{{ __('master_data_product_item')['col_action'] }}</th>
@@ -100,10 +99,6 @@
                 {
                     data: 'name',
                     name: 'name'
-                },
-                {
-                    data: 'type_name',
-                    name: 'types.name'
                 },
                 {
                     data: 'category_name',

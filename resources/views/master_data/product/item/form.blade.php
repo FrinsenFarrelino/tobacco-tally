@@ -54,8 +54,6 @@
                                 <div class="col-md-8">
                                     {!! renderInput('mb-3 row', 'col-md-4 col-form-label', 'col-md-8', 'text', 'code', __('master_data_product_item')['col_code'], $master_data_product_item['code'] ?? '', $mode, 'disabled placeholder="Auto Generated"') !!}
                                     {!! renderInput('mb-3 row', 'col-md-4 col-form-label', 'col-md-8', 'text', 'name', __('master_data_product_item')['col_name'], $master_data_product_item['name'] ?? '', $mode, 'required') !!}
-                                    {!! renderBrowserInput('mb-3 row', 'col-md-4', 'col-8 col-md-5', 'browse_type_name', '', __('master_data_product_item')['col_type'], $master_data_product_item['type_name'] ?? '', $mode, 'required', $action_type, ["types.code|like","types.name|like"], [], array('browse_type_id|id','browse_type_name|name'), ['code','name'], 'type', ['Code','Name'], [['field'=>'code', 'name' => 'types.code'], ['field'=>'name', 'name' => 'types.name']], title_modal:'Get Type', id_ajax: 'example') !!}
-                                    {!! renderInput('row', 'col-md-4 col-form-label', 'col-md-8', 'hidden', 'type_id', '', $master_data_product_item['type_id'] ?? '', 'add', '', 'browse_type_id') !!}
                                     {!! renderBrowserInput('mb-3 row', 'col-md-4', 'col-8 col-md-5', 'browse_category_name', '', __('master_data_product_item')['col_category'], $master_data_product_item['category_name'] ?? '', $mode, 'required', $action_category, ["categories.code|like","categories.name|like"], [], array('browse_category_id|id','browse_category_name|name'), ['code','name'], 'category', ['Code','Name'], [['field'=>'code', 'name' => 'categories.code'], ['field'=>'name', 'name' => 'categories.name']], title_modal:'Get Category', id_ajax: 'example') !!}
                                     {!! renderInput('row', 'col-md-4 col-form-label', 'col-md-8', 'hidden', 'category_id', '', $master_data_product_item['category_id'] ?? '', 'add', '', 'browse_category_id') !!}
                                     {!! renderBrowserInput('mb-3 row', 'col-md-4', 'col-8 col-md-5', 'browse_unit_name', '', __('master_data_product_item')['col_unit'], $master_data_product_item['unit_name'] ?? '', $mode, 'required', $action_unit, ["units.code|like","units.name|like"], [], array('browse_unit_id|id','browse_unit_name|name'), ['code','name'], 'unit', ['Code','Name'], [['field'=>'code', 'name' => 'units.code'], ['field'=>'name', 'name' => 'units.name']], title_modal:'Get Unit', id_ajax: 'example') !!}
@@ -79,10 +77,6 @@
 
 @section('scripts')
 <script>
-    function getVal() {
-        console.log($('#browse_province_id').val())
-    }
-    
     $(document).ready(function() {
         setMenuActive();
     });

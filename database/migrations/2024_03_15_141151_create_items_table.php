@@ -16,7 +16,6 @@ return new class extends Migration
             $table->id();
             $table->string('code', 100);
             $table->string('name', 200);
-            $table->foreignId('type_id')->nullable()->constrained('types');
             $table->foreignId('category_id')->nullable()->constrained('categories');
             $table->foreignId('unit_id')->nullable()->constrained('units');
             $table->bigInteger('buy_price');

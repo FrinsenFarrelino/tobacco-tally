@@ -205,7 +205,6 @@ class GlobalController extends Controller
                 return response()->json(['success' => false, 'message' => 'Filter by Customer Id is required!'], 400);
             }
         } elseif ($action == 'getItem') {
-            $query->leftJoin('types', 'types.id', '=', 'items.type_id');
             $query->leftJoin('categories', 'categories.id', '=', 'items.category_id');
             $query->leftJoin('units', 'units.id', '=', 'items.unit_id');
             $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'items.created_by');
@@ -214,7 +213,6 @@ class GlobalController extends Controller
             $query->select(
                 'items.*',
                 'categories.name as category_name',
-                'types.name as type_name',
                 'units.name as unit_name',
                 'created_by_user.name as created_by',
                 'updated_by_user.name as updated_by',
