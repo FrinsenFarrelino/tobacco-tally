@@ -69,6 +69,7 @@ class WarehouseController extends GlobalController
 
         $formData['list_nav_button'] = $generate_nav_button;
         $formData['action_branch'] = $this->globalVariable->actionGetBranch;
+        $formData['action_item'] = $this->globalVariable->actionGetItem;
         $formData['selectActive'] = $this->arrayIsActive;
 
         return view($this->form_file, $formData);
@@ -119,6 +120,7 @@ class WarehouseController extends GlobalController
         $formData['master_data_business_warehouse'] = $decodedData;
         $formData['selectActive'] = $this->arrayIsActive;
         $formData['action_branch'] = $this->globalVariable->actionGetBranch;
+        $formData['action_item'] = $this->globalVariable->actionGetItem;
 
         return view($this->form_file, $formData);
     }
@@ -146,6 +148,7 @@ class WarehouseController extends GlobalController
         $formData['master_data_business_warehouse'] = $decodedData;
         $formData['selectActive'] = $this->arrayIsActive;
         $formData['action_city'] = $this->globalVariable->actionGetCity;
+        $formData['action_item'] = $this->globalVariable->actionGetItem;
 
         return view($this->form_file, $formData);
     }
