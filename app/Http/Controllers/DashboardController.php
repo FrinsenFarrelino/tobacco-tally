@@ -83,7 +83,7 @@ class DashboardController extends Controller
 
             $user = Auth::user();
             Session::put('user', $user);
-            $list_menu = Menu::all();
+            $list_menu = Menu::where('is_active', 1)->orderBy("order", "asc")->get();
             Session::put('list_menu', $list_menu);
             $userGroupName = UserGroup::where('id', Session::get('user')['user_group_id'])->first();
             Session::put('user_group', $userGroupName);
