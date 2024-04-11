@@ -490,5 +490,26 @@
         "col_total": "Total",
         "col_remark": "Keterangan",
         "col_is_approve": "Status"
+    },
+
+    "report_stock_report": {
+        "name": "Laporan Stok",
+        "list": "Daftar",
+        "col_transaction_code": "Kode Transaksi",
+        "col_warehouse": "Warehouse",
+        "col_item": "Barang",
+        "col_unit": "Satuan",
+        "col_amount": "Jumlah",
+        "col_date": "Tanggal"
+    },
+
+    "report_stock_balance": {
+        "name": "Sisa Stok",
+        "list": "Daftar",
+        "col_warehouse": "Warehouse",
+        "col_item": "Barang",
+        "col_unit": "Satuan",
+        "col_stock": "Stok Tersedia",
+        "col_stock_updated_at": "Stok Terakhir Diperbarui"
     }
 }

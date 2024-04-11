@@ -35,6 +35,9 @@ class GlobalVariable
     public $actionGetPurchase;
     public $actionGetSale;
 
+    // REPORT
+    public $actionGetStockReport;
+
     // SETTING
 
 
@@ -63,6 +66,9 @@ class GlobalVariable
         // transaction
         $this->actionGetPurchase = 'getPurchase';
         $this->actionGetSale = 'getSale';
+
+        // report
+        $this->actionGetStockReport = 'getStockReport';
     }
 
     public function ModuleGlobal($module, $subModule, $menuUrl, $menuRoute, $menuParam)
