@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 
 function generateMenu($data, $parent = 0)
@@ -9,7 +10,7 @@ function generateMenu($data, $parent = 0)
 
     if (!empty($data)) {
         foreach ($data as $item) {
-            if ($item['id_menu'] === $parent) {
+            if ($item['id_menu'] === $parent && checkAccess($item)) {
 
                 switch ($item['type']) {
                     case 'menu-header':
@@ -54,4 +55,20 @@ function generateMenu($data, $parent = 0)
         }
     }
     return $html;
+}
+
+
+function checkAccess($menuItem)
+{
+    if (Session::get('user_group')['name'] === 'Admin') {
+        return true;
+    } else {
+        foreach (Session::get('access_menu') as $value) {
+            if ($value['menu_id'] == $menuItem['id'] && $value['open'] == true) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }

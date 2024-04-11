@@ -12,4 +12,9 @@ class Menu extends Model
 
     protected $guarded = ['id'];
     protected $table = 'menus';
+
+    public function access_menu()
+    {
+        return $this->hasMany(AccessMenu::class);
+    }
 }
