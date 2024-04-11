@@ -9,6 +9,7 @@ use App\Http\Services\CustomerGridService;
 use App\Http\Services\PurchaseGridService;
 use App\Http\Services\SaleGridService;
 use App\Models\Branch;
+use App\Models\StockBalance;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Route;
@@ -126,6 +127,7 @@ class GlobalController extends Controller
         } elseif ($action == 'getWarehouse') {
             $query->leftJoin('branches', 'branches.id', '=', 'warehouses.branch_id');
             $query->leftJoin('items', 'items.id', '=', 'warehouses.item_id');
+            $query->leftJoin('units', 'units.id', '=', 'items.unit_id');
             $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'warehouses.created_by');
             $query->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', 'warehouses.updated_by');
             $query->leftJoin('users as deleted_by_user', 'deleted_by_user.id', '=', 'warehouses.deleted_by');
@@ -133,6 +135,7 @@ class GlobalController extends Controller
                 'warehouses.*',
                 'branches.name as branch_name',
                 'items.name as item_name',
+                'units.name as unit_name',
                 'created_by_user.name as created_by',
                 'updated_by_user.name as updated_by',
                 'deleted_by_user.name as deleted_by',
@@ -272,6 +275,19 @@ class GlobalController extends Controller
             } else {
                 return response()->json(['success' => false, 'message' => 'Filter by Sale Id is required!'], 400);
             }
+        }
+
+        // REPORT
+        elseif ($action == 'getStockReport') {
+            $query->leftJoin('warehouses', 'warehouses.id', '=', 'stock_reports.warehouse_id');
+            $query->leftJoin('items', 'items.id', '=', 'warehouses.item_id');
+            $query->leftJoin('units', 'units.id', '=', 'items.unit_id');
+            $query->select(
+                'stock_reports.*',
+                'warehouses.name as warehouse_name',
+                'items.name as item_name',
+                'units.name as unit_name',
+            );
         }
 
         else {
@@ -669,6 +685,11 @@ class GlobalController extends Controller
                         $row->is_approve = 'Approved';
                     } elseif (!$row->is_approve || $row->is_approve === 0) {
                         $row->is_approve = 'Not Approved';
+                    }
+
+                    // change is stock updated status
+                    if ($row->stock_updated_at && $row->stock_updated_at === null) {
+                        $row->stock_updated_at = 'Never';
                     }
                 }
 

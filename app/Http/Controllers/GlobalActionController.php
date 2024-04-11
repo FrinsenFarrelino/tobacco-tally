@@ -32,6 +32,9 @@ class GlobalActionController extends Controller
         'getSale' => 'Sale',
         'getSaleItemGrid' => 'Sale',
 
+        // GET REPORT
+        'getStockReport' => 'StockReport',
+
         // ADD MASTER
         'addProvince' => 'Province',
         'addCity' => 'City',

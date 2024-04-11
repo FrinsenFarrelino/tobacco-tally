@@ -508,5 +508,26 @@
         "col_total": "Total",
         "col_remark": "Remark",
         "col_is_approve": "Status"
+    },
+
+    "report_stock_report": {
+        "name": "Stock Report",
+        "list": "List",
+        "col_transaction_code": "Transaction Code",
+        "col_warehouse": "Warehouse",
+        "col_item": "Item",
+        "col_unit": "Unit",
+        "col_amount": "Amount",
+        "col_date": "Date"
+    },
+
+    "report_stock_balance": {
+        "name": "Stock Balance",
+        "list": "List",
+        "col_warehouse": "Warehouse",
+        "col_item": "Item",
+        "col_unit": "Unit",
+        "col_stock": "Stock",
+        "col_stock_updated_at": "Stock Updated At"
     }
 }

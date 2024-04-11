@@ -20,12 +20,14 @@ return new class extends Migration
             $table->foreignId('item_id')->nullable()->constrained('items');
             $table->foreignId('branch_id')->nullable()->constrained('branches');
             $table->text('remark')->nullable();
+            $table->bigInteger('stock')->default(0);
             $table->boolean('is_active')->default(1);
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->foreignId('deleted_by')->nullable()->constrained('users');
             $table->timestamps();
             $table->softDeletes();
+            $table->dateTime('stock_updated_at')->nullable();
         });
 
         DB::statement('DROP INDEX IF EXISTS warehouses_code_unique');
