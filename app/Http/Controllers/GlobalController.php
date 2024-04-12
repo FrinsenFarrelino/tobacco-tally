@@ -585,7 +585,7 @@ class GlobalController extends Controller
                         if (!$purchaseItem->isEmpty()) {
                             foreach ($purchaseItem as $item) {
                                 // Cari Warehouse yang sesuai dengan item tersebut
-                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', 1)->first();
                                 // tambah stok tersedia
                                 if($warehouse) {
                                     $warehouse->update([
@@ -637,7 +637,7 @@ class GlobalController extends Controller
                         if (!$purchaseItem->isEmpty()) {
                             foreach ($purchaseItem as $item) {
                                 // Cari Warehouse yang sesuai dengan item tersebut
-                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', 1)->first();
                                 // tambah stok tersedia
                                 if($warehouse) {
                                     $warehouse->update([
@@ -715,7 +715,7 @@ class GlobalController extends Controller
                         if (!$saleItem->isEmpty()) {
                             foreach ($saleItem as $item) {
                                 // Cari Warehouse yang sesuai dengan item tersebut
-                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', 2)->first();
                                 // tambah stok tersedia
                                 if($warehouse) {
                                     $warehouse->update([
@@ -767,7 +767,7 @@ class GlobalController extends Controller
                         if (!$saleItem->isEmpty()) {
                             foreach ($saleItem as $item) {
                                 // Cari Warehouse yang sesuai dengan item tersebut
-                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', 2)->first();
                                 // tambah stok tersedia
                                 if($warehouse) {
                                     $warehouse->update([
@@ -842,7 +842,7 @@ class GlobalController extends Controller
                         if (!$stockTransferItem->isEmpty()) {
                             foreach ($stockTransferItem as $item) {
                                 // Cari Warehouse yang sesuai dengan item tersebut
-                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', 1)->first();
                                 // kurangi stok tersedia
                                 if($warehouse) {
                                     $warehouse->update([
@@ -895,7 +895,7 @@ class GlobalController extends Controller
                         if (!$stockTransfer->isEmpty()) {
                             foreach ($stockTransfer as $item) {
                                 // Cari Warehouse yang sesuai dengan item tersebut
-                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', 1)->first();
                                 // tambah stok tersedia
                                 if($warehouse) {
                                     $warehouse->update([
@@ -941,7 +941,7 @@ class GlobalController extends Controller
                         if (!$stockTransferItem->isEmpty()) {
                             foreach ($stockTransferItem as $item) {
                                 // Cari Warehouse yang sesuai dengan item tersebut
-                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', 2)->first();
                                 // kurangi stok tersedia
                                 if($warehouse) {
                                     $warehouse->update([
@@ -994,7 +994,7 @@ class GlobalController extends Controller
                         if (!$stockTransfer->isEmpty()) {
                             foreach ($stockTransfer as $item) {
                                 // Cari Warehouse yang sesuai dengan item tersebut
-                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', 2)->first();
                                 // tambah stok tersedia
                                 if($warehouse) {
                                     $warehouse->update([
