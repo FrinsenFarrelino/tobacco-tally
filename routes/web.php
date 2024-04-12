@@ -99,8 +99,12 @@ Route::group(['middleware' => ['web']], function () {
                     Route::get('sale/print/{sale}', [SaleController::class, 'createPDF'])->name('sale.print');
                 });
                 Route::prefix('/warehouse/')->group(function () {
+                    Route::controller(OutgoingItemController::class)->group(function () {
+                        Route::resource('outgoing-item', OutgoingItemController::class);
+                        Route::post('outgoing-item/update-status/{id}', [OutgoingItemController::class, 'updateStatus'])->name('update-status-outgoing-item');
+                        Route::get('outgoing-item/print/{outgoing_item}', [OutgoingItemController::class, 'createPDF'])->name('outgoing-item.print');
+                    });
                     Route::resource('incoming-item', IncomingItemController::class);
-                    Route::resource('outgoing-item', OutgoingItemController::class);
                 });
             });
 

@@ -40,6 +40,20 @@
         "success_update_sale": "Sale Status Updated Successfully",
         "error_update_sale": "Sale Status Failed to Update",
 
+        "title_approve_outgoing_item": "Approve Outgoing Item",
+        "content_approve_outgoing_item": "Are you sure you want to approve this Outgoing Item?",
+        "title_disapprove_outgoing_item": "Disapprove Outgoing Item",
+        "content_disapprove_outgoing_item": "Are you sure you want to disapprove this Outgoing Item?",
+        "success_update_outgoing_item": "Outgoing Item Status Updated Successfully",
+        "error_update_outgoing_item": "Outgoing Item Status Failed to Update",
+
+        "title_approve_incoming_item": "Approve Incoming Item",
+        "content_approve_incoming_item": "Are you sure you want to approve this Incoming Item?",
+        "title_disapprove_incoming_item": "Disapprove Incoming Item",
+        "content_disapprove_incoming_item": "Are you sure you want to disapprove this Incoming Item?",
+        "success_update_incoming_item": "Incoming Item Status Updated Successfully",
+        "error_update_incoming_item": "Incoming Item Status Failed to Update",
+
         "button_confirm": "Confirm",
         "button_cancel": "Cancel"
     },
@@ -529,7 +543,8 @@
         "name": "Stock Balance",
         "list": "List",
         "col_warehouse": "Warehouse",
-        "col_item": "Item",
+        "col_item_code": "Item Code",
+        "col_item_name": "Item Name",
         "col_unit": "Unit",
         "col_stock": "Stock",
         "col_stock_updated_at": "Stock Updated At"
@@ -549,7 +564,8 @@
         "col_item_code": "Code",
         "col_item_name": "Name",
         "col_amount": "Amount",
-        "col_unit": "Unit"
+        "col_unit": "Unit",
+        "col_is_approve": "Status"
     },
 
     "transaction_warehouse_incoming_item": {
@@ -567,6 +583,6 @@
         "col_item_name": "Name",
         "col_amount": "Amount",
         "col_unit": "Unit",
-        "col_warehouse": "Warehouse"
+        "col_is_approve": "Status"
     }
 }

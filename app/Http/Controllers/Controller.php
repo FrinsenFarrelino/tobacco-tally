@@ -93,6 +93,9 @@ class Controller extends BaseController
                     case "str-cab-tgl-transaction":
                         $formattedCode = $initial . $separator . $branch . $separator . $ym . $separator;
                         break;
+                    case "str-tgl-transaction":
+                        $formattedCode = $initial . $separator . $ym . $separator;
+                        break;
                     default:
                         $formattedCode = ''; // Handle jika tipe tidak cocok
                         break;
