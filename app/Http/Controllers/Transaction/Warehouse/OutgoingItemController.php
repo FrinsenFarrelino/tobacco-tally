@@ -121,7 +121,7 @@ class OutgoingItemController extends GlobalController
         $decodedData = $result['data'][0];
 
         $setFeatures = $this->computeSetFeatures();
-        $generate_nav_button = generateNavbutton($decodedData, 'back|approve|disapprove|print' . $setFeatures, 'show', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
+        $generate_nav_button = generateNavbutton($decodedData, 'back|approve|disapprove' . $setFeatures, 'show', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'view');
 

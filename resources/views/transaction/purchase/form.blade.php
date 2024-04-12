@@ -37,7 +37,9 @@
                                 @if ($mode == 'edit')
                                     {!! $list_nav_button['cancel'] !!}
                                     @if (isset($list_nav_button['save']))
-                                        {!! $list_nav_button['save'] !!}
+                                        @if ($is_approve == false)
+                                            {!! $list_nav_button['save'] !!}
+                                        @endif
                                     @endif
                                 @elseif ($mode == 'view')
                                     {!! $list_nav_button['back'] !!}
@@ -47,12 +49,12 @@
                                         @endif
                                     @endif
                                     @if (isset($list_nav_button['approve']))
-                                        @if ($show_button == 'approve')
+                                        @if ($show_button == 'approve' && $is_approve == false)
                                             {!! $list_nav_button['approve'] !!}
                                         @endif
                                     @endif
                                     @if (isset($list_nav_button['disapprove']))
-                                        @if ($show_button == 'disapprove')
+                                        @if ($show_button == 'disapprove' && $is_approve == true)
                                             {!! $list_nav_button['disapprove'] !!}
                                         @endif
                                     @endif
