@@ -131,6 +131,7 @@ class GlobalController extends Controller
         } elseif ($action == 'getWarehouse') {
             $query->leftJoin('branches', 'branches.id', '=', 'warehouses.branch_id');
             $query->leftJoin('items', 'items.id', '=', 'warehouses.item_id');
+            $query->leftJoin('categories', 'categories.id', '=', 'items.category_id');
             $query->leftJoin('units', 'units.id', '=', 'items.unit_id');
             $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'warehouses.created_by');
             $query->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', 'warehouses.updated_by');
@@ -139,6 +140,7 @@ class GlobalController extends Controller
                 'warehouses.*',
                 'branches.name as branch_name',
                 'items.name as item_name',
+                'categories.name as category_name',
                 'units.name as unit_name',
                 'created_by_user.name as created_by',
                 'updated_by_user.name as updated_by',

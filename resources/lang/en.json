@@ -243,6 +243,7 @@
         "col_code": "Code",
         "col_name": "Name",
         "col_item": "Item",
+        "col_category": "Category",
         "col_branch": "Branch",
         "col_remark": "Remark",
         "col_is_active": "Status"
@@ -532,5 +533,40 @@
         "col_unit": "Unit",
         "col_stock": "Stock",
         "col_stock_updated_at": "Stock Updated At"
+    },
+
+    "transaction_warehouse_outgoing_item": {
+        "submodule": "Warehouse",
+        "name": "Outgoing Item",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Transfer Code",
+        "col_date": "Date",
+        "col_item_detail": "Item Detail",
+        "col_item_code": "Code",
+        "col_item_name": "Name",
+        "col_amount": "Amount",
+        "col_unit": "Unit"
+    },
+
+    "transaction_warehouse_incoming_item": {
+        "submodule": "Warehouse",
+        "name": "Incoming Item",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_code": "Transfer Code",
+        "col_date": "Date",
+        "col_item_detail": "Item Detail",
+        "col_item_code": "Code",
+        "col_item_name": "Name",
+        "col_amount": "Amount",
+        "col_unit": "Unit",
+        "col_warehouse": "Warehouse"
     }
 }

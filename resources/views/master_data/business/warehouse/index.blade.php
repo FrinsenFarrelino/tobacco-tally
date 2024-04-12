@@ -50,6 +50,7 @@
                                         <th>{{ __('master_data_business_warehouse')['col_code'] }}</th>
                                         <th>{{ __('master_data_business_warehouse')['col_name'] }}</th>
                                         <th>{{ __('master_data_business_warehouse')['col_item'] }}</th>
+                                        <th>{{ __('master_data_business_warehouse')['col_category'] }}</th>
                                         <th>{{ __('master_data_business_warehouse')['col_branch'] }}</th>
                                         <th>{{ __('master_data_business_warehouse')['col_is_active'] }}</th>
                                         <th>{{ __('master_data_business_warehouse')['col_action'] }}</th>
@@ -104,6 +105,10 @@
                 {
                     data: 'item_name',
                     name: 'items.name'
+                },
+                {
+                    data: 'category_name',
+                    name: 'categories.name'
                 },
                 {
                     data: 'branch_name',
