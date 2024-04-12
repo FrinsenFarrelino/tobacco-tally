@@ -12,6 +12,8 @@ use App\Http\Services\StockTransferGridService;
 use App\Models\Branch;
 use App\Models\Purchase;
 use App\Models\PurchaseItemDetail;
+use App\Models\Sale;
+use App\Models\SaleItemDetail;
 use App\Models\StockBalance;
 use App\Models\StockReport;
 use App\Models\StockTransfer;
@@ -696,22 +698,101 @@ class GlobalController extends Controller
             // Approval
             elseif($action == 'updateStatusSale') {
                 if (isset($requestBody['is_approve'])) {
+                    $is_approve = true;
                     if ($requestBody['is_approve'] == 1) {
+                        // Basic Approve
                         $newData = [
                             'approved_by' => auth()->id(),
                             'is_approve' => true,
                             'approved_at' => now(),
                         ];
+
+                        // Find header sale data
+                        $sale = Sale::where('id', $id)->first();
+                        // Find data item yang di sale
+                        $saleItem = SaleItemDetail::where('sale_id', $id)->get();
+
+                        if (!$saleItem->isEmpty()) {
+                            foreach ($saleItem as $item) {
+                                // Cari Warehouse yang sesuai dengan item tersebut
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                // tambah stok tersedia
+                                if($warehouse) {
+                                    $warehouse->update([
+                                        'stock' => $warehouse->stock - $item->amount,
+                                        'stock_updated_at' => now()
+                                    ]);
+                                } else {
+                                    $is_approve = false;
+                                    $message = [
+                                        'type' => 'Error',
+                                        'message' => trans('warehouse_not_found')
+                                    ];
+                                    break;
+                                }
+                                // tambah data laporan barang masuk
+                                StockReport::create([
+                                    'transaction_code' => $sale->code,
+                                    'warehouse_id' => $warehouse->id,
+                                    'amount' => '-' . $item->amount,
+                                    'remark' => 'Approve Sale',
+                                    'date' => now()
+                                ]);
+                            }
+                        } else {
+                            $is_approve = false;
+                            $message = [
+                                'type' => 'Error',
+                                'message' => trans('item_not_found')
+                            ];
+                        }
+
+                        if ($is_approve) {
+                            $data = $this->modelName($actionsToModel[$action])::where('id', $id)
+                                ->update($newData);
+                        }
                     } else {
+                        // Basic disapprove
                         $newData = [
                             'approved_by' => null,
                             'is_approve' => false,
                             'approved_at' => null,
                         ];
+
+                        // Find header sale data
+                        $sale = Sale::where('id', $id)->first();
+                        // Find data item yang di sale
+                        $saleItem = SaleItemDetail::where('sale_id', $id)->get();
+
+                        if (!$saleItem->isEmpty()) {
+                            foreach ($saleItem as $item) {
+                                // Cari Warehouse yang sesuai dengan item tersebut
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                // tambah stok tersedia
+                                if($warehouse) {
+                                    $warehouse->update([
+                                        'stock' => $warehouse->stock + $item->amount,
+                                        'stock_updated_at' => now()
+                                    ]);
+                                }
+                                // tambah data laporan barang masuk
+                                StockReport::create([
+                                    'transaction_code' => $sale->code,
+                                    'warehouse_id' => $warehouse->id,
+                                    'amount' => '+' . $item->amount,
+                                    'remark' => 'Disapprove Sale',
+                                    'date' => now()
+                                ]);
+                            }
+                        }
+                        
+                        $data = $this->modelName($actionsToModel[$action])::where('id', $id)
+                            ->update($newData);
+                    }
+                    if (!$is_approve) {
+                        return $message;
                     }
                 }
-                $data = $this->modelName($actionsToModel[$action])::where('id', $id)
-                    ->update($newData);
             }
             elseif ($action == 'updateOutgoingItem') {
                 // update grid
