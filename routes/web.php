@@ -50,12 +50,12 @@ Route::group(['middleware' => ['web']], function () {
             Route::post('getData', 'requestGetData')->name('requestGetData');
         });
 
-        // Route::middleware('checkUserGroupPermission')->group(function () {
-            Route::controller(UserController::class)->group(function(){
-                Route::get('/profile', 'seeProfile')->name('seeprofile');
-                Route::post('/profile/send', 'updateProfileSend');
-            });
+        Route::controller(UserController::class)->group(function () {
+            Route::get('/profile', 'seeProfile')->name('seeprofile');
+            Route::post('/profile/send', 'updateProfileSend');
+        });
 
+        Route::middleware('checkUserGroupPermission')->group(function () {
             Route::prefix('/setting/')->group(function () {
                 Route::resource('group-user', GroupUserController::class);
                 Route::resource('user', UserController::class);
@@ -108,17 +108,16 @@ Route::group(['middleware' => ['web']], function () {
                 Route::get('stock-report', [StockReportController::class, 'index'])->name('stock-report.index');
                 Route::get('stock-balance', [ReportStockBalanceController::class, 'index'])->name('stock-balance.index');
             });
-        // });
+        });
     });
 
-    Route::controller(DashboardController::class)->group(function(){
+    Route::controller(DashboardController::class)->group(function () {
         Route::get('login', 'loginpage')->name('login');
         Route::post('/login/send', 'loginSend');
         Route::get('/logout/send', 'sendLogout')->name('logout');
     });
 
-    Route::controller(GlobalController::class)->group(function(){
-        Route::get('/render-warn', 'renderWarn');
+    Route::controller(GlobalController::class)->group(function () {
         Route::get('/call-helper-function', 'callRenderBody')->name('call-helper-function');
         Route::get('lang/{lang}', ['as' => 'lang.switch', 'uses' => 'switchLang']);
         Route::get('/warning', 'showWarning')->name('warning');

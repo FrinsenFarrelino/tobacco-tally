@@ -165,52 +165,26 @@ class Controller extends BaseController
     {
         $setValueFeature = '';
         if (Session::get('user_group')['name'] === 'Admin') {
-            if ($code == 'locked_principal') {
-                $setValueFeature .= '|' . 'locked';
-            } elseif ($code == 'pre_order') {
-                $setValueFeature .= '|' . 'add';
-                $setValueFeature .= '|' . 'edit';
-                $setValueFeature .= '|' . 'delete';
-                $setValueFeature .= '|' . 'rollbackdraft';
-                $setValueFeature .= '|' . 'rollbackreqrfq';
-            } else {
-                $setValueFeature .= '|' . 'add';
-                $setValueFeature .= '|' . 'edit';
-                $setValueFeature .= '|' . 'delete';
-            }
+            $setValueFeature .= '|' . 'add';
+            $setValueFeature .= '|' . 'edit';
+            $setValueFeature .= '|' . 'delete';
         } else {
             if (Session::has('list_menu') && Session::has('access_menu')) {
                 $listMenu = Session::get('list_menu');
-                $accessMaster = Session::get('access_menu');
+                $accessMenu = Session::get('access_menu');
 
                 foreach ($listMenu as $list_menu) {
                     if ($list_menu['code'] == $code) {
-                        foreach ($accessMaster as $access_master) {
-                            if ($access_master['menu_id'] == $list_menu['id']) {
-                                if ($access_master['add'] == true) {
-                                    if ($code == 'locked_principal') {
-                                        $setValueFeature .= '|' . 'locked';
-                                    } else {
-                                        $setValueFeature .= '|' . 'add';
-                                    }
+                        foreach ($accessMenu as $access_menu) {
+                            if ($access_menu['menu_id'] == $list_menu['id']) {
+                                if ($access_menu['add'] == true) {
+                                    $setValueFeature .= '|' . 'add';
                                 }
-                                if ($access_master['edit'] == true) {
-                                    if ($code == 'locked_principal') {
-                                        $setValueFeature .= '|' . 'locked';
-                                    } elseif ($code == 'pre_order') {
-                                        $setValueFeature .= '|' . 'edit';
-                                        $setValueFeature .= '|' . 'rollbackdraft';
-                                        $setValueFeature .= '|' . 'rollbackreqrfq';
-                                    } else {
-                                        $setValueFeature .= '|' . 'edit';
-                                    }
+                                if ($access_menu['edit'] == true) {
+                                    $setValueFeature .= '|' . 'edit';
                                 }
-                                if ($access_master['delete'] == true) {
-                                    if ($code == 'locked_principal') {
-                                        $setValueFeature .= '|' . 'locked';
-                                    } else {
-                                        $setValueFeature .= '|' . 'delete';
-                                    }
+                                if ($access_menu['delete'] == true) {
+                                    $setValueFeature .= '|' . 'delete';
                                 }
                                 break;
                             }

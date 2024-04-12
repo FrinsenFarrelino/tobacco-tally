@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\LoginRequest;
+use App\Models\AccessMenu;
 use App\Models\Menu;
 use App\Models\UserGroup;
 
@@ -85,8 +86,25 @@ class DashboardController extends Controller
             Session::put('user', $user);
             $list_menu = Menu::where('is_active', 1)->orderBy("order", "asc")->get();
             Session::put('list_menu', $list_menu);
-            $userGroupName = UserGroup::where('id', Session::get('user')['user_group_id'])->first();
-            Session::put('user_group', $userGroupName);
+            $userGroup = UserGroup::where('id', Session::get('user')['user_group_id'])->first();
+            Session::put('user_group', $userGroup);
+            $getAccessMenu = AccessMenu::where('user_group_id', $userGroup->id)
+                ->with(['menu' => function ($query) {
+                    $query->select('id', 'code');
+                }])
+                ->select('access_menus.id', 'access_menus.user_group_id', 'access_menus.menu_id', 'open', 'add', 'edit', 'delete', 'print', 'approve', 'disapprove')
+                ->distinct('access_menus.menu_id')
+                ->orderBy('access_menus.menu_id')
+                ->orderBy('open', 'DESC')
+                ->orderBy('add', 'DESC')
+                ->orderBy('edit', 'DESC')
+                ->orderBy('delete', 'DESC')
+                ->orderBy('print', 'DESC')
+                ->orderBy('approve', 'DESC')
+                ->orderBy('disapprove', 'DESC')
+                ->leftJoin('menus', 'access_menus.menu_id', '=', 'menus.id')
+                ->get();
+            Session::put('access_menu', $getAccessMenu);
             
             return redirect()->route('dashboard');
         } catch (\Exception $e) {

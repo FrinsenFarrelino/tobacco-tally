@@ -15,9 +15,7 @@ return new class extends Migration
         Schema::create('user_groups', function (Blueprint $table) {
             $table->id();
             $table->string('name', 200);
-            DB::statement("DROP TYPE IF EXISTS user_groups_category");
-            DB::statement("CREATE TYPE user_groups_category AS ENUM ('admin-lombok', 'admin-bjn', 'manager')");
-            $table->enum('category', ['admin-lombok', 'admin-bjn', 'manager']);
+            $table->foreignId('branch_id')->nullable()->constrained('branches');
             $table->text('remark')->nullable();
             $table->boolean('is_active')->default(1);
             $table->foreignId('created_by')->nullable()->constrained('users');

@@ -620,6 +620,9 @@ class GlobalController extends Controller
                         $data = $this->modelName($actionsToModel[$action])::where('id', $id)
                             ->update($newData);
                     }
+                    if (!$is_approve) {
+                        return $message;
+                    }
                 }
             }
             // Transaction

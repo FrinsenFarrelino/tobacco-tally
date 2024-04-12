@@ -34,12 +34,15 @@ class GlobalVariable
     // TRANSACTION
     public $actionGetPurchase;
     public $actionGetSale;
+    public $actionGetOutgoingStock;
+    public $actionGetIncomingStock;
 
     // REPORT
     public $actionGetStockReport;
 
     // SETTING
-
+    public $actionGetUser;
+    public $actionGetUserGroup;
 
     public function __construct()
     {
@@ -66,9 +69,15 @@ class GlobalVariable
         // transaction
         $this->actionGetPurchase = 'getPurchase';
         $this->actionGetSale = 'getSale';
+        $this->actionGetOutgoingStock = 'getOutgoingStock';
+        $this->actionGetIncomingStock = 'getIncomingStock';
 
         // report
         $this->actionGetStockReport = 'getStockReport';
+
+        // setting
+        $this->actionGetUser = 'getUser';
+        $this->actionGetUserGroup = 'getUserGroup';
     }
 
     public function ModuleGlobal($module, $subModule, $menuUrl, $menuRoute, $menuParam)

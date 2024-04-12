@@ -31,6 +31,10 @@ class GlobalActionController extends Controller
         'getPurchaseItemGrid' => 'Purchase',
         'getSale' => 'Sale',
         'getSaleItemGrid' => 'Sale',
+        'getIncomingStock' => 'IncomingStock',
+        'getIncomingStockItemGrid' => 'IncomingStock',
+        'getOutgoingStock' => 'OutgoingStock',
+        'getOutgoingStockItemGrid' => 'OutgoingStock',
 
         // GET REPORT
         'getStockReport' => 'StockReport',
@@ -56,6 +60,8 @@ class GlobalActionController extends Controller
         // ADD TRANSACTION
         'addPurchase' => 'Purchase',
         'addSale' => 'Sale',
+        'addIncomingStock' => 'IncomingStock',
+        'addOutgoingStock' => 'OutgoingStock',
 
         // UPDATE
         'updateProvince' => 'Province',
@@ -80,6 +86,10 @@ class GlobalActionController extends Controller
         'updateStatusPurchase' => 'Purchase',
         'updateSale' => 'Sale',
         'updateStatusSale' => 'Sale',
+        'updateIncomingStock' => 'IncomingStock',
+        'updateStatusIncomingStock' => 'IncomingStock',
+        'updateOutgoingStock' => 'OutgoingStock',
+        'updateStatusOutgoingStock' => 'OutgoingStock',
 
         // SOFT DELETES
         'softDeleteProvince' => 'Province',
@@ -102,6 +112,8 @@ class GlobalActionController extends Controller
         // SOFT DELETE TRANSACTION
         'softDeletePurchase' => 'Purchase',
         'softDeleteSale' => 'Sale',
+        'softDeleteIncomingStock' => 'IncomingStock',
+        'softDeleteOutgoingStock' => 'OutgoingStock',
     ];
 
 
