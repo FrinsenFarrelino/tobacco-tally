@@ -32,12 +32,12 @@
                 <div class="card">
                     <div class="d-flex justify-content-between">
                         <div class="card-header">
-                            <h4>{{ __('report_stock_balance')['list'] }} {{ $title }} - {{ $subtitle }}</h4>
+                            <h4>{{ __('transaction_warehouse_outgoing_item')['list'] }} {{ $title }} - {{ $subtitle }}</h4>
                         </div>
                         <div class="d-flex justify-content-end align-items-center pr-3">
-                            {!! $list_nav_button['reload'] !!}
+                                {!! $list_nav_button['reload'] !!}
                             @if (isset($list_nav_button['add']))
-                            {!! $list_nav_button['add'] !!}
+                                {!! $list_nav_button['add'] !!}
                             @endif
                         </div>
                     </div>
@@ -47,12 +47,10 @@
                                 <thead>
                                     <tr>
                                         <th></th>
-                                        <th>{{ __('report_stock_balance')['col_warehouse'] }}</th>
-                                        <th>{{ __('report_stock_balance')['col_item_code'] }}</th>
-                                        <th>{{ __('report_stock_balance')['col_item_name'] }}</th>
-                                        <th>{{ __('report_stock_balance')['col_stock'] }}</th>
-                                        <th>{{ __('report_stock_balance')['col_unit'] }}</th>
-                                        <th>{{ __('report_stock_balance')['col_stock_updated_at'] }}</th>
+                                        <th>{{ __('transaction_warehouse_outgoing_item')['col_code'] }}</th>
+                                        <th>{{ __('transaction_warehouse_outgoing_item')['col_date'] }}</th>
+                                        <th>{{ __('transaction_warehouse_outgoing_item')['col_is_approve'] }}</th>
+                                        <th>{{ __('transaction_warehouse_outgoing_item')['col_action'] }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -65,13 +63,15 @@
         </div>
     </div>
 </section>
+<?php echo renderBaseModel(); ?>
+
 @endsection
 
 @section('scripts')
 <script>
     $(document).ready(function() {
         setMenuActive();
-
+        
         $('#myTable').DataTable({
             processing: true,
             serverSide: false,
@@ -81,10 +81,10 @@
                 type: "GET",
                 data: function(d) {
                     d.route = "{{ $menu_route }}";
+                    // d.filters = 'array("key" => "stock_transfers.is_approve_1", "term" => "equal", "query" => "true")';
                 }
             },
-            columns: [
-                {
+            columns: [{
                     data: null,
                     render: function(data, type, row, meta) {
                         return meta.row + 1;
@@ -93,28 +93,37 @@
                     searchable: false
                 },
                 {
-                    data: 'name',
-                    name: 'name'
+                    data: 'code',
+                    name: 'code'
                 },
                 {
-                    data: 'item_code',
-                    name: 'items.code'
+                    data: 'date',
+                    name: 'date'
                 },
                 {
-                    data: 'item_name',
-                    name: 'items.name'
+                    data: 'is_approve_1',
+                    name: 'is_approve_1'
                 },
                 {
-                    data: 'stock',
-                    name: 'stock'
-                },
-                {
-                    data: 'unit_name',
-                    name: 'units.name'
-                },
-                {
-                    data: 'stock_updated_at',
-                    name: 'stock_updated_at'
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, row) {
+                        var showButton = '<a href="' + row.showUrl + '" class="btn btn-secondary btn-sm rounded-circle"><i class="fas fa-eye"></i></a>';
+                        var editButton = '<a href="' + row.editUrl + '" class="btn btn-warning btn-sm ml-2 rounded-circle"><i class="fas fa-pencil-alt"></i></a>';
+                        var deleteButton = '<button class="btn btn-danger btn-sm ml-2 rounded-circle btnDestroy" type="button" data-id="' + row.id + '"><i class="fas fa-trash-alt"></i></button>';
+                        var approveButton = '<a href="' + row.approveUrl + '" class="btn btn-success btn-sm ml-2 rounded-circle"><i class="fas fa-check"></i></a>';
+                        var disapproveButton = '<a href="' + row.disapproveUrl + '" class="btn btn-danger btn-sm ml-2 rounded-circle"><i class="fas fa-ban"></i></a>';
+
+                        if (row.is_approve_1 == 'Not Approved') {
+                            return showButton + editButton + deleteButton + approveButton;
+                        } else if (row.is_approve_1 == 'Approved') {
+                            return showButton + disapproveButton;
+                        } else if (row.is_approve_2 == 'Approved') {
+                            return showButton;
+                        }
+                    }
                 }
             ],
             language: {
@@ -124,6 +133,10 @@
                 },
             }
         });
+
+        // untuk pop up delete modal data
+        <?php echo renderOpenModal(); ?>
+        <?php echo renderScriptButtonTable('btnDestroy', 'confirmations', 'fa-solid fa-triangle-exclamation fa-beat-fade', '#FF0000', 'title_delete', 'content_delete', $menu_route, $menu_param); ?>
     });
 </script>
 @endsection

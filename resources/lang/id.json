@@ -33,12 +33,26 @@
         "success_update_purchase": "Pembelian Berhasil Diperbarui",
         "error_update_purchase": "Pembelian Gagal Diperbarui",
 
-        "title_approve_penjualan": "Approve Penjualan",
-        "content_approve_penjualan": "Apakah Anda menyetujui Penjualan ini?",
-        "title_disapprove_penjualan": "Disapprove Penjualan",
-        "content_disapprove_penjualan": "Apakah Anda tidak menyetujui Penjualan ini?",
-        "success_update_penjualan": "Penjualan Berhasil Diperbarui",
-        "error_update_penjualan": "Penjualan Gagal Diperbarui",
+        "title_approve_sale": "Approve Penjualan",
+        "content_approve_sale": "Apakah Anda menyetujui Penjualan ini?",
+        "title_disapprove_sale": "Disapprove Penjualan",
+        "content_disapprove_sale": "Apakah Anda tidak menyetujui Penjualan ini?",
+        "success_update_sale": "Penjualan Berhasil Diperbarui",
+        "error_update_sale": "Penjualan Gagal Diperbarui",
+
+        "title_approve_outgoing_item": "Approve Barang Keluar",
+        "content_approve_outgoing_item": "Apakah Anda menyetujui Barang Keluar ini?",
+        "title_disapprove_outgoing_item": "Disapprove Barang Keluar",
+        "content_disapprove_outgoing_item": "Apakah Anda tidak menyetujui Barang Keluar ini?",
+        "success_update_outgoing_item": "Barang Keluar Berhasil Diperbarui",
+        "error_update_outgoing_item": "Barang Keluar Gagal Diperbarui",
+
+        "title_approve_incoming_item": "Approve Barang Masuk",
+        "content_approve_incoming_item": "Apakah Anda menyetujui Barang Masuk ini?",
+        "title_disapprove_incoming_item": "Disapprove Barang Masuk",
+        "content_disapprove_incoming_item": "Apakah Anda tidak menyetujui Barang Masuk ini?",
+        "success_update_incoming_item": "Barang Masuk Berhasil Diperbarui",
+        "error_update_incoming_item": "Barang Masuk Gagal Diperbarui",
 
         "button_confirm": "Konfirmasi",
         "button_cancel": "Batal"
@@ -511,7 +525,8 @@
         "name": "Sisa Stok",
         "list": "Daftar",
         "col_warehouse": "Warehouse",
-        "col_item": "Barang",
+        "col_item_code": "Kode Barang",
+        "col_item_name": "Nama Barang",
         "col_unit": "Satuan",
         "col_stock": "Stok Tersedia",
         "col_stock_updated_at": "Stok Terakhir Diperbarui"
@@ -531,7 +546,8 @@
         "col_item_code": "Kode",
         "col_item_name": "Nama",
         "col_amount": "Jumlah",
-        "col_unit": "Satuan"
+        "col_unit": "Satuan",
+        "col_is_approve": "Status"
     },
 
     "transaction_warehouse_incoming_item": {
@@ -549,6 +565,6 @@
         "col_item_name": "Nama",
         "col_amount": "Jumlah",
         "col_unit": "Satuan",
-        "col_warehouse": "Warehouse"
+        "col_is_approve": "Status"
     }
 }

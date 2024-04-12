@@ -34,8 +34,8 @@ class GlobalVariable
     // TRANSACTION
     public $actionGetPurchase;
     public $actionGetSale;
-    public $actionGetOutgoingStock;
-    public $actionGetIncomingStock;
+    public $actionGetOutgoingItem;
+    public $actionGetIncomingItem;
 
     // REPORT
     public $actionGetStockReport;
@@ -69,8 +69,8 @@ class GlobalVariable
         // transaction
         $this->actionGetPurchase = 'getPurchase';
         $this->actionGetSale = 'getSale';
-        $this->actionGetOutgoingStock = 'getOutgoingStock';
-        $this->actionGetIncomingStock = 'getIncomingStock';
+        $this->actionGetOutgoingItem = 'getOutgoingItem';
+        $this->actionGetIncomingItem = 'getIncomingItem';
 
         // report
         $this->actionGetStockReport = 'getStockReport';

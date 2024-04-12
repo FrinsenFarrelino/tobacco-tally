@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Services\CustomerGridService;
 use App\Http\Services\PurchaseGridService;
 use App\Http\Services\SaleGridService;
+use App\Http\Services\StockTransferGridService;
 use App\Models\Branch;
 use App\Models\Purchase;
 use App\Models\PurchaseItemDetail;
@@ -25,17 +26,20 @@ class GlobalController extends Controller
     protected $customerGridService;
     protected $purchaseGridService;
     protected $saleGridService;
+    protected $stockTransferGridService;
 
     public function __construct(
         GlobalActionController $globalActionController,
         CustomerGridService $customerGridService,
         PurchaseGridService $purchaseGridService,
         SaleGridService $saleGridService,
+        StockTransferGridService $stockTransferGridService,
     ) {
         $this->globalActionController = $globalActionController;
         $this->customerGridService = $customerGridService;
         $this->purchaseGridService = $purchaseGridService;
         $this->saleGridService = $saleGridService;
+        $this->stockTransferGridService = $stockTransferGridService;
     }
 
     public function requestGetData(Request $request)
@@ -140,6 +144,7 @@ class GlobalController extends Controller
                 'warehouses.*',
                 'branches.name as branch_name',
                 'items.name as item_name',
+                'items.code as item_code',
                 'categories.name as category_name',
                 'units.name as unit_name',
                 'created_by_user.name as created_by',
@@ -282,6 +287,20 @@ class GlobalController extends Controller
                 return response()->json(['success' => false, 'message' => 'Filter by Sale Id is required!'], 400);
             }
         }
+        elseif ($action == 'getOutgoingItemItemGrid' || $action == 'getIncomingItemItemGrid') {
+            // Must be filtered by sale id.
+            if (isset($filters['id'])) {
+                if (isset($columnHead)) {
+                    $result = $this->stockTransferGridService->getStockTransferItemGrid($filters['id'], $columnHead);
+
+                    return $result;
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Column head is required!'], 400);
+                }
+            } else {
+                return response()->json(['success' => false, 'message' => 'Filter by Stock Transfer Id is required!'], 400);
+            }
+        }
 
         // REPORT
         elseif ($action == 'getStockReport') {
@@ -409,6 +428,20 @@ class GlobalController extends Controller
                                     'subtotal' => $item['subtotal'] ?? 0,
                                 ];
                                 $data->items()->attach($saleItem['item_id'], $saleItem);
+                            }
+                        }
+                    }
+                } elseif ($action == 'addOutgoingItem') {
+                    if ($detailPayload != '') {
+                        $outgoingItems = $detailPayload[0]['transaction_warehouse_outgoing_item_item'];
+
+                        if ($outgoingItems != []) {
+                            foreach ($outgoingItems as $i => $item) {
+                                $outgoingItem = [
+                                    'item_id' => $item['item_id'] ?? null,
+                                    'amount' => $item['amount'] ?? 0,
+                                ];
+                                $data->items()->attach($outgoingItem['item_id'], $outgoingItem);
                             }
                         }
                     }
@@ -669,9 +702,58 @@ class GlobalController extends Controller
                         ];
                     } else {
                         $newData = [
-                            'approved_by' => auth()->id(),
+                            'approved_by' => null,
                             'is_approve' => false,
-                            'approved_at' => now(),
+                            'approved_at' => null,
+                        ];
+                    }
+                }
+                $data = $this->modelName($actionsToModel[$action])::where('id', $id)
+                    ->update($newData);
+            }
+            elseif ($action == 'updateOutgoingItem') {
+                // update grid
+                $data = $this->modelName($actionsToModel[$action])::where('id', $id)->first();
+
+                if ($data) {
+                    $data->update($requestBody);
+                    $outgoingItems = [];
+
+                    if (isset($requestBody['detail'])) {
+                        $outgoingItems = $requestBody['detail'][0]['transaction_warehouse_outgoing_item_item'];
+                    }
+
+                    if (empty($outgoingItems)) {
+                        $data->items()->detach();
+                    } else {
+                        $data->items()->detach();
+
+                        if ($outgoingItems != []) {
+                            foreach ($outgoingItems as $i => $item) {
+                                $outgoingItem = [
+                                    'item_id' => $item['item_id'] ?? null,
+                                    'amount' => $item['amount'] ?? 0,
+                                ];
+                                $data->items()->attach($outgoingItem['item_id'], $outgoingItem);
+                            }
+                        }
+                    }
+                }
+            } 
+            // Approval
+            elseif($action == 'updateStatusOutgoingItem') {
+                if (isset($requestBody['is_approve_1'])) {
+                    if ($requestBody['is_approve_1'] == 1) {
+                        $newData = [
+                            'approved_1_by' => auth()->id(),
+                            'is_approve_1' => true,
+                            'approved_1_at' => now(),
+                        ];
+                    } else {
+                        $newData = [
+                            'approved_1_by' => null,
+                            'is_approve_1' => false,
+                            'approved_1_at' => null,
                         ];
                     }
                 }
@@ -679,6 +761,7 @@ class GlobalController extends Controller
                     ->update($newData);
             }
             
+            // Default action
             else {
                 $data = $this->modelName($actionsToModel[$action])::where('id', $id)->update($requestBody);
             }
@@ -747,22 +830,22 @@ class GlobalController extends Controller
                 // Modify each row's data to include buttons
                 foreach ($data['data'] as $row) {
                     if (Route::has($request->route . '.edit')) {
-                        $row->editUrl = route($request->route . '.edit', [$request->route => $row->id]);
+                        $row->editUrl = route($request->route . '.edit', $row->id);
                     }
                     if (Route::has($request->route . '.destroy')) {
-                        $row->destroyUrl = route($request->route . '.destroy', [$request->route => $row->id]);
+                        $row->destroyUrl = route($request->route . '.destroy', $row->id);
                     }
                     if (Route::has($request->route . '.show')) {
-                        $row->showUrl = route($request->route . '.show', [$request->route => $row->id]);
+                        $row->showUrl = route($request->route . '.show', $row->id);
+                    }
+                    if (isset($row->is_approve) || isset($row->is_approve_1) || isset($row->is_approve_2)) {
+                        $row->approveUrl = route($request->route . '.show', $row->id . ',approve');
+                    }
+                    if (isset($row->is_approve) || isset($row->is_approve_1) || isset($row->is_approve_2)) {
+                        $row->disapproveUrl = route($request->route . '.show', $row->id . ',disapprove');
                     }
                     if (isset($row->is_approve)) {
-                        $row->approveUrl = route($request->route . '.show', [$request->route => $row->id . ',approve']);
-                    }
-                    if (isset($row->is_approve)) {
-                        $row->disapproveUrl = route($request->route . '.show', [$request->route => $row->id . ',disapprove']);
-                    }
-                    if (isset($row->is_approve)) {
-                        $row->printUrl = route($request->route . '.show', [$request->route => $row->id . ',print']);
+                        $row->printUrl = route($request->route . '.show', $row->id . ',print');
                     }
 
                     // change is active status
@@ -777,6 +860,18 @@ class GlobalController extends Controller
                         $row->is_approve = 'Approved';
                     } elseif (!$row->is_approve || $row->is_approve === 0) {
                         $row->is_approve = 'Not Approved';
+                    }
+
+                    if ($row->is_approve_1 || $row->is_approve_1 === 1) {
+                        $row->is_approve_1 = 'Approved';
+                    } elseif (!$row->is_approve_1 || $row->is_approve_1 === 0) {
+                        $row->is_approve_1 = 'Not Approved';
+                    }
+
+                    if ($row->is_approve_2 || $row->is_approve_2 === 1) {
+                        $row->is_approve_2 = 'Approved';
+                    } elseif (!$row->is_approve_2 || $row->is_approve_2 === 0) {
+                        $row->is_approve_2 = 'Not Approved';
                     }
 
                     // change is stock updated status
