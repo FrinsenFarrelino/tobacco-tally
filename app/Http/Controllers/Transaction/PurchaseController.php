@@ -172,6 +172,10 @@ class PurchaseController extends GlobalController
      */
     public function update(Request $request, string $id)
     {
+        $make_detail = $request->input('detail');
+        $detailArray = json_decode($make_detail, true);
+
+        $request->merge(['detail' => $detailArray]);
         $set_request = SetRequestGlobal('updatePurchase', $request);
         $result = $this->updateData($set_request, $id);
 
