@@ -20,7 +20,7 @@
 
     #loading-spinner {
         border: 8px solid #d9dbde;
-        border-top: 8px solid rgb(174, 23, 36);
+        border-top: 8px solid #572D0C;
         border-radius: 50%;
         width: 50px;
         height: 50px;

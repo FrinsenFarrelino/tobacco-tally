@@ -9,7 +9,11 @@ use App\Http\Services\CustomerGridService;
 use App\Http\Services\PurchaseGridService;
 use App\Http\Services\SaleGridService;
 use App\Models\Branch;
+use App\Models\Purchase;
+use App\Models\PurchaseItemDetail;
 use App\Models\StockBalance;
+use App\Models\StockReport;
+use App\Models\Warehouse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Route;
@@ -525,22 +529,98 @@ class GlobalController extends Controller
             // Approval
             elseif($action == 'updateStatusPurchase') {
                 if (isset($requestBody['is_approve'])) {
+                    $is_approve = true;
                     if ($requestBody['is_approve'] == 1) {
+                        // Basic Approve
                         $newData = [
                             'approved_by' => auth()->id(),
                             'is_approve' => true,
                             'approved_at' => now(),
                         ];
+
+                        // Find header purchase data
+                        $purchase = Purchase::where('id', $id)->first();
+                        // Find data item yang di purchase
+                        $purchaseItem = PurchaseItemDetail::where('purchase_id', $id)->get();
+
+                        if (!$purchaseItem->isEmpty()) {
+                            foreach ($purchaseItem as $item) {
+                                // Cari Warehouse yang sesuai dengan item tersebut
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                // tambah stok tersedia
+                                if($warehouse) {
+                                    $warehouse->update([
+                                        'stock' => $warehouse->stock + $item->amount,
+                                        'stock_updated_at' => now()
+                                    ]);
+                                } else {
+                                    $is_approve = false;
+                                    $message = [
+                                        'type' => 'Error',
+                                        'message' => trans('warehouse_not_found')
+                                    ];
+                                    break;
+                                }
+                                // tambah data laporan barang masuk
+                                StockReport::create([
+                                    'transaction_code' => $purchase->code,
+                                    'warehouse_id' => $warehouse->id,
+                                    'amount' => '+' . $item->amount,
+                                    'remark' => 'Approve Purchase',
+                                    'date' => now()
+                                ]);
+                            }
+                        } else {
+                            $is_approve = false;
+                            $message = [
+                                'type' => 'Error',
+                                'message' => trans('item_not_found')
+                            ];
+                        }
+
+                        if ($is_approve) {
+                            $data = $this->modelName($actionsToModel[$action])::where('id', $id)
+                                ->update($newData);
+                        }
                     } else {
+                        // Basic disapprove
                         $newData = [
-                            'approved_by' => auth()->id(),
+                            'approved_by' => null,
                             'is_approve' => false,
-                            'approved_at' => now(),
+                            'approved_at' => null,
                         ];
+
+                        // Find header purchase data
+                        $purchase = Purchase::where('id', $id)->first();
+                        // Find data item yang di purchase
+                        $purchaseItem = PurchaseItemDetail::where('purchase_id', $id)->get();
+
+                        if (!$purchaseItem->isEmpty()) {
+                            foreach ($purchaseItem as $item) {
+                                // Cari Warehouse yang sesuai dengan item tersebut
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                // tambah stok tersedia
+                                if($warehouse) {
+                                    $warehouse->update([
+                                        'stock' => $warehouse->stock - $item->amount,
+                                        'stock_updated_at' => now()
+                                    ]);
+                                }
+                                // tambah data laporan barang masuk
+                                StockReport::create([
+                                    'transaction_code' => $purchase->code,
+                                    'warehouse_id' => $warehouse->id,
+                                    'amount' => '-' . $item->amount,
+                                    'remark' => 'Disapprove Purchase',
+                                    'date' => now()
+                                ]);
+                            }
+                        }
+                        
+                        $data = $this->modelName($actionsToModel[$action])::where('id', $id)
+                            ->update($newData);
                     }
                 }
-                $data = $this->modelName($actionsToModel[$action])::where('id', $id)
-                    ->update($newData);
             }
             // Transaction
             elseif ($action == 'updateSale') {
@@ -600,6 +680,13 @@ class GlobalController extends Controller
 
             return $data;
         });
+
+        if (isset($result['type'])) {
+            if ($result['type'] === 'Error') {
+                $result = array('success' => false, 'message' => $result['message']);
+                return $result;
+            }
+        }
 
         $data = $this->modelName($actionsToModel[$action])::where('id', $id)->get();
         $result = array('success' => true, 'data' => $data);

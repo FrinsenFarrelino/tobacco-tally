@@ -250,6 +250,7 @@
                     method: "POST",
                     data: { 
                         is_approve: is_approve,
+                        branch_id: "{{ Session::get('user')['branch_id']; }}",
                         _token: '{{ csrf_token() }}'
                     },
                     beforeSend: function() {

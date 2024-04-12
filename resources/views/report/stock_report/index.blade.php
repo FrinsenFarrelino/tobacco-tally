@@ -52,6 +52,7 @@
                                         <th>{{ __('report_stock_report')['col_item'] }}</th>
                                         <th>{{ __('report_stock_report')['col_amount'] }}</th>
                                         <th>{{ __('report_stock_report')['col_unit'] }}</th>
+                                        <th>{{ __('report_stock_report')['col_remark'] }}</th>
                                         <th>{{ __('report_stock_report')['col_date'] }}</th>
                                     </tr>
                                 </thead>
@@ -113,8 +114,12 @@
                     name: 'units.name'
                 },
                 {
-                    data: 'created_at',
-                    name: 'created_at'
+                    data: 'remark',
+                    name: 'remark'
+                },
+                {
+                    data: 'date',
+                    name: 'date'
                 }
             ],
             language: {
