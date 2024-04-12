@@ -82,9 +82,6 @@ class PurchaseController extends GlobalController
 
         $request->merge(['detail' => $detailArray]);
 
-        $branch_id = Session::get('user_group')['branch_id'];
-        $request->merge(['branch_id' => $branch_id]);
-
         $set_request = SetRequestGlobal('addPurchase', $request, formatCode: 'code_purchase');
         $result = $this->addData($set_request);
 
