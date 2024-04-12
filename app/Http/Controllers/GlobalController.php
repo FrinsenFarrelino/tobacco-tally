@@ -369,14 +369,7 @@ class GlobalController extends Controller
             $requestBody['company_id'] = $detailPayload[3]['user_company'][0]['company_id'] ?? null;
             $requestBody['user_group_id'] = $detailPayload[2]['user_group'][0]['user_group_id'] ?? null;
         } else {
-            if($action == 'addPurchase' || $action == 'addSale') {
-                $requestBody['branch_code'] = Branch::where('id', $requestBody['branch_id'])->first();
-                $stringBranch = ['code' => $requestBody['branch_code']['code']];
-            } else {
-                $stringBranch = [];
-            }
-
-            $formattedCode = $this->formatCode($requestBody['format_code'] ?? '', "", $stringBranch);
+            $formattedCode = $this->formatCode($requestBody['format_code'] ?? '', "");
         }
 
         $requestBody['code'] = $formattedCode ?? $requestBody['manual_code'] ?? '';

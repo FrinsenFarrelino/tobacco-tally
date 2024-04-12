@@ -23,7 +23,7 @@ class Controller extends BaseController
         return $set;
     }
 
-    function formatCode($stringCode = "", $stringDate = "", $stringBranch = [])
+    function formatCode($stringCode = "", $stringDate = "")
     {
         $formatCode = DB::table('variables')
             ->where('code', $stringCode)
@@ -65,33 +65,15 @@ class Controller extends BaseController
                 $ym = $y;
             }
 
-            $branch = !empty($stringBranch['code']) ? $stringBranch['code'] : null;
+            // $branch = !empty($stringBranch['code']) ? $stringBranch['code'] : null;
 
             if (!empty($type)) {
                 switch ($type) {
-                    case "str-cab-tgl":
-                        $formattedCode = $initial . $separator . $branch . $separator . $ym . $separator;
-                        break;
                     case "str-tgl":
                         $formattedCode = $initial . $separator . $ym . $separator;
                         break;
-                    case "cab-str":
-                        $formattedCode = $branch . $separator . $initial . $separator;
-                        break;
-                    case "cab-str-tgl":
-                        $formattedCode = $branch . $separator . $initial . $separator . $ym . $separator;
-                        break;
-                    case "cab-str-tgl2":
-                        $formattedCode = $branch . $initial . $ym;
-                        break;
-                    case "cab":
-                        $formattedCode = $branch . $separator;
-                        break;
                     case "str":
                         $formattedCode = $initial . $separator;
-                        break;
-                    case "str-cab-tgl-transaction":
-                        $formattedCode = $initial . $separator . $branch . $separator . $ym . $separator;
                         break;
                     case "str-tgl-transaction":
                         $formattedCode = $initial . $separator . $ym . $separator;
@@ -101,7 +83,7 @@ class Controller extends BaseController
                         break;
                 }
             } elseif (!empty($date_format)) {
-                $formattedCode = $branch . $separator . $initial . $separator . $ym . $separator;
+                $formattedCode = $initial . $separator . $ym . $separator;
             }
 
             
@@ -111,8 +93,8 @@ class Controller extends BaseController
                     ->latest()->first();
                 if($latestData) {
                     $codeFormat = explode("/", $latestData->code);
-                    if(count($codeFormat) > 2) {
-                        if ($codeFormat[2] !== $ym) {
+                    if(count($codeFormat) > 1) {
+                        if ($codeFormat[1] !== $ym) {
                             $lastNumber = 0;
                         } else {
                             $lastDigit = explode("0",end($codeFormat));
