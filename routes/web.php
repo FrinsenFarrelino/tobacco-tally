@@ -104,7 +104,12 @@ Route::group(['middleware' => ['web']], function () {
                         Route::post('outgoing-item/update-status/{id}', [OutgoingItemController::class, 'updateStatus'])->name('update-status-outgoing-item');
                         Route::get('outgoing-item/print/{outgoing_item}', [OutgoingItemController::class, 'createPDF'])->name('outgoing-item.print');
                     });
-                    Route::resource('incoming-item', IncomingItemController::class);
+                    Route::controller(IncomingItemController::class)->group(function () {
+                        Route::get('incoming-item', [IncomingItemController::class, 'index'])->name('incoming-item.index');
+                        Route::get('incoming-item/{incoming_item}', [IncomingItemController::class, 'show'])->name('incoming-item.show');
+                        Route::post('incoming-item/update-status/{id}', [IncomingItemController::class, 'updateStatus'])->name('update-status-incoming-item');
+                        Route::get('incoming-item/print/{incoming_item}', [IncomingItemController::class, 'createPDF'])->name('incoming-item.print');
+                    });
                 });
             });
 

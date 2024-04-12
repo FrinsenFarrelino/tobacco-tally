@@ -545,8 +545,10 @@
         "col_warehouse": "Warehouse",
         "col_item_code": "Item Code",
         "col_item_name": "Item Name",
+        "col_category": "Category",
         "col_unit": "Unit",
         "col_stock": "Stock",
+        "col_branch": "Branch",
         "col_stock_updated_at": "Stock Updated At"
     },
 

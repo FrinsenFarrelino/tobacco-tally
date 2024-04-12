@@ -527,8 +527,10 @@
         "col_warehouse": "Warehouse",
         "col_item_code": "Kode Barang",
         "col_item_name": "Nama Barang",
+        "col_category": "Category",
         "col_unit": "Satuan",
         "col_stock": "Stok Tersedia",
+        "col_branch": "Cabang",
         "col_stock_updated_at": "Stok Terakhir Diperbarui"
     },
 
