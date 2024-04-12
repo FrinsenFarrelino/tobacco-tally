@@ -252,6 +252,7 @@
                     method: "POST",
                     data: { 
                         is_approve: is_approve,
+                        branch_id: "{{ Session::get('user_group')['branch_id']; }}",
                         _token: '{{ csrf_token() }}'
                     },
                     beforeSend: function() {
