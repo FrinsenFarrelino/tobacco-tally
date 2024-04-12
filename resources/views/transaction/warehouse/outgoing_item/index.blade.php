@@ -116,13 +116,13 @@
                         var approveButton = '<a href="' + row.approveUrl + '" class="btn btn-success btn-sm ml-2 rounded-circle"><i class="fas fa-check"></i></a>';
                         var disapproveButton = '<a href="' + row.disapproveUrl + '" class="btn btn-danger btn-sm ml-2 rounded-circle"><i class="fas fa-ban"></i></a>';
 
-                        if (row.is_approve_1 == 'Not Approved') {
+                        if (row.is_approve_2 == 'Approved') {
+                            return showButton;
+                        } else if (row.is_approve_1 == 'Not Approved') {
                             return showButton + editButton + deleteButton + approveButton;
                         } else if (row.is_approve_1 == 'Approved') {
                             return showButton + disapproveButton;
-                        } else if (row.is_approve_2 == 'Approved') {
-                            return showButton;
-                        }
+                        } 
                     }
                 }
             ],

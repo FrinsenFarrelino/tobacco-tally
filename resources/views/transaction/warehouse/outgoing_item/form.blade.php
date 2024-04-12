@@ -32,12 +32,15 @@
                             </div>
                             <div class="d-flex justify-content-end align-items-center pr-3">
                                 <?php
-                                    $is_approve = $transaction_warehouse_outgoing_item['is_approve'] ?? 0;
+                                    $is_approve = $transaction_warehouse_outgoing_item['is_approve_1'] ?? 0;
+                                    $is_approve_2 = $transaction_warehouse_outgoing_item['is_approve_2'] ?? 0;
                                 ?>
                                 @if ($mode == 'edit')
                                     {!! $list_nav_button['cancel'] !!}
                                     @if (isset($list_nav_button['save']))
-                                        {!! $list_nav_button['save'] !!}
+                                        @if ($is_approve == false && $is_approve_2 == false)
+                                            {!! $list_nav_button['save'] !!}
+                                        @endif
                                     @endif
                                 @elseif ($mode == 'view')
                                     {!! $list_nav_button['back'] !!}
@@ -47,17 +50,14 @@
                                         @endif
                                     @endif
                                     @if (isset($list_nav_button['approve']))
-                                        @if ($show_button == 'approve')
+                                        @if ($show_button == 'approve' && $is_approve == false)
                                             {!! $list_nav_button['approve'] !!}
                                         @endif
                                     @endif
                                     @if (isset($list_nav_button['disapprove']))
-                                        @if ($show_button == 'disapprove')
+                                        @if ($show_button == 'disapprove' && $is_approve == true && $is_approve_2 == false)
                                             {!! $list_nav_button['disapprove'] !!}
                                         @endif
-                                    @endif
-                                    @if ($is_approve == true)
-                                        {!! $list_nav_button['print'] !!}
                                     @endif
                                 @else
                                     {!! $list_nav_button['back'] !!}
