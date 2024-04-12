@@ -184,7 +184,7 @@
 
 @section('scripts')
 <script>
-    <?php echo autocomplete_render("transaction_sale_item",["items.name|like"],"getItem", ['code','name'], ['code']) ?>
+    <?php echo autocomplete_render("transaction_sale_item",["items.name|like"],"getItem", ['code','name','category_name'], ['code']) ?>
 
     function setSubtotalPerItem(rowid) {
         var rowData = $(<?= $grid_id ?>_element).jqGrid('getRowData', rowid);

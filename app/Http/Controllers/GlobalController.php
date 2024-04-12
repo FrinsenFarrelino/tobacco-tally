@@ -14,6 +14,8 @@ use App\Models\Purchase;
 use App\Models\PurchaseItemDetail;
 use App\Models\StockBalance;
 use App\Models\StockReport;
+use App\Models\StockTransfer;
+use App\Models\StockTransferItemDetail;
 use App\Models\Warehouse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
@@ -743,22 +745,200 @@ class GlobalController extends Controller
             // Approval
             elseif($action == 'updateStatusOutgoingItem') {
                 if (isset($requestBody['is_approve_1'])) {
+                    $is_approve = true;
                     if ($requestBody['is_approve_1'] == 1) {
                         $newData = [
                             'approved_1_by' => auth()->id(),
                             'is_approve_1' => true,
                             'approved_1_at' => now(),
                         ];
+
+                        // Find header stockTransfer data
+                        $stockTransfer = StockTransfer::where('id', $id)->first();
+                        // Find data item yang di stockTransfer
+                        $stockTransferItem = StockTransferItemDetail::where('stock_transfer_id', $id)->get();
+
+                        if (!$stockTransferItem->isEmpty()) {
+                            foreach ($stockTransferItem as $item) {
+                                // Cari Warehouse yang sesuai dengan item tersebut
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                // kurangi stok tersedia
+                                if($warehouse) {
+                                    $warehouse->update([
+                                        'stock' => $warehouse->stock - $item->amount,
+                                        'stock_updated_at' => now()
+                                    ]);
+                                } else {
+                                    $is_approve = false;
+                                    $message = [
+                                        'type' => 'Error',
+                                        'message' => trans('warehouse_not_found')
+                                    ];
+                                    break;
+                                }
+                                // tambah data laporan barang masuk
+                                StockReport::create([
+                                    'transaction_code' => $stockTransfer->code,
+                                    'warehouse_id' => $warehouse->id,
+                                    'amount' => '-' . $item->amount,
+                                    'remark' => 'Approve Stock Transfer (Outgoing)',
+                                    'date' => now()
+                                ]);
+                            }
+                        } else {
+                            $is_approve = false;
+                            $message = [
+                                'type' => 'Error',
+                                'message' => trans('item_not_found')
+                            ];
+                        }
+
+                        if ($is_approve) {
+                            $data = $this->modelName($actionsToModel[$action])::where('id', $id)
+                                ->update($newData);
+                        }
                     } else {
                         $newData = [
                             'approved_1_by' => null,
                             'is_approve_1' => false,
                             'approved_1_at' => null,
                         ];
+
+                        // Find header stockTransfer data
+                        $stockTransfer = StockTransfer::where('id', $id)->first();
+                        $stockTransferCode = $stockTransfer->code;
+
+                        // Find data item yang di purchase
+                        $stockTransfer = StockTransferItemDetail::where('stock_transfer_id', $id)->get();
+
+                        if (!$stockTransfer->isEmpty()) {
+                            foreach ($stockTransfer as $item) {
+                                // Cari Warehouse yang sesuai dengan item tersebut
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                // tambah stok tersedia
+                                if($warehouse) {
+                                    $warehouse->update([
+                                        'stock' => $warehouse->stock + $item->amount,
+                                        'stock_updated_at' => now()
+                                    ]);
+                                }
+                                // tambah data laporan barang masuk
+                                StockReport::create([
+                                    'transaction_code' => $stockTransferCode,
+                                    'warehouse_id' => $warehouse->id,
+                                    'amount' => '+' . $item->amount,
+                                    'remark' => 'Disapprove Stock Transfer (Outgoing)',
+                                    'date' => now()
+                                ]);
+                            }
+                        }
+                        
+                        $data = $this->modelName($actionsToModel[$action])::where('id', $id)
+                            ->update($newData);
+                    }
+                    if (!$is_approve) {
+                        return $message;
                     }
                 }
-                $data = $this->modelName($actionsToModel[$action])::where('id', $id)
-                    ->update($newData);
+            }
+            // Approval
+            elseif($action == 'updateStatusIncomingItem') {
+                if (isset($requestBody['is_approve_2'])) {
+                    $is_approve = true;
+                    if ($requestBody['is_approve_2'] == 1) {
+                        $newData = [
+                            'approved_2_by' => auth()->id(),
+                            'is_approve_2' => true,
+                            'approved_2_at' => now(),
+                        ];
+
+                        // Find header stockTransfer data
+                        $stockTransfer = StockTransfer::where('id', $id)->first();
+                        // Find data item yang di stockTransfer
+                        $stockTransferItem = StockTransferItemDetail::where('stock_transfer_id', $id)->get();
+
+                        if (!$stockTransferItem->isEmpty()) {
+                            foreach ($stockTransferItem as $item) {
+                                // Cari Warehouse yang sesuai dengan item tersebut
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                // kurangi stok tersedia
+                                if($warehouse) {
+                                    $warehouse->update([
+                                        'stock' => $warehouse->stock + $item->amount,
+                                        'stock_updated_at' => now()
+                                    ]);
+                                } else {
+                                    $is_approve = false;
+                                    $message = [
+                                        'type' => 'Error',
+                                        'message' => trans('warehouse_not_found')
+                                    ];
+                                    break;
+                                }
+                                // tambah data laporan barang masuk
+                                StockReport::create([
+                                    'transaction_code' => $stockTransfer->code,
+                                    'warehouse_id' => $warehouse->id,
+                                    'amount' => '+' . $item->amount,
+                                    'remark' => 'Approve Stock Transfer (Incoming)',
+                                    'date' => now()
+                                ]);
+                            }
+                        } else {
+                            $is_approve = false;
+                            $message = [
+                                'type' => 'Error',
+                                'message' => trans('item_not_found')
+                            ];
+                        }
+
+                        if ($is_approve) {
+                            $data = $this->modelName($actionsToModel[$action])::where('id', $id)
+                                ->update($newData);
+                        }
+                    } else {
+                        $newData = [
+                            'approved_2_by' => null,
+                            'is_approve_2' => false,
+                            'approved_2_at' => null,
+                        ];
+
+                        // Find header stockTransfer data
+                        $stockTransfer = StockTransfer::where('id', $id)->first();
+                        $stockTransferCode = $stockTransfer->code;
+
+                        // Find data item yang di purchase
+                        $stockTransfer = StockTransferItemDetail::where('stock_transfer_id', $id)->get();
+
+                        if (!$stockTransfer->isEmpty()) {
+                            foreach ($stockTransfer as $item) {
+                                // Cari Warehouse yang sesuai dengan item tersebut
+                                $warehouse = Warehouse::where('item_id', $item->item_id)->where('branch_id', $requestBody['branch_id'])->first();
+                                // tambah stok tersedia
+                                if($warehouse) {
+                                    $warehouse->update([
+                                        'stock' => $warehouse->stock - $item->amount,
+                                        'stock_updated_at' => now()
+                                    ]);
+                                }
+                                // tambah data laporan barang masuk
+                                StockReport::create([
+                                    'transaction_code' => $stockTransferCode,
+                                    'warehouse_id' => $warehouse->id,
+                                    'amount' => '-' . $item->amount,
+                                    'remark' => 'Disapprove Stock Transfer (Incoming)',
+                                    'date' => now()
+                                ]);
+                            }
+                        }
+                        
+                        $data = $this->modelName($actionsToModel[$action])::where('id', $id)
+                            ->update($newData);
+                    }
+                    if (!$is_approve) {
+                        return $message;
+                    }
+                }
             }
             
             // Default action
@@ -822,7 +1002,18 @@ class GlobalController extends Controller
             }
         }
 
-        $set_request = SetRequestGlobal($action);
+        if(isset($request->filters)) {
+            $search_key[] = array(
+                'key' => $request->filters['key'],
+                'term' => $request->filters['term'],
+                'query' => $request->filters['query']
+            );
+    
+            $set_request = SetRequestGlobal($action, search: $search_key);
+        } else {
+            $set_request = SetRequestGlobal($action);
+        }
+
         $data = $this->getData($set_request);
 
         if (isset($data['success'])) {
