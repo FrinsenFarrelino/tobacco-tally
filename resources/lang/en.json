@@ -82,36 +82,6 @@
         "name": "You do not have permission to view this resource."
     },
 
-    "datatable_info_language": {
-        "show": "Show",
-        "records_per_page": "Records Per Page",
-        "nothing_found": "Nothing found",
-        "showing_page": "Showing page",
-        "of": "of",
-        "no_records_available": "No records available",
-        "search": "Search:"
-    },
-
-    "log_activity": {
-        "name": "Log Activity",
-        "list": "List",
-
-        "filter_date_range": "Date Range",
-        "filter_category": "Category",
-        "filter_log_type": "Log Type",
-
-        "col_menu": "Menu",
-        "col_ip": "IP",
-        "col_action": "Action",
-        "col_desc": "Description",
-        "col_user": "User",
-        "col_time": "Time",
-        "col_activity": "Activity",
-        "col_payload": "Payload",
-        "col_response": "Response",
-        "col_device_info": "Device Info"
-    },
-
     "dashboard": {
         "name": "Dashboard",
         "menu": "Menu",
@@ -135,40 +105,6 @@
         "new_password": "New Password",
         "confirm_password": "Confirm Password",
         "save": "Menu"
-    },
-
-    "login": {
-        "sign_in": "Sign In",
-        "text": "Sign in to your account to start using LNJ"
-    },
-
-    "user": {
-        "name": "User",
-        "list": "List",
-        "col_username": "Username",
-        "col_name": "Name",
-        "col_email": "Email",
-        "col_branch_name": "Branch",
-        "col_action": "Action",
-        "col_is_active": "Status",
-        "col_remark": "Remark",
-        "col_api_key": "API Key",
-        "username": "Username",
-        "password": "New Password",
-        "confirm_password": "Confirm Password",
-
-        "group_admin": "Group Admin",
-        "group_admin_template": "Group Admin Template",
-
-        "employee_name": "Employee Name",
-        "is_show_all_tickets": "Show All Ticket",
-        "is_post_cs": "Post CS",
-
-        "user_group_id": "Group User",
-        "employee_id": "Employee",
-        "add": "Add",
-        "view": "View",
-        "edit": "Edit"
     },
 
     "group_user": {
@@ -586,5 +522,23 @@
         "col_amount": "Amount",
         "col_unit": "Unit",
         "col_is_approve": "Status"
+    },
+
+    "setting_user": {
+        "name": "User",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_name": "Name",
+        "col_username": "Username",
+        "col_email": "Email",
+        "col_user_group": "User Group",
+        "col_password": "Password",
+        "col_confirm_password": "Confirm Password",
+        "col_employee": "Employee",
+        "col_is_active": "Status",
+        "col_remark": "Remark"
     }
 }

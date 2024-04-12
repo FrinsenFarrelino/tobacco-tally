@@ -39,6 +39,10 @@ class GlobalActionController extends Controller
         // GET REPORT
         'getStockReport' => 'StockReport',
 
+        // GET SETTING
+        'getUser' => 'User',
+        'getUserGroup' => 'UserGroup',
+
         // ADD MASTER
         'addProvince' => 'Province',
         'addCity' => 'City',
@@ -61,6 +65,10 @@ class GlobalActionController extends Controller
         'addPurchase' => 'Purchase',
         'addSale' => 'Sale',
         'addOutgoingItem' => 'StockTransfer',
+
+        // ADD SETTING
+        'addUser' => 'User',
+        'addUserGroup' => 'UserGroup',
 
         // UPDATE
         'updateProvince' => 'Province',
@@ -89,6 +97,10 @@ class GlobalActionController extends Controller
         'updateOutgoingItem' => 'StockTransfer',
         'updateStatusOutgoingItem' => 'StockTransfer',
 
+        // UPDATE SETTING
+        'updateUser' => 'User',
+        'updateUserGroup' => 'UserGroup',
+
         // SOFT DELETES
         'softDeleteProvince' => 'Province',
         'softDeleteCity' => 'City',
@@ -111,6 +123,10 @@ class GlobalActionController extends Controller
         'softDeletePurchase' => 'Purchase',
         'softDeleteSale' => 'Sale',
         'softDeleteOutgoingItem' => 'StockTransfer',
+
+        // SOFT DELETE SETTING
+        'softDeleteUser' => 'User',
+        'softDeleteUserGroup' => 'UserGroup',
     ];
 
 

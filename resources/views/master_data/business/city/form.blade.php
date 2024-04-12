@@ -73,10 +73,6 @@
 
 @section('scripts')
 <script>
-    function getVal() {
-        console.log($('#browse_province_id').val())
-    }
-    
     $(document).ready(function() {
         setMenuActive();
     });

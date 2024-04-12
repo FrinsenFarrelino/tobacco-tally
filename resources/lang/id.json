@@ -77,35 +77,6 @@
         "setting": "Pengaturan"
     },
 
-    "datatable_info_language": {
-        "show": "Tampil",
-        "records_per_page": "Data Per Halaman",
-        "nothing_found": "Tidak ada yang ditemukan",
-        "showing_page": "Menampilkan halaman",
-        "of": "dari",
-        "no_records_available": "Tidak ada data yang tersedia",
-        "search": "Pencarian:"
-    },
-    "log_activity": {
-        "name": "Aktivitas Log",
-        "list": "Daftar",
-
-        "filter_date_range": "Rentang Tanggal",
-        "filter_category": "Kategori",
-        "filter_log_type": "Tipe Log",
-
-        "col_menu": "Menu",
-        "col_ip": "IP",
-        "col_action": "Aksi",
-        "col_desc": "Deskripsi",
-        "col_user": "Pengguna",
-        "col_time": "Waktu",
-        "col_activity": "Aktivitas",
-        "col_payload": "Payload",
-        "col_response": "Response",
-        "col_device_info": "Informasi Perangkat"
-    },
-
     "dashboard": {
         "name": "Dasbor",
         "menu": "Menu",
@@ -129,29 +100,6 @@
         "new_password": "Password Baru",
         "confirm_password": "Konfirmasi Password",
         "save": "Simpan"
-    },
-
-    "login": {
-        "sign_in": "Masuk",
-        "text": "Masuk ke akun Anda untuk mulai menggunakan LNJ"
-    },
-
-    "user": {
-        "name": "Pengguna",
-        "col_username": "Username",
-        "col_name": "Nama",
-        "col_email": "Email",
-        "col_action": "Aksi",
-        "col_remark": "Keterangan",
-        "username": "Username",
-        "password": "Password Baru",
-        "confirm_password": "Konfirmasi Password",
-        "user_group_id": "Group User",
-        "employee_id": "Pegawai",
-        "list": "Daftar",
-        "add": "Tambah",
-        "view": "Lihat",
-        "edit": "Ubah"
     },
 
     "group_user": {
@@ -568,5 +516,23 @@
         "col_amount": "Jumlah",
         "col_unit": "Satuan",
         "col_is_approve": "Status"
+    },
+
+    "setting_user": {
+        "name": "Pengguna",
+        "list": "Daftar",
+        "view": "Lihat",
+        "add": "Tambah",
+        "edit": "Ubah",
+        "col_action": "Aksi",
+        "col_name": "Nama",
+        "col_username": "Username",
+        "col_email": "Email",
+        "col_user_group": "User Group",
+        "col_password": "Password",
+        "col_confirm_password": "Konfirmasi Password",
+        "col_employee": "Pegawai",
+        "col_is_active": "Status",
+        "col_remark": "Remark"
     }
 }
