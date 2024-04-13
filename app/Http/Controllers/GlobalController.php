@@ -319,6 +319,35 @@ class GlobalController extends Controller
             );
         }
 
+        // SETTING
+        elseif ($action == 'getUser') {
+            $query->leftJoin('user_groups', 'user_groups.id', '=', 'users.user_group_id');
+            $query->leftJoin('employees', 'employees.id', '=', 'users.employee_id');
+            $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'users.created_by');
+            $query->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', 'users.updated_by');
+            $query->leftJoin('users as deleted_by_user', 'deleted_by_user.id', '=', 'users.deleted_by');
+            $query->select(
+                'users.*',
+                'user_groups.name as user_group_name',
+                'employees.name as employee_name',
+                'created_by_user.name as created_by',
+                'updated_by_user.name as updated_by',
+                'deleted_by_user.name as deleted_by',
+            );
+        } elseif ($action == 'getUserGroup') {
+            $query->leftJoin('branches', 'branches.id', '=', 'user_groups.branch_id');
+            $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'user_groups.created_by');
+            $query->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', 'user_groups.updated_by');
+            $query->leftJoin('users as deleted_by_user', 'deleted_by_user.id', '=', 'user_groups.deleted_by');
+            $query->select(
+                'user_groups.*',
+                'branches.name as branch_name',
+                'created_by_user.name as created_by',
+                'updated_by_user.name as updated_by',
+                'deleted_by_user.name as deleted_by',
+            );
+        }
+
         else {
             $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', $tableName . '.created_by')
                 ->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', $tableName . '.updated_by')
@@ -365,9 +394,6 @@ class GlobalController extends Controller
         if ($action == 'addUser') {
             //encrypt password
             $password = bcrypt($requestBody['password']);
-            $requestBody['branch_id'] = $detailPayload[0]['user_branch'][0]['branch_id'] ?? null;
-            $requestBody['company_id'] = $detailPayload[3]['user_company'][0]['company_id'] ?? null;
-            $requestBody['user_group_id'] = $detailPayload[2]['user_group'][0]['user_group_id'] ?? null;
         } else {
             $formattedCode = $this->formatCode($requestBody['format_code'] ?? '', "");
         }
@@ -472,8 +498,11 @@ class GlobalController extends Controller
 
         // if action updateUser then remove confirm password key
         if ($action == 'updateUser') {
-            if (array_key_exists('confirm_password', $requestBody)) {
-                unset($requestBody['confirm_password']);
+            if (array_key_exists('password_confirmation', $requestBody)) {
+                unset($requestBody['password_confirmation']);
+            }
+            if (array_key_exists('password', $requestBody)) {
+                $requestBody['password'] = bcrypt($requestBody['password']);
             }
         }
 

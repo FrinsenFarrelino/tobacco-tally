@@ -256,10 +256,11 @@ if (!function_exists('fileInput')) {
 
 function renderFieldError($errors, $name)
 {
-    $field  = '<div class="alert alert-danger alert-dismissible fade show">';
+    $field  = '<div class="alert alert-danger alert-dismissible fade show" id="alert">';
+    $field .= '<div class="alert-body">';
+    $field .= '<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>';
     $field .= $errors->first("$name");
-    $field .= '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close">';
-    $field .= '</button>';
+    $field .= "</div>";
     $field .= "</div>";
 
     return $field;

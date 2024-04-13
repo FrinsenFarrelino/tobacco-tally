@@ -19,16 +19,16 @@ class UserController extends GlobalController
     private $index_file;
     private $form_file;
 
+    private $arrayIsActive;
+
     public function __construct(GlobalVariable $globalVariable, GlobalActionController $globalActionController)
     {
         $this->globalActionController = $globalActionController;
         $this->globalVariable = $globalVariable;
-        $this->globalVariable->ModuleGlobal('setting', 'user', 'setting/user', 'user', 'user');
+        $this->globalVariable->ModuleGlobal(module: 'setting', menuParam: 'user', subModule: 'setting_user', menuRoute: 'user', menuUrl: 'setting/user');
 
         $this->index_file = 'setting.user.index';
         $this->form_file = 'setting.user.form';
-        $this->is_show_all_tickets = generateIsBooleanNo('No','Yes');
-        $this->is_post_cs = generateIsBooleanNo('No','Yes');
         $this->arrayIsActive = array(['id' => 1, 'name' => 'Active'], ['id' => 0, 'name' => 'Inactive']);
     }
 
@@ -47,7 +47,6 @@ class UserController extends GlobalController
     public function index()
     {
         $setFeatures = $this->computeSetFeatures();
-
         $generate_nav_button = generateNavbutton([],'reload'.$setFeatures, 'index', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'index');
@@ -56,7 +55,6 @@ class UserController extends GlobalController
         $formData['list_nav_button'] = $generate_nav_button;
         $formData['menu_route'] = $this->globalVariable->menuRoute;
         $formData['menu_param'] = $this->globalVariable->menuParam;
-        $formData['setFeatures'] = $setFeatures;
 
         return view($this->index_file, $formData);
     }
@@ -71,8 +69,9 @@ class UserController extends GlobalController
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'add');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['is_show_all_tickets'] = $this->is_show_all_tickets;
-        $formData['is_post_cs'] = $this->is_post_cs;
+        $formData['action_user_group'] = $this->globalVariable->actionGetUserGroup;
+        $formData['action_employee'] = $this->globalVariable->actionGetEmployee;
+        $formData['selectActive'] = $this->arrayIsActive;
 
         return view($this->form_file, $formData);
     }
@@ -82,104 +81,15 @@ class UserController extends GlobalController
      */
     public function store(Request $request)
     {
-        $make_detail = $request->input('detail');
-        $detailArray = json_decode($make_detail, true);
-
-        foreach ($detailArray as $key => $value) {
-            if (isset($value['user_branch'])) {
-                foreach ($value['user_branch'] as $second_key => $data) {
-                    if (array_key_exists("branch_name", $data)) {
-                        unset($detailArray[$key]['user_branch'][$second_key]['branch_name']);
-                    }
-                }
-            }
-            elseif (isset($value['user_branch_report'])) {
-                foreach ($value['user_branch_report'] as $second_key => $data) {
-                    if (array_key_exists("branch_report_name", $data)) {
-                        unset($detailArray[$key]['user_branch_report'][$second_key]['branch_report_name']);
-                    }
-                }
-            }
-            elseif (isset($value['access_application'])) {
-                foreach ($value['access_application'] as $second_key => $data) {
-                    if (array_key_exists("webstite_access_name", $data)) {
-                        unset($detailArray[$key]['access_application'][$second_key]['webstite_access_name']);
-                    }
-                }
-            }
-            elseif (isset($value['user_company'])) {
-                foreach ($value['user_company'] as $second_key => $data) {
-                    if (array_key_exists("user_company_name", $data)) {
-                        unset($detailArray[$key]['user_company'][$second_key]['user_company_name']);
-                    }
-                }
-            }
-            elseif (isset($value['user_group'])) {
-                foreach ($value['user_group'] as $second_key => $data) {
-                    if (array_key_exists("user_group_name", $data)) {
-                        unset($detailArray[$key]['user_group'][$second_key]['user_group_name']);
-                    }
-                }
-            }
-            elseif (isset($value['access_file_principal'])) {
-                foreach ($value['access_file_principal'] as $second_key => $data) {
-                    if (array_key_exists("principal_file_access_name", $data)) {
-                        unset($detailArray[$key]['access_file_principal'][$second_key]['principal_file_access_name']);
-                    }
-                }
-            }
-            elseif (isset($value['access_file_principal_group'])) {
-                foreach ($value['access_file_principal_group'] as $second_key => $data) {
-                    if (array_key_exists("principal_group_access_file_name", $data)) {
-                        unset($detailArray[$key]['access_file_principal_group'][$second_key]['principal_group_access_file_name']);
-                    }
-                }
-            }
-
-            elseif (isset($value['access_webbooking_principal_group'])) {
-                foreach ($value['access_webbooking_principal_group'] as $second_key => $data) {
-                    if (array_key_exists("principal_group_web_access_name", $data)) {
-                        unset($detailArray[$key]['access_webbooking_principal_group'][$second_key]['principal_group_web_access_name']);
-                    }
-                }
-            }
-            elseif (isset($value['access_doc_dist'])) {
-                foreach ($value['access_doc_dist'] as $second_key => $data) {
-                    if (array_key_exists("doc_access_type", $data)) {
-                        unset($detailArray[$key]['access_doc_dist'][$second_key]['doc_access_type']);
-                    }
-                }
-            }
-        }
-
-        $request->merge(['detail' => $detailArray]);
-
         $this->validate($request,[
             'username' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:8',
             'name' => 'required',
-            'detail' => 'required'
         ]);
 
-        if($request['is_show_all_tickets'] == "1")
-        {
-            $request['is_show_all_tickets'] = 1;
-        }
-        if($request['is_post_cs'] == "1")
-        {
-            $request['is_post_cs'] = 1;
-        }
-
-        $validationResponse = $this->handleValidation($request, 'add');
-
-        if ($validationResponse) {
-            return $validationResponse;
-        }
-
-        $set_request = SetRequestGlobal('addUser', collectDeviceInfo(), $request, array('created_at'=>'created_at'), 'user_code');
-
-        $result = $this->sendApi($set_request, 'post');
+        $set_request = SetRequestGlobal('addUser', $request);
+        $result = $this->addData($set_request);
 
         if($result['success'] == false)
         {
@@ -200,21 +110,26 @@ class UserController extends GlobalController
      */
     public function show(string $id)
     {
-        $set_request = SetRequestGlobal(action:$this->globalVariable->actionGetUser, deviceInfo:collectDeviceInfo(), filter:array('id' => $id));
-        $result = $this->getApi($set_request);
-        $decodedData = removeArrayBracket($result['data']['data']);
+        $search_key[] = array(
+            'key' => 'users.id',
+            'term' => 'equal',
+            'query' => $id
+        );
+
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetUser, search: $search_key);
+        $result = $this->getData($set_request);
+        $decodedData = $result['data'][0];
 
         $setFeatures = $this->computeSetFeatures();
-
-        $generate_nav_button = generateNavbutton($decodedData,'back'.$setFeatures,'show', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
+        $generate_nav_button = generateNavbutton($decodedData, 'back' . $setFeatures, 'show', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'view');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['user'] = $decodedData;
-        $formData['is_show_all_tickets'] = $this->is_show_all_tickets;
-        $formData['is_post_cs'] = $this->is_post_cs;
+        $formData['setting_user'] = $decodedData;
         $formData['selectActive'] = $this->arrayIsActive;
+        $formData['action_user_group'] = $this->globalVariable->actionGetUserGroup;
+        $formData['action_employee'] = $this->globalVariable->actionGetEmployee;
 
         return view($this->form_file, $formData);
     }
@@ -224,19 +139,25 @@ class UserController extends GlobalController
      */
     public function edit(string $id)
     {
-        $set_request = SetRequestGlobal(action:$this->globalVariable->actionGetUser, deviceInfo:collectDeviceInfo(), filter:array('id' => $id));
-        $result = $this->getApi($set_request);
-        $decodedData = removeArrayBracket($result['data']['data']);
+        $search_key[] = array(
+            'key' => 'users.id',
+            'term' => 'equal',
+            'query' => $id
+        );
 
-        $generate_nav_button = generateNavbutton($decodedData,'back|save','edit', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetUser, search: $search_key);
+        $result = $this->getData($set_request);
+        $decodedData = $result['data'][0];
+
+        $generate_nav_button = generateNavbutton($decodedData, 'back|save', 'edit', '', $this->globalVariable->menuRoute, $this->globalVariable->menuParam);
 
         $formData = $this->objResponse($this->globalVariable->module, $this->globalVariable->subModule, $this->globalVariable->menuUrl, 'edit');
 
         $formData['list_nav_button'] = $generate_nav_button;
-        $formData['user'] = $decodedData;
-        $formData['is_show_all_tickets'] = $this->is_show_all_tickets;
-        $formData['is_post_cs'] = $this->is_post_cs;
+        $formData['setting_user'] = $decodedData;
         $formData['selectActive'] = $this->arrayIsActive;
+        $formData['action_user_group'] = $this->globalVariable->actionGetUserGroup;
+        $formData['action_employee'] = $this->globalVariable->actionGetEmployee;
 
         return view($this->form_file, $formData);
     }
@@ -246,101 +167,25 @@ class UserController extends GlobalController
      */
     public function update(Request $request, string $id)
     {
-        $this->validate($request,[
+        $rules = [
             'username' => 'required',
-            'email' => 'required|email|unique:users,email,'.$id,
-            'password' => 'required|confirmed|min:8',
+            'email' => 'required|email|unique:users,email,' . $id,
             'name' => 'required',
-        ]);
-        $make_detail = $request->input('detail');
-        if($request['is_show_all_tickets'] == "1")
-        {
-            $request['is_show_all_tickets'] = 1;
-        }
-        if($request['is_post_cs'] == "1")
-        {
-            $request['is_post_cs'] = 1;
-        }
-        $detailArray = json_decode($make_detail, true);
+        ];
 
-        foreach ($detailArray as $key => $value) {
-            if (isset($value['user_branch'])) {
-                foreach ($value['user_branch'] as $second_key => $data) {
-                    if (array_key_exists("branch_name", $data)) {
-                        unset($detailArray[$key]['user_branch'][$second_key]['branch_name']);
-                    }
-                }
-            }
-            elseif (isset($value['user_branch_report'])) {
-                foreach ($value['user_branch_report'] as $second_key => $data) {
-                    if (array_key_exists("branch_report_name", $data)) {
-                        unset($detailArray[$key]['user_branch_report'][$second_key]['branch_report_name']);
-                    }
-                }
-            }
-            elseif (isset($value['access_application'])) {
-                foreach ($value['access_application'] as $second_key => $data) {
-                    if (array_key_exists("webstite_access_name", $data)) {
-                        unset($detailArray[$key]['access_application'][$second_key]['webstite_access_name']);
-                    }
-                }
-            }
-            elseif (isset($value['user_company'])) {
-                foreach ($value['user_company'] as $second_key => $data) {
-                    if (array_key_exists("user_company_name", $data)) {
-                        unset($detailArray[$key]['user_company'][$second_key]['user_company_name']);
-                    }
-                }
-            }
-            elseif (isset($value['user_group'])) {
-                foreach ($value['user_group'] as $second_key => $data) {
-                    if (array_key_exists("user_group_name", $data)) {
-                        unset($detailArray[$key]['user_group'][$second_key]['user_group_name']);
-                    }
-                }
-            }
-            elseif (isset($value['access_file_principal'])) {
-                foreach ($value['access_file_principal'] as $second_key => $data) {
-                    if (array_key_exists("principal_file_access_name", $data)) {
-                        unset($detailArray[$key]['access_file_principal'][$second_key]['principal_file_access_name']);
-                    }
-                }
-            }
-            elseif (isset($value['access_file_principal_group'])) {
-                foreach ($value['access_file_principal_group'] as $second_key => $data) {
-                    if (array_key_exists("principal_group_access_file_name", $data)) {
-                        unset($detailArray[$key]['access_file_principal_group'][$second_key]['principal_group_access_file_name']);
-                    }
-                }
-            }
-
-            elseif (isset($value['access_webbooking_principal_group'])) {
-                foreach ($value['access_webbooking_principal_group'] as $second_key => $data) {
-                    if (array_key_exists("principal_group_web_access_name", $data)) {
-                        unset($detailArray[$key]['access_webbooking_principal_group'][$second_key]['principal_group_web_access_name']);
-                    }
-                }
-            }
-            elseif (isset($value['access_doc_dist'])) {
-                foreach ($value['access_doc_dist'] as $second_key => $data) {
-                    if (array_key_exists("doc_access_type", $data)) {
-                        unset($detailArray[$key]['access_doc_dist'][$second_key]['doc_access_type']);
-                    }
-                }
-            }
+        // Check if password field is filled, then validate the password confirmation
+        if ($request->filled('password')) {
+            $rules['password'] = 'required|confirmed|min:8';
+        } else {
+            unset($request['password']);
+            unset($request['password_confirmation']);
         }
 
-        $request->merge(['detail' => $detailArray]);
+        // Validate the request
+        $this->validate($request, $rules);
 
-        $validationResponse = $this->handleValidation($request, 'update');
-
-        if ($validationResponse) {
-            return $validationResponse;
-        }
-
-        $set_request = SetRequestGlobal('updateUser', collectDeviceInfo(), $request);
-
-        $result = $this->sendApi($set_request, 'put', $id);
+        $set_request = SetRequestGlobal('updateUser', $request);
+        $result = $this->updateData($set_request, $id);
 
         if($result['success'] == false)
         {
@@ -366,10 +211,9 @@ class UserController extends GlobalController
      */
     public function destroy(string $id)
     {
-        $set_request = SetRequestGlobal('softDeleteUser', collectDeviceInfo());
+        $set_request = SetRequestGlobal('softDeleteUser');
+        $result = $this->softDeleteData($set_request, $id);
 
-        $result = $this->sendApi($set_request, 'delete', $id);
-        // dd($result);
         if($result['success'] == false)
         {
             return redirect()->back()
