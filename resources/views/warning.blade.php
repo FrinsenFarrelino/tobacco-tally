@@ -13,14 +13,14 @@
     <meta property="og:image" content="social-image.png">
     <meta name="format-detection" content="telephone=no">
     <title>{{ $title }}</title>
+    <link rel="stylesheet" href="{{ asset('assets/modules/bootstrap/css/bootstrap.min.css') }}">
     <link rel="shortcut icon" type="image/png" href="{{ url('images/favicon.png') }}" />
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
-
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" />
 </head>
 
 <body class="vh-100">
     <main>
-        <div class="authincation h-100" style="background-image: url(images/student-bg.jpg); background-repeat:no-repeat; background-size:cover;">
+        <div class="authincation h-100">
             <div class="container h-100">
                 <div class="row h-100 align-items-center">
                     <div class="col-lg-6 col-sm-12">

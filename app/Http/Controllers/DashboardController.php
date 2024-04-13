@@ -31,7 +31,7 @@ class DashboardController extends Controller
         $listMenu = Session::get('list_menu');
         $formData['list_menus'] = $listMenu;
         // dd($formData);
-        // $formData['name'] = 'Home';
+        $formData['title'] = 'Home';
 
         return view('dashboard', $formData);
     }

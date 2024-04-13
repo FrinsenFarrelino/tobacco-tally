@@ -27,7 +27,7 @@ class GroupUserController extends GlobalController
     {
         $this->globalActionController = $globalActionController;
         $this->globalVariable = $globalVariable;
-        $this->globalVariable->ModuleGlobal(module: 'setting', menuParam: 'group_user', subModule: 'group_user', menuRoute: 'group-user', menuUrl: 'setting/group-user');
+        $this->globalVariable->ModuleGlobal(module: 'setting', menuParam: 'group_user', subModule: 'setting_group_user', menuRoute: 'group-user', menuUrl: 'setting/group-user');
 
         $this->index_file = 'setting.group_user.index';
         $this->form_file = 'setting.group_user.form';

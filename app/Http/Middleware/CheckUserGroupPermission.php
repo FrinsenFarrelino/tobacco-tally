@@ -34,8 +34,6 @@ class CheckUserGroupPermission
 
     private function hasPermission($user_group, $getListMenu, $getAccessMenu, $url, $route)
     {
-        // Check user's group and permissions here
-
         // Define the permission hierarchy
         $permissionsHierarchy = [
             'index' => ['open'],
@@ -51,15 +49,16 @@ class CheckUserGroupPermission
         ];
 
         if ($user_group['name'] === 'Admin') {
-            // Admin has access to all URLs
             return true;
         } else {
             foreach ($permissionsHierarchy as $permission => $requiredPermissions) {
                 if (str_contains($route, '.' . $permission) || str_contains($route, $permission)) {
                     foreach ($requiredPermissions as $requiredPermission) {
                         foreach ($getAccessMenu as $accessMenu) {
-                            if ($user_group['id'] === $accessMenu['user_group_id'] && $accessMenu[$requiredPermission]) {
-                                return true;
+                            foreach ($getListMenu as $listMenu) {
+                                if ($user_group['id'] === $accessMenu['user_group_id'] && $accessMenu[$requiredPermission] && $accessMenu['menu_id'] === $listMenu['id'] && $this->isSamePath($url, $listMenu['url_menu'])) {
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -68,5 +67,27 @@ class CheckUserGroupPermission
         }
 
         return false;
+    }
+
+    function isSamePath($path1, $path2)
+    {
+        // Ensure both paths start with a slash and have no trailing slashes
+        $path1 = '/' . trim($path1, '/');
+        $path2 = '/' . trim($path2, '/');
+
+        // Extract segments from the paths
+        $segments1 = explode('/', $path1);
+        $segments2 = explode('/', $path2);
+
+        // Compare segments until a non-matching segment is found
+        $minSegments = min(count($segments1), count($segments2));
+        for ($i = 0; $i < $minSegments; $i++) {
+            if ($segments1[$i] !== $segments2[$i]) {
+                return false; // Non-matching segment found
+            }
+        }
+
+        // If all segments matched or one path is a sub-path of the other, return true
+        return true;
     }
 }

@@ -1373,9 +1373,9 @@ class GlobalController extends Controller
         $message = session('message');
 
         $objResponse = [
-            'title' => $this->globalVariable->module,
-            'subtitle' =>  $this->globalVariable->subModule,
-            'menu' => $this->globalVariable->menuUrl,
+            'title' => 'Warning',
+            'subtitle' =>  'Warning',
+            'menu' => 'warning',
             'mode' => 'index'
         ];
 
