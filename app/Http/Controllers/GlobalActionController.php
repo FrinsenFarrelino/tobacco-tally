@@ -42,6 +42,7 @@ class GlobalActionController extends Controller
         // GET SETTING
         'getUser' => 'User',
         'getUserGroup' => 'UserGroup',
+        'getAccessMenu' => 'AccessMenu',
 
         // ADD MASTER
         'addProvince' => 'Province',

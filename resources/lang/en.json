@@ -107,35 +107,6 @@
         "save": "Menu"
     },
 
-    "group_user": {
-        "name": "Group User",
-        "list": "List",
-        "col_name": "Name",
-        "col_level": "Level",
-        "col_category": "Category",
-        "col_access_right": "Access Right",
-        "form_group_user_template": "Group User Template",
-        "col_status": "Status",
-        "col_remark": "Remark",
-        "col_action": "Action",
-
-        "col_menu": "Menu",
-        "col_select_all": "Select All",
-        "col_open": "Open",
-        "col_add": "Add",
-        "col_edit": "Edit",
-        "col_delete": "Delete",
-        "col_print": "Print",
-        "col_approve": "Approve",
-        "col_disapprove": "DisApprove",
-        "col_reject": "Reject",
-        "col_finish": "Finish",
-
-        "add": "Add",
-        "view": "View",
-        "edit": "Edit"
-    },
-
     "master_data_business_province": {
         "submodule": "Business",
         "name": "Province",
@@ -540,5 +511,28 @@
         "col_employee": "Employee",
         "col_is_active": "Status",
         "col_remark": "Remark"
+    },
+
+    "setting_group_user": {
+        "name": "Group User",
+        "list": "List",
+        "view": "View",
+        "add": "Add",
+        "edit": "Edit",
+        "col_action": "Action",
+        "col_name": "Name",
+        "col_access_menu": "Access Menu",
+        "col_is_active": "Status",
+        "col_remark": "Remark",
+
+        "col_menu": "Menu",
+        "col_select_all": "Select All",
+        "col_open": "Open",
+        "col_add": "Add",
+        "col_edit": "Edit",
+        "col_delete": "Delete",
+        "col_print": "Print",
+        "col_approve": "Approve",
+        "col_disapprove": "Disapprove"
     }
 }

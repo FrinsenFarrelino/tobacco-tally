@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_group_id')->nullable()->constrained('user_groups');
             $table->foreignId('menu_id')->nullable()->constrained('menus');
-            $table->boolean('open');
-            $table->boolean('add');
-            $table->boolean('edit');
-            $table->boolean('delete');
-            $table->boolean('print');
-            $table->boolean('approve');
-            $table->boolean('disapprove');
+            $table->boolean('open')->default(0);
+            $table->boolean('add')->default(0);
+            $table->boolean('edit')->default(0);
+            $table->boolean('delete')->default(0);
+            $table->boolean('print')->default(0);
+            $table->boolean('approve')->default(0);
+            $table->boolean('disapprove')->default(0);
             $table->boolean('is_active')->default(1);
         });
     }
