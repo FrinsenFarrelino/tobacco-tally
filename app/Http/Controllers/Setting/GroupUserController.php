@@ -193,7 +193,7 @@ class GroupUserController extends GlobalController
         return redirect('/' . $this->globalVariable->menuUrl);
     }
 
-    public function showAccessMenu(string $id, Request $request)
+    public function showAccessMenu(string $id)
     {
         $search_key[] = array(
             'key' => 'access_menus.user_group_id',
