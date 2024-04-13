@@ -57,7 +57,11 @@ Route::group(['middleware' => ['web']], function () {
 
         Route::middleware('checkUserGroupPermission')->group(function () {
             Route::prefix('/setting/')->group(function () {
-                Route::resource('group-user', GroupUserController::class);
+                Route::controller(GroupUserController::class)->group(function () {
+                    Route::resource('group-user', GroupUserController::class);
+                    Route::get('group-user/access-menu/{id}', [GroupUserController::class, 'showAccessMenu'])->name('group-user.show-access-menu');
+                    Route::post('purchase/access-menu', [GroupUserController::class, 'setAccessMenu'])->name('group-user.set-access-menu');
+                });
                 Route::resource('user', UserController::class);
             });
 

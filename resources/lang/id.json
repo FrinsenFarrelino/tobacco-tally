@@ -102,35 +102,6 @@
         "save": "Simpan"
     },
 
-    "group_user": {
-        "name": "Grup Pengguna",
-        "list": "Daftar",
-        "col_name": "Nama",
-        "col_level": "Level",
-        "col_access_right": "Hak Akses",
-        "form_group_user_template": "Templat Pengguna Grup",
-        "col_category": "Kategori",
-        "col_remark": "Keterangan",
-        "col_status": "Status",
-        "col_action": "Aksi",
-
-        "col_menu": "Menu",
-        "col_select_all": "Pilih Semua",
-        "col_open": "Buka",
-        "col_add": "Tambah",
-        "col_edit": "Edit",
-        "col_delete": "Hapus",
-        "col_print": "Cetak",
-        "col_approve": "Setujui",
-        "col_disapprove": "Tidak Setujui",
-        "col_reject": "Tolak",
-        "col_finish": "Selesai",
-
-        "add": "Tambah",
-        "view": "Lihat",
-        "edit": "Ubah"
-    },
-
     "master_data_business_province": {
         "submodule": "Bisnis",
         "name": "Provinsi",
@@ -534,5 +505,28 @@
         "col_employee": "Pegawai",
         "col_is_active": "Status",
         "col_remark": "Remark"
+    },
+
+    "setting_group_user": {
+        "name": "Grup Pengguna",
+        "list": "Daftar",
+        "view": "Lihat",
+        "add": "Tambah",
+        "edit": "Ubah",
+        "col_action": "Aksi",
+        "col_name": "Nama",
+        "col_access_menu": "Akses Menu",
+        "col_is_active": "Status",
+        "col_remark": "Keterangan",
+
+        "col_menu": "Menu",
+        "col_select_all": "Pilih Semua",
+        "col_open": "Buka",
+        "col_add": "Tambah",
+        "col_edit": "Edit",
+        "col_delete": "Hapus",
+        "col_print": "Cetak",
+        "col_approve": "Setujui",
+        "col_disapprove": "Tidak Setujui"
     }
 }

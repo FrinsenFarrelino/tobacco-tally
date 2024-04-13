@@ -9,7 +9,9 @@ use App\Http\Services\CustomerGridService;
 use App\Http\Services\PurchaseGridService;
 use App\Http\Services\SaleGridService;
 use App\Http\Services\StockTransferGridService;
+use App\Models\AccessMenu;
 use App\Models\Branch;
+use App\Models\Menu;
 use App\Models\Purchase;
 use App\Models\PurchaseItemDetail;
 use App\Models\Sale;
@@ -334,6 +336,12 @@ class GlobalController extends Controller
                 'updated_by_user.name as updated_by',
                 'deleted_by_user.name as deleted_by',
             );
+        } elseif ($action == 'getAccessMenu') {
+            $query->leftJoin('user_groups', 'user_groups.id', '=', 'access_menus.user_group_id');
+            $query->select(
+                'access_menus.*',
+                'user_groups.name as user_group_name',
+            );
         }
 
         else {
@@ -456,6 +464,27 @@ class GlobalController extends Controller
                             }
                         }
                     }
+                }
+
+                // add user group
+                elseif ($action == 'addUserGroup') {
+                    $menus = Menu::get();
+
+                    foreach($menus as $menu) {
+                        $newAccessMenus[] = [
+                            'user_group_id' => $data->id,
+                            'menu_id' => $menu->id,
+                            'open' => false,
+                            'add' => false,
+                            'edit' => false,
+                            'delete' => false,
+                            'print' => false,
+                            'approve' => false,
+                            'disapprove' => false
+                        ];
+                    }
+
+                    AccessMenu::insert($newAccessMenus);
                 }
 
                 return $data;
@@ -1160,6 +1189,10 @@ class GlobalController extends Controller
                     if ($row->stock_updated_at && $row->stock_updated_at === null) {
                         $row->stock_updated_at = 'Never';
                     }
+
+                    if ($request->route == 'group-user') {
+                        $row->setAccess = route($request->route . '.show-access-menu', $row->id);
+                    }
                 }
 
                 return response()->json($data);
@@ -1444,4 +1477,19 @@ class GlobalController extends Controller
             return json_encode(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function setPriviledge($request, $userGroup) {
+        return DB::transaction(function () use ($request, $userGroup) {
+          AccessMenu::where('user_group_id', $userGroup)->delete();
+    
+          $accessRight = [];
+          foreach($request['priviledges'] as $data) {
+            array_push($accessRight, $data);
+    
+            AccessMenu::create($data);
+          }
+          
+          return $accessRight;
+        });
+      }
 }
