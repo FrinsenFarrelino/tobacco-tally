@@ -8,8 +8,12 @@ use App\Http\Controllers\GlobalActionController;
 use App\Http\Controllers\GlobalController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\GlobalVariable;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends GlobalController
 {
@@ -230,39 +234,49 @@ class UserController extends GlobalController
 
     public function seeProfile()
     {
-        $id = Session::get('id');
-        $authToken = Session::get('auth_token');
+        $id = auth()->user()->id;
 
-        $response = Http::accept('application/json')->withHeaders([
-            'Authorization' => 'Bearer ' . $authToken,
-        ])->get($this->getUrlBase('profile/') . $id);
+        $search_key[] = array(
+            'key' => 'users.id',
+            'term' => 'equal',
+            'query' => $id
+        );
 
-        $result = json_decode($response);
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetUser, search: $search_key);
+        $result = $this->getData($set_request);
+        $decodedData = $result['data'][0];
 
-        $formData = $this->objResponse('Dashboard', 'Profil', 'profil-user', 'index');
-        $formData['list_users'] = $result['data']['data'];
+        $generate_nav_button = generateNavbutton($decodedData, 'save', 'edit', '', 'dashboard', 'profile');
+        $formData = $this->objResponse('dashboard', 'profile_user', 'profile-user', 'index');
+        $formData['list_nav_button'] = $generate_nav_button;
+        $formData['user'] = $decodedData;
 
         return view('profile-user',$formData);
     }
 
     public function updateProfileSend(Request $request)
     {
-        $authToken = Session::get('auth_token');
-        $user = Auth::user();
-
-        $response = Http::accept('application/json')->withHeaders([
-            'Authorization' => 'Bearer ' . $authToken,
-        ])->post($this->getUrlBase('profile'),
-            $request,
-        );
-
-        $result = json_decode($response,true);
-
-        if($result['success'] == false)
-        {
-            return back()->withErrors($result['error'])->withInput();
+        $validator = Validator::make($request->all(), [
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
+    
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
-
-        return redirect('/')->with('message', $result['data']['data']['message']);
+    
+        $user = $request->user();
+    
+        if (!Hash::check($request->current_password, $user->password)) {
+            return redirect()->back()
+                ->withErrors(['current_password' => 'Current password is incorrect'])
+                ->withInput();
+        }
+    
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+    
+        return redirect()->back()->with('success', 'Update Password Success');
     }
 }
