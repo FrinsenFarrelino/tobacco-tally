@@ -52,7 +52,7 @@ Route::group(['middleware' => ['web']], function () {
 
         Route::controller(UserController::class)->group(function () {
             Route::get('/profile', 'seeProfile')->name('seeprofile');
-            Route::post('/profile/send', 'updateProfileSend');
+            Route::post('/profile', 'updateProfileSend');
         });
 
         Route::middleware('checkUserGroupPermission')->group(function () {

@@ -71,6 +71,7 @@
 
     "subMenu": {
         "home": "Beranda",
+        "dashboard": "Dasbor",
         "master_data": "Data Master",
         "transaction": "Transaksi",
         "report": "Laporan",
@@ -94,8 +95,10 @@
     "profile_user": {
         "title": "Profil Edit",
         "back": "Kembali",
+        "subtitle": "Profil",
         "name": "Nama",
         "username": "Username",
+        "email": "Email",
         "old_password": "Password Lama",
         "new_password": "Password Baru",
         "confirm_password": "Konfirmasi Password",

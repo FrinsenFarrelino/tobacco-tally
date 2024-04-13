@@ -71,6 +71,7 @@
 
     "subMenu": {
         "home": "Home",
+        "dashboard": "Dashboard",
         "master_data": "Master Data",
         "transaction": "Transaction",
         "report": "Report",
@@ -99,8 +100,10 @@
     "profile_user": {
         "title": "Edit Profile",
         "back": "Back",
+        "subtitle": "Profile",
         "name": "Name",
         "username": "Username",
+        "email": "Email",
         "old_password": "Old Password",
         "new_password": "New Password",
         "confirm_password": "Confirm Password",
