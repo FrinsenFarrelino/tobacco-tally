@@ -224,12 +224,12 @@
 
     // Function to approve sales order
     $(document).on('click', '#btnApprove', function() {
-        updateOutgoingItemStatus("{{ route('update-status-outgoing-item', $transaction_warehouse_outgoing_item['id'] ?? '') }}", 1, "{{ __('script_modal')['title_approve_outgoing_item'] }}", "{{ __('script_modal')['content_approve_outgoing_item'] }}");
+        updateOutgoingItemStatus("{{ route('status-outgoing-item', $transaction_warehouse_outgoing_item['id'] ?? '') }}", 1, "{{ __('script_modal')['title_approve_outgoing_item'] }}", "{{ __('script_modal')['content_approve_outgoing_item'] }}");
     });
 
     // Function to disapprove sales order
     $(document).on('click', '#btnDisapprove', function() {
-        updateOutgoingItemStatus("{{ route('update-status-outgoing-item', $transaction_warehouse_outgoing_item['id'] ?? '') }}", 0, "{{ __('script_modal')['title_disapprove_outgoing_item'] }}", "{{ __('script_modal')['content_disapprove_outgoing_item'] }}");
+        updateOutgoingItemStatus("{{ route('status-outgoing-item', $transaction_warehouse_outgoing_item['id'] ?? '') }}", 0, "{{ __('script_modal')['title_disapprove_outgoing_item'] }}", "{{ __('script_modal')['content_disapprove_outgoing_item'] }}");
     });
 
     $(document).ready(function() {

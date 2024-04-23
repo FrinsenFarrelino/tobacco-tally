@@ -60,7 +60,7 @@ Route::group(['middleware' => ['web']], function () {
                 Route::controller(GroupUserController::class)->group(function () {
                     Route::resource('group-user', GroupUserController::class);
                     Route::get('group-user/access-menu/{id}', [GroupUserController::class, 'showAccessMenu'])->name('group-user.show-access-menu');
-                    Route::post('purchase/access-menu', [GroupUserController::class, 'setAccessMenu'])->name('group-user.set-access-menu');
+                    Route::post('group-user/access-menu', [GroupUserController::class, 'setAccessMenu'])->name('group-user.set-access-menu');
                 });
                 Route::resource('user', UserController::class);
             });
@@ -70,7 +70,7 @@ Route::group(['middleware' => ['web']], function () {
                     Route::resource('province', ProvinceController::class);
                     Route::resource('city', CityController::class);
                     Route::resource('subdistrict', SubdistrictController::class);
-                    Route::resource('branch', BranchController::class);
+                    // Route::resource('branch', BranchController::class);
                     Route::resource('warehouse', WarehouseController::class);
                     Route::resource('bank', BankController::class);
                 });
@@ -94,24 +94,24 @@ Route::group(['middleware' => ['web']], function () {
             Route::prefix('/transaction/')->group(function () {
                 Route::controller(PurchaseController::class)->group(function () {
                     Route::resource('purchase', PurchaseController::class);
-                    Route::post('purchase/update-status/{id}', [PurchaseController::class, 'updateStatus'])->name('update-status-purchase');
+                    Route::post('purchase/update-status/{id}', [PurchaseController::class, 'updateStatus'])->name('status-purchase');
                     Route::get('purchase/print/{purchase}', [PurchaseController::class, 'createPDF'])->name('purchase.print');
                 });
                 Route::controller(SaleController::class)->group(function () {
                     Route::resource('sale', SaleController::class);
-                    Route::post('sale/update-status/{id}', [SaleController::class, 'updateStatus'])->name('update-status-sale');
+                    Route::post('sale/update-status/{id}', [SaleController::class, 'updateStatus'])->name('status-sale');
                     Route::get('sale/print/{sale}', [SaleController::class, 'createPDF'])->name('sale.print');
                 });
                 Route::prefix('/warehouse/')->group(function () {
                     Route::controller(OutgoingItemController::class)->group(function () {
                         Route::resource('outgoing-item', OutgoingItemController::class);
-                        Route::post('outgoing-item/update-status/{id}', [OutgoingItemController::class, 'updateStatus'])->name('update-status-outgoing-item');
+                        Route::post('outgoing-item/update-status/{id}', [OutgoingItemController::class, 'updateStatus'])->name('status-outgoing-item');
                         Route::get('outgoing-item/print/{outgoing_item}', [OutgoingItemController::class, 'createPDF'])->name('outgoing-item.print');
                     });
                     Route::controller(IncomingItemController::class)->group(function () {
                         Route::get('incoming-item', [IncomingItemController::class, 'index'])->name('incoming-item.index');
                         Route::get('incoming-item/{incoming_item}', [IncomingItemController::class, 'show'])->name('incoming-item.show');
-                        Route::post('incoming-item/update-status/{id}', [IncomingItemController::class, 'updateStatus'])->name('update-status-incoming-item');
+                        Route::post('incoming-item/update-status/{id}', [IncomingItemController::class, 'updateStatus'])->name('status-incoming-item');
                         Route::get('incoming-item/print/{incoming_item}', [IncomingItemController::class, 'createPDF'])->name('incoming-item.print');
                     });
                 });

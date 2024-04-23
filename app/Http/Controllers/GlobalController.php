@@ -1488,8 +1488,12 @@ class GlobalController extends Controller
     
             AccessMenu::create($data);
           }
+
+          $response = [];
+          $response['success'] = true;
+          $response['data'] = $accessRight;
           
-          return $accessRight;
+          return $response;
         });
       }
 }

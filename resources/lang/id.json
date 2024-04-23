@@ -21,6 +21,8 @@
 
     "success": "Berhasil",
     "fail": "Gagal",
+    "not_authorized_action": "Anda tidak memiliki akses untuk melakukan aksi ini.",
+    "not_authorized_page": "Anda tidak memiliki akses menuju halaman ini.",
 
     "script_modal": {
         "title_delete": "Hapus data",

@@ -33,6 +33,7 @@ class DashboardController extends Controller
         // dd($formData);
         $formData['title'] = 'Home';
 
+        // todo tambahkan kondisi jika usergroup name nya manager, maka langsung redirect ke dashboard grafik
         return view('dashboard', $formData);
     }
 

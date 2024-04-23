@@ -25,6 +25,9 @@ class CheckUserGroupPermission
         $getAccessMenu = Session::get('access_menu');
         if (auth()->check()) {
             if (!$this->hasPermission($user_group, $getListMenu, $getAccessMenu, $url, $route)) {
+                if(request()->ajax()) {
+                    return response()->json(array('success' => false, 'message' => trans('not_authorized_action')));
+                }
                 // Redirect to a warning page or show a popup modal
                 return redirect()->route('warning')->with('message', 'You do not have permission to access this page.');
             }
@@ -45,9 +48,15 @@ class CheckUserGroupPermission
             'delete' => ['delete'],
             'destroy' => ['delete'],
             'print' => ['open'],
+            'show-access-menu' => ['open'],
+            'set-access-menu' => ['edit'],
+            'status-purchase' => ['approve', 'disapprove'],
+            'status-sale' => ['approve', 'disapprove'],
+            'status-outgoing-item' => ['approve', 'disapprove'],
+            'status-incoming-item' => ['approve', 'disapprove'],
             // Add more permissions as needed
         ];
-
+        
         if ($user_group['name'] === 'Admin') {
             return true;
         } else {
