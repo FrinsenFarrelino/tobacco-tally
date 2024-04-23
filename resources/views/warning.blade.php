@@ -60,7 +60,7 @@
                     class_icon: 'fa-solid fa-triangle-exclamation fa-beat-fade',
                     color: "#FF0000",
                     title: "Warning",
-                    text: "You do not have permission to view this resource.",
+                    text: "{{ trans('not_authorized_page'); }}",
                     text_button_cancel: "Close",
                     text_button_ok: "Back to index"
                 },

@@ -21,6 +21,8 @@
 
     "success": "Success",
     "fail": "Fail",
+    "not_authorized_action": "You do not have permission to perform this action.",
+    "not_authorized_page": "You do not have permission to access this page.",
 
     "script_modal": {
         "title_delete": "Delete Data",
