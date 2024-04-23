@@ -73,6 +73,7 @@ class GroupUserController extends GlobalController
 
         $formData['list_nav_button'] = $generate_nav_button;
         $formData['selectActive'] = $this->arrayIsActive;
+        $formData['action_branch'] = $this->globalVariable->actionGetBranch;
 
         return view($this->form_file, $formData);
     }
@@ -121,6 +122,7 @@ class GroupUserController extends GlobalController
         $formData['list_nav_button'] = $generate_nav_button;
         $formData['setting_group_user'] = $decodedData;
         $formData['selectActive'] = $this->arrayIsActive;
+        $formData['action_branch'] = $this->globalVariable->actionGetBranch;
 
         return view($this->form_file, $formData);
     }
@@ -147,6 +149,7 @@ class GroupUserController extends GlobalController
         $formData['list_nav_button'] = $generate_nav_button;
         $formData['setting_group_user'] = $decodedData;
         $formData['selectActive'] = $this->arrayIsActive;
+        $formData['action_branch'] = $this->globalVariable->actionGetBranch;
 
         return view($this->form_file, $formData);
     }

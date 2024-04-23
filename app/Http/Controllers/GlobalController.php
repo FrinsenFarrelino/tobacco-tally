@@ -336,6 +336,18 @@ class GlobalController extends Controller
                 'updated_by_user.name as updated_by',
                 'deleted_by_user.name as deleted_by',
             );
+        }  elseif ($action == 'getUserGroup') {
+            $query->leftJoin('branches', 'branches.id', '=', 'user_groups.branch_id');
+            $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'user_groups.created_by');
+            $query->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', 'user_groups.updated_by');
+            $query->leftJoin('users as deleted_by_user', 'deleted_by_user.id', '=', 'user_groups.deleted_by');
+            $query->select(
+                'user_groups.*',
+                'branches.name as branch_name',
+                'created_by_user.name as created_by',
+                'updated_by_user.name as updated_by',
+                'deleted_by_user.name as deleted_by',
+            );
         } elseif ($action == 'getAccessMenu') {
             $query->leftJoin('user_groups', 'user_groups.id', '=', 'access_menus.user_group_id');
             $query->select(
