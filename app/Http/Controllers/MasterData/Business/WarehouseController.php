@@ -149,6 +149,7 @@ class WarehouseController extends GlobalController
         $formData['selectActive'] = $this->arrayIsActive;
         $formData['action_city'] = $this->globalVariable->actionGetCity;
         $formData['action_item'] = $this->globalVariable->actionGetItem;
+        $formData['action_branch'] = $this->globalVariable->actionGetBranch;
 
         return view($this->form_file, $formData);
     }

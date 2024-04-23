@@ -142,12 +142,12 @@ class SaleController extends GlobalController
     public function edit(string $id)
     {
         $search_key[] = array(
-            'key' => 'customers.id',
+            'key' => 'sales.id',
             'term' => 'equal',
             'query' => $id
         );
 
-        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetCustomer, search: $search_key);
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetSale, search: $search_key);
         $result = $this->getData($set_request);
         $decodedData = $result['data'][0];
 

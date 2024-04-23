@@ -526,6 +526,7 @@
         "edit": "Edit",
         "col_action": "Action",
         "col_name": "Name",
+        "col_branch": "Branch",
         "col_access_menu": "Access Menu",
         "col_is_active": "Status",
         "col_remark": "Remark",
