@@ -46,7 +46,6 @@
                             <table class="table table-striped" id="myTable">
                                 <thead>
                                     <tr>
-                                        <th></th>
                                         <th>{{ __('setting_group_user')['col_name'] }}</th>
                                         <th>{{ __('setting_group_user')['col_access_menu'] }}</th>
                                         <th>{{ __('setting_group_user')['col_is_active'] }}</th>
@@ -84,14 +83,6 @@
                 }
             },
             columns: [
-                {
-                    data: null,
-                    render: function(data, type, row, meta) {
-                        return meta.row + 1;
-                    },
-                    orderable: false,
-                    searchable: false
-                },
                 {
                     data: 'name',
                     name: 'name'
