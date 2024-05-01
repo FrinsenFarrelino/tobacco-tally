@@ -46,7 +46,6 @@
                             <table class="table table-striped" id="myTable">
                                 <thead>
                                     <tr>
-                                        <th></th>
                                         <th>{{ __('report_stock_report')['col_transaction_code'] }}</th>
                                         <th>{{ __('report_stock_report')['col_warehouse'] }}</th>
                                         <th>{{ __('report_stock_report')['col_item'] }}</th>
@@ -85,14 +84,6 @@
                 }
             },
             columns: [
-                {
-                    data: null,
-                    render: function(data, type, row, meta) {
-                        return meta.row + 1;
-                    },
-                    orderable: false,
-                    searchable: false
-                },
                 {
                     data: 'transaction_code',
                     name: 'transaction_code'

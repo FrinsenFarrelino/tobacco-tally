@@ -46,7 +46,6 @@
                             <table class="table table-striped" id="myTable">
                                 <thead>
                                     <tr>
-                                        <th></th>
                                         <th>{{ __('transaction_sale')['col_code'] }}</th>
                                         <th>{{ __('transaction_sale')['col_date'] }}</th>
                                         <th>{{ __('transaction_sale')['col_customer'] }}</th>
@@ -85,14 +84,7 @@
                     d.route = "{{ $menu_route }}";
                 }
             },
-            columns: [{
-                    data: null,
-                    render: function(data, type, row, meta) {
-                        return meta.row + 1;
-                    },
-                    orderable: false,
-                    searchable: false
-                },
+            columns: [
                 {
                     data: 'code',
                     name: 'code'

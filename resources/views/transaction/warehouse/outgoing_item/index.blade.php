@@ -46,7 +46,6 @@
                             <table class="table table-striped" id="myTable">
                                 <thead>
                                     <tr>
-                                        <th></th>
                                         <th>{{ __('transaction_warehouse_outgoing_item')['col_code'] }}</th>
                                         <th>{{ __('transaction_warehouse_outgoing_item')['col_date'] }}</th>
                                         <th>{{ __('transaction_warehouse_outgoing_item')['col_is_approve'] }}</th>
@@ -84,14 +83,7 @@
                     // d.filters = 'array("key" => "stock_transfers.is_approve_1", "term" => "equal", "query" => "true")';
                 }
             },
-            columns: [{
-                    data: null,
-                    render: function(data, type, row, meta) {
-                        return meta.row + 1;
-                    },
-                    orderable: false,
-                    searchable: false
-                },
+            columns: [
                 {
                     data: 'code',
                     name: 'code'

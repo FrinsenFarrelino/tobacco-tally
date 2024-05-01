@@ -46,7 +46,6 @@
                             <table class="table table-striped" id="myTable">
                                 <thead>
                                     <tr>
-                                        <th></th>
                                         <th>{{ __('master_data_business_province')['col_code'] }}</th>
                                         <th>{{ __('master_data_business_province')['col_name'] }}</th>
                                         <th>{{ __('master_data_business_province')['col_country'] }}</th>
@@ -85,14 +84,6 @@
                 }
             },
             columns: [
-                {
-                    data: null,
-                    render: function(data, type, row, meta) {
-                        return meta.row + 1;
-                    },
-                    orderable: false,
-                    searchable: false
-                },
                 {
                     data: 'code',
                     name: 'code'
