@@ -311,11 +311,13 @@ class GlobalController extends Controller
         // REPORT
         elseif ($action == 'getStockReport') {
             $query->leftJoin('warehouses', 'warehouses.id', '=', 'stock_reports.warehouse_id');
+            $query->leftJoin('branches', 'branches.id', '=', 'warehouses.branch_id');
             $query->leftJoin('items', 'items.id', '=', 'warehouses.item_id');
             $query->leftJoin('units', 'units.id', '=', 'items.unit_id');
             $query->select(
                 'stock_reports.*',
                 'warehouses.name as warehouse_name',
+                'branches.name as branch_name',
                 'items.name as item_name',
                 'units.name as unit_name',
             );

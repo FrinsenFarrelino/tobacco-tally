@@ -48,6 +48,7 @@
                                     <tr>
                                         <th>{{ __('report_stock_report')['col_transaction_code'] }}</th>
                                         <th>{{ __('report_stock_report')['col_warehouse'] }}</th>
+                                        <th>{{ __('report_stock_report')['col_branch'] }}</th>
                                         <th>{{ __('report_stock_report')['col_item'] }}</th>
                                         <th>{{ __('report_stock_report')['col_amount'] }}</th>
                                         <th>{{ __('report_stock_report')['col_unit'] }}</th>
@@ -91,6 +92,10 @@
                 {
                     data: 'warehouse_name',
                     name: 'warehouses.name'
+                },
+                {
+                    data: 'branch_name',
+                    name: 'branches.name'
                 },
                 {
                     data: 'item_name',

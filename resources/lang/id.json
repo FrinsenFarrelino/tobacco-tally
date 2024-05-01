@@ -438,6 +438,7 @@
         "list": "Daftar",
         "col_transaction_code": "Kode Transaksi",
         "col_warehouse": "Warehouse",
+        "col_branch": "Cabang",
         "col_item": "Barang",
         "col_unit": "Satuan",
         "col_amount": "Jumlah",
