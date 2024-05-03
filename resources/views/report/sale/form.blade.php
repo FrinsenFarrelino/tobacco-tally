@@ -268,12 +268,12 @@
         })
     }
 
-    // Function to approve sales order
+    // Function to approve sales
     $(document).on('click', '#btnApprove', function() {
         updateSaleStatus("{{ route('status-sale', $transaction_sale['id'] ?? '') }}", 1, "{{ __('script_modal')['title_approve_sale'] }}", "{{ __('script_modal')['content_approve_sale'] }}");
     });
 
-    // Function to disapprove sales order
+    // Function to disapprove sales
     $(document).on('click', '#btnDisapprove', function() {
         updateSaleStatus("{{ route('status-sale', $transaction_sale['id'] ?? '') }}", 0, "{{ __('script_modal')['title_disapprove_sale'] }}", "{{ __('script_modal')['content_disapprove_sale'] }}");
     });

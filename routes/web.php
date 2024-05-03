@@ -50,6 +50,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('ajax-data-table/{action}', 'getAjaxDataTable')->name('ajax-data-table');
             Route::get('get-browse-data', 'getBrowseData')->name('get-browse-data');
             Route::post('getData', 'requestGetData')->name('requestGetData');
+            Route::post('overstaple/{id}', 'overstaple')->name('overstaple');
         });
 
         Route::controller(UserController::class)->group(function () {

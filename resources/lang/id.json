@@ -23,6 +23,7 @@
     "fail": "Gagal",
     "not_authorized_action": "Anda tidak memiliki akses untuk melakukan aksi ini.",
     "not_authorized_page": "Anda tidak memiliki akses menuju halaman ini.",
+    "no_stock": "Tidak ada stok di dalam warehouse",
 
     "script_modal": {
         "title_delete": "Hapus data",
@@ -55,6 +56,10 @@
         "content_disapprove_incoming_item": "Apakah Anda tidak menyetujui Barang Masuk ini?",
         "success_update_incoming_item": "Barang Masuk Berhasil Diperbarui",
         "error_update_incoming_item": "Barang Masuk Gagal Diperbarui",
+
+        "title_overstaple": "Overstaple",
+        "content_overstaple": "Apakah anda ingin melakukan Overstaple?",
+        "success_overstaple": "Berhasil Melakukan Overstaple",
 
         "button_confirm": "Konfirmasi",
         "button_cancel": "Batal"
@@ -456,7 +461,10 @@
         "col_unit": "Satuan",
         "col_stock": "Stok Tersedia",
         "col_branch": "Cabang",
-        "col_stock_updated_at": "Stok Terakhir Diperbarui"
+        "col_stock_updated_at": "Stok Terakhir Diperbarui",
+        "col_is_overstapled": "Status",
+        "col_action": "Aksi",
+        "col_overstapled_at": "Terakhir Dioverstaple"
     },
 
     "transaction_warehouse_outgoing_item": {

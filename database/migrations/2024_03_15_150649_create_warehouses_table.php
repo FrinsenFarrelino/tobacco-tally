@@ -28,6 +28,8 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->dateTime('stock_updated_at')->nullable();
+            $table->boolean('is_overstapled')->default(0);
+            $table->dateTime('overstapled_at')->default('2000-01-01 00:00:00');
         });
 
         DB::statement('DROP INDEX IF EXISTS warehouses_code_unique');

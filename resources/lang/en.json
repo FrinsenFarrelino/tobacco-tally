@@ -23,6 +23,7 @@
     "fail": "Fail",
     "not_authorized_action": "You do not have permission to perform this action.",
     "not_authorized_page": "You do not have permission to access this page.",
+    "no_stock": "There is no stock in the warehouse",
 
     "script_modal": {
         "title_delete": "Delete Data",
@@ -55,6 +56,10 @@
         "content_disapprove_incoming_item": "Are you sure you want to disapprove this Incoming Item?",
         "success_update_incoming_item": "Incoming Item Status Updated Successfully",
         "error_update_incoming_item": "Incoming Item Status Failed to Update",
+
+        "title_overstaple": "Overstaple",
+        "content_overstaple": "Are you sure you want to overstaple this warehouse?",
+        "success_overstaple": "Successfully Overstapled",
 
         "button_confirm": "Confirm",
         "button_cancel": "Cancel"
@@ -462,7 +467,10 @@
         "col_unit": "Unit",
         "col_stock": "Stock",
         "col_branch": "Branch",
-        "col_stock_updated_at": "Stock Updated At"
+        "col_stock_updated_at": "Stock Updated At",
+        "col_is_overstapled": "Status",
+        "col_action": "Action",
+        "col_overstapled_at": "Overstapled At"
     },
 
     "transaction_warehouse_outgoing_item": {

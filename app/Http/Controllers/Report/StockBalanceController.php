@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\GlobalActionController;
 use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\GlobalVariable;
+use Illuminate\Support\Facades\Session;
 
 class StockBalanceController extends GlobalController
 {
@@ -13,6 +14,7 @@ class StockBalanceController extends GlobalController
     protected $globalActionController;
 
     private $index_file;
+    private $index1_file;
 
     public function __construct(GlobalVariable $globalVariable, GlobalActionController $globalActionController)
     {
@@ -21,6 +23,7 @@ class StockBalanceController extends GlobalController
         $this->globalVariable->ModuleGlobal(module: 'report', menuParam: 'stock_balance', subModule: 'report_stock_balance', menuRoute: 'stock-balance', menuUrl: 'report/stock-balance');
 
         $this->index_file = 'report.stock_balance.index';
+        $this->index1_file = 'report.stock_balance.index1';
     }
 
     /**
@@ -37,6 +40,14 @@ class StockBalanceController extends GlobalController
         $formData['menu_route'] = $this->globalVariable->menuRoute;
         $formData['menu_param'] = $this->globalVariable->menuParam;
 
+        $user_group = Session::get('user_group');
+
+        // update overstaple status
+        $this->updateOverstapleStatus();
+        
+        if (str_contains($user_group['name'], 'Warehouse') || $user_group['name'] === 'Admin') {
+            return view($this->index1_file, $formData);
+        }
 
         return view($this->index_file, $formData);
     }
