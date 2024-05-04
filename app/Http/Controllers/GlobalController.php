@@ -21,12 +21,13 @@ use App\Models\StockReport;
 use App\Models\StockTransfer;
 use App\Models\StockTransferItemDetail;
 use App\Models\Warehouse;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
-class GlobalController extends Controller
+class GlobalController extends DashboardController
 {
     private $globalVariable;
     protected $customerGridService;
@@ -1204,6 +1205,13 @@ class GlobalController extends Controller
                         $row->stock_updated_at = 'Never';
                     }
 
+                    // change is overstaple status
+                    if ($row->is_overstapled || $row->is_overstapled === 1) {
+                        $row->is_overstapled = 'Overstapled';
+                    } elseif (!$row->is_overstapled || $row->is_overstapled === 0) {
+                        $row->is_overstapled = 'Not Overstapled';
+                    }
+
                     if ($request->route == 'group-user') {
                         $row->setAccess = route($request->route . '.show-access-menu', $row->id);
                     }
@@ -1509,5 +1517,24 @@ class GlobalController extends Controller
           
           return $response;
         });
-      }
+    }
+
+    public function overstaple(Request $request, $id) {
+        try {
+            $data = Warehouse::where('id', $id)->first();
+            if($data->stock !== 0) {
+                $data->update([
+                    'overstapled_at' => now(),
+                    'is_overstapled' => true
+                ]);
+                $result = array('success' => true, 'data' => $data);
+            } else {
+                $result = array('success' => false, 'message' => trans('no_stock'));
+            }
+        } catch (Exception $e) {
+            $result = array('success' => false, 'message' => $e->getMessage());
+        }
+
+        return $result;
+    }
 }

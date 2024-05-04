@@ -15,6 +15,8 @@ use App\Http\Requests\LoginRequest;
 use App\Models\AccessMenu;
 use App\Models\Menu;
 use App\Models\UserGroup;
+use App\Models\Warehouse;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -93,7 +95,7 @@ class DashboardController extends Controller
                 ->with(['menu' => function ($query) {
                     $query->select('id', 'code');
                 }])
-                ->select('access_menus.id', 'access_menus.user_group_id', 'access_menus.menu_id', 'open', 'add', 'edit', 'delete', 'print', 'approve', 'disapprove')
+                ->select('access_menus.id', 'access_menus.user_group_id', 'access_menus.menu_id', 'open', 'add', 'edit', 'delete', 'print', 'approve', 'disapprove', 'menus.url_menu as menu_url')
                 ->distinct('access_menus.menu_id')
                 ->orderBy('access_menus.menu_id')
                 ->orderBy('open', 'DESC')
@@ -106,7 +108,10 @@ class DashboardController extends Controller
                 ->leftJoin('menus', 'access_menus.menu_id', '=', 'menus.id')
                 ->get();
             Session::put('access_menu', $getAccessMenu);
-            
+
+            // update overstaple status
+            $this->updateOverstapleStatus();
+
             return redirect()->route('dashboard');
         } catch (\Exception $e) {
             return redirect()->back()
@@ -128,5 +133,33 @@ class DashboardController extends Controller
         Auth::logout();
         return redirect()->route('login')
             ->with('success', $message);
+    }
+
+    public function updateOverstapleStatus() {
+        $dataWarehouses = Warehouse::all();
+        foreach ($dataWarehouses as $dataWarehouse) {
+            if ($this->isMoreThanThreeMonths($dataWarehouse->overstapled_at)) {
+                Warehouse::where('id', $dataWarehouse->id)->update([
+                    'is_overstapled' => false
+                ]);
+            }
+        }
+    }
+
+    public function isMoreThanThreeMonths($stockLastUpdated)
+    {
+        $dateToCheck = Carbon::parse($stockLastUpdated);
+
+        // Get the current date
+        $currentDate = Carbon::now();
+
+        // Check if the date is more than 3 months ago
+        if ($dateToCheck->diffInMonths($currentDate) > 3) {
+            // Date is more than 3 months ago
+            return true;
+        } else {
+            // Date is within the last 3 months
+            return false;
+        }
     }
 }
