@@ -46,7 +46,6 @@
                             <table class="table table-striped" id="myTable">
                                 <thead>
                                     <tr>
-                                        <th></th>
                                         <th>{{ __('setting_user')['col_name'] }}</th>
                                         <th>{{ __('setting_user')['col_email'] }}</th>
                                         <th>{{ __('setting_user')['col_user_group'] }}</th>
@@ -85,14 +84,6 @@
                 }
             },
             columns: [
-                {
-                    data: null,
-                    render: function(data, type, row, meta) {
-                        return meta.row + 1;
-                    },
-                    orderable: false,
-                    searchable: false
-                },
                 {
                     data: 'name',
                     name: 'name'
