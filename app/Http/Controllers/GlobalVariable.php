@@ -43,6 +43,7 @@ class GlobalVariable
     // SETTING
     public $actionGetUser;
     public $actionGetUserGroup;
+    public $actionGetTax;
 
     public function __construct()
     {
@@ -78,6 +79,7 @@ class GlobalVariable
         // setting
         $this->actionGetUser = 'getUser';
         $this->actionGetUserGroup = 'getUserGroup';
+        $this->actionGetTax = 'getTax';
     }
 
     public function ModuleGlobal($module, $subModule, $menuUrl, $menuRoute, $menuParam)

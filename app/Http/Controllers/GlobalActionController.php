@@ -43,6 +43,7 @@ class GlobalActionController extends Controller
         'getUser' => 'User',
         'getUserGroup' => 'UserGroup',
         'getAccessMenu' => 'AccessMenu',
+        'getTax' => 'Tax',
 
         // ADD MASTER
         'addProvince' => 'Province',
@@ -101,6 +102,7 @@ class GlobalActionController extends Controller
         // UPDATE SETTING
         'updateUser' => 'User',
         'updateUserGroup' => 'UserGroup',
+        'updateTax' => 'Tax',
 
         // SOFT DELETES
         'softDeleteProvince' => 'Province',

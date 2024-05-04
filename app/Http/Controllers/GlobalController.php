@@ -20,6 +20,7 @@ use App\Models\StockBalance;
 use App\Models\StockReport;
 use App\Models\StockTransfer;
 use App\Models\StockTransferItemDetail;
+use App\Models\Tax;
 use App\Models\Warehouse;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -371,7 +372,13 @@ class GlobalController extends DashboardController
                 );
         }
 
-        $data = $query->get();
+        if(isset($request['type'])) {
+            if($request['type'] === 'latest') {
+                $data = $query->get()->last();
+            }
+        } else {
+            $data = $query->get();
+        }
 
         $result = array('success' => true, 'data' => $data);
         return $result;
@@ -554,7 +561,10 @@ class GlobalController extends DashboardController
             return response()->json(['success' => false, 'message' => 'Action not found'], 404);
         }
 
-        $data = $this->modelName($actionsToModel[$action])::findOrFail($id);
+        if($action !== 'updateTax') {
+            $data = $this->modelName($actionsToModel[$action])::findOrFail($id);
+        }
+
 
         $result = DB::transaction(function () use ($actionsToModel, $action, $requestBody, $id) {
 
@@ -1075,6 +1085,18 @@ class GlobalController extends DashboardController
                     }
                 }
             }
+
+            // setting PPN
+            elseif($action == 'updateTax') {
+                $data = Tax::get()->last();
+                if($data !== null){
+                    if (intval($requestBody['ppn']) !== $data['ppn']) {
+                        $data = Tax::create($requestBody);
+                    }
+                } else {
+                    $data = Tax::create($requestBody);
+                }
+            }
             
             // Default action
             else {
@@ -1536,5 +1558,19 @@ class GlobalController extends DashboardController
         }
 
         return $result;
+    }
+
+    public function getDataTax() {
+        $set_request = SetRequestGlobal(action: 'getTax', type: 'latest');
+        $result = $this->getData($set_request);
+        if ($result['data'] !== null) {
+            $decodedData = $result['data'];
+        } else {
+            $decodedData = new Tax([
+                'ppn' => 10
+            ]);
+        }
+
+        return $decodedData['ppn'];
     }
 }

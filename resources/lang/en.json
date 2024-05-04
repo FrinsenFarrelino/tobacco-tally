@@ -549,5 +549,20 @@
         "col_print": "Print",
         "col_approve": "Approve",
         "col_disapprove": "Disapprove"
+    },
+
+    "setting_tax_tax_setting": {
+        "submodule": "Tax",
+        "edit": "Edit",
+        "name": "Tax Setting",
+        "col_ppn": "PPN"
+    },
+
+    "setting_tax_tax_history": {
+        "submodule": "Tax",
+        "name": "Tax History",
+        "list": "List",
+        "col_ppn": "PPN %",
+        "col_date": "Date Set"
     }
 }

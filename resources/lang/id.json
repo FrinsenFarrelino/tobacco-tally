@@ -543,5 +543,20 @@
         "col_print": "Cetak",
         "col_approve": "Setujui",
         "col_disapprove": "Tidak Setujui"
+    },
+
+    "setting_tax_tax_setting": {
+        "submodule": "Pajak",
+        "edit": "Ubah",
+        "name": "Pengaturan Pajak",
+        "col_ppn": "PPN"
+    },
+
+    "setting_tax_tax_history": {
+        "submodule": "Pajak",
+        "name": "Riwayat Pengaturan Pajak",
+        "list": "Daftar",
+        "col_ppn": "PPN %",
+        "col_date": "Tanggal Diatur"
     }
 }

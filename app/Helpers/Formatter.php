@@ -1,5 +1,5 @@
 <?php
-    function SetRequestGlobal($action=null, $requestData = null, $filter = null, $formatCode = null, $manualCode = null, $groupBy = null, $orderBy = null, $sort = 'asc', $limit = null, $additional_action=null, $additional_request=null, $search=null, $input_param=null, $custom_filters = [], $get_data = '')
+    function SetRequestGlobal($action=null, $requestData = null, $filter = null, $formatCode = null, $manualCode = null, $groupBy = null, $orderBy = null, $sort = 'asc', $limit = null, $additional_action=null, $additional_request=null, $search=null, $input_param=null, $custom_filters = [], $get_data = '', $type=null)
     {
         $set_request = [];
 
@@ -66,6 +66,11 @@
         if($limit!==null)
         {
             $set_request['filters']['limit'] = $limit;
+        }
+
+        if($type!==null)
+        {
+            $set_request['type'] = $type;
         }
 
         if(!empty($custom_filters))
