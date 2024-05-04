@@ -84,4 +84,18 @@
 
         return $set_request;
     }
+
+    function generateTerbilang($angka){
+        $bilangan=array("","satu","dua","tiga","empat","lima","enam","tujuh","delapan","sembilan","sepuluh","sebelas");
+        if($angka<12)return " ".$bilangan[$angka];
+        elseif($angka<20)return generateTerbilang($angka-10)." belas";
+        elseif($angka<100)return generateTerbilang($angka/10)." puluh".generateTerbilang($angka%10);
+        elseif($angka<200)return " seratus".generateTerbilang($angka-100);
+        elseif($angka<1000)return generateTerbilang($angka/100)." ratus".generateTerbilang($angka%100);
+        elseif($angka<2000)return " seribu".generateTerbilang($angka-1000);
+        elseif($angka<1000000)return generateTerbilang($angka/1000)." ribu".generateTerbilang($angka%1000);
+        elseif($angka<1000000000)return generateTerbilang($angka/1000000)." juta".generateTerbilang($angka%1000000);
+        elseif($angka<1000000000000)return generateTerbilang($angka/1000000000)." miliar".generateTerbilang(fmod($angka,1000000000));
+        elseif($angka<1000000000000000)return generateTerbilang($angka/1000000000000)." triliun".generateTerbilang(fmod($angka,1000000000000));
+    }
 ?>
