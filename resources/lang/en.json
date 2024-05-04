@@ -444,6 +444,7 @@
         "list": "List",
         "col_transaction_code": "Transaction Code",
         "col_warehouse": "Warehouse",
+        "col_branch": "Branch",
         "col_item": "Item",
         "col_unit": "Unit",
         "col_amount": "Amount",
