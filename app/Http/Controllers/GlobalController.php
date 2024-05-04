@@ -283,12 +283,17 @@ class GlobalController extends DashboardController
         }
         elseif ($action == 'getSale') {
             $query->leftJoin('customers', 'customers.id', '=', 'sales.customer_id');
+            $query->leftJoin('cities', 'cities.id', '=', 'customers.send_city_id');
             $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'sales.created_by');
             $query->leftJoin('users as updated_by_user', 'updated_by_user.id', '=', 'sales.updated_by');
             $query->leftJoin('users as deleted_by_user', 'deleted_by_user.id', '=', 'sales.deleted_by');
             $query->select(
                 'sales.*',
                 'customers.name as customer_name',
+                'customers.code as customer_code',
+                'customers.phone_number as customer_phone_number',
+                'customers.send_address as customer_send_address',
+                'cities.name as customer_send_city',
                 'created_by_user.name as created_by',
                 'updated_by_user.name as updated_by',
                 'deleted_by_user.name as deleted_by',
