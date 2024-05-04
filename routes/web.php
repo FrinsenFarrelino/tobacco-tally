@@ -17,6 +17,8 @@ use App\Http\Controllers\MasterData\Relation\DivisionController;
 use App\Http\Controllers\MasterData\Relation\EmployeeController;
 use App\Http\Controllers\MasterData\Relation\PositionController;
 use App\Http\Controllers\MasterData\Relation\SupplierController;
+use App\Http\Controllers\Report\PurchaseController as ReportPurchaseController;
+use App\Http\Controllers\Report\SaleController as ReportSaleController;
 use App\Http\Controllers\Report\StockBalanceController as ReportStockBalanceController;
 use App\Http\Controllers\Report\StockReportController;
 use App\Http\Controllers\Setting\GroupUserController;
@@ -120,6 +122,14 @@ Route::group(['middleware' => ['web']], function () {
             Route::prefix('/report/')->group(function () {
                 Route::get('stock-report', [StockReportController::class, 'index'])->name('stock-report.index');
                 Route::get('stock-balance', [ReportStockBalanceController::class, 'index'])->name('stock-balance.index');
+                Route::controller(ReportSaleController::class)->group(function () {
+                    Route::resource('sale-report', ReportSaleController::class);
+                    Route::get('sale-report/print/{sale_report}', [ReportSaleController::class, 'createPDF'])->name('sale-report.print');
+                });
+                Route::controller(ReportPurchaseController::class)->group(function () {
+                    Route::resource('purchase-report', ReportPurchaseController::class);
+                    Route::get('purchase-report/print/{purchase_report}', [ReportPurchaseController::class, 'createPDF'])->name('purchase-report.print');
+                });
             });
         });
     });
