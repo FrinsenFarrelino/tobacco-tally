@@ -165,7 +165,7 @@
                                 <div class="col-md-12">
                                     {!! renderTextArea('mb-3 row', 'col-md-4 col-form-label', 'col-md-8', 'remark', __('transaction_sale')['col_remark'], 5, $transaction_sale["remark"] ?? '', $mode, '') !!}
                                     {!! renderInput('mb-3 row', 'col-md-4 col-form-label', 'col-md-8', 'text', 'subtotal', __('transaction_sale')['col_subtotal'], $transaction_sale['subtotal'] ?? '', $mode, 'onkeypress="return false;"') !!}
-                                    {!! renderFieldCombineInput('mb-3 row', 'col-md-4', 'col-md-8', __('transaction_sale')['col_ppn'], 'col-3 col-lg-2', 'col-3 col-lg-2', 'col-6 col-lg-8', 'ppn', $transaction_sale["ppn"] ?? '10', 'ppn_percent', $transaction_sale["ppn_percent"] ?? '%', 'ppn_price', $transaction_sale["ppn_price"] ?? '', 'required min="0" max="100"', 'disabled', 'onkeypress="return false;"', 'ppn', 'ppn_percent', 'ppn_price', $mode, type_input1: 'number') !!}
+                                    {!! renderFieldCombineInput('mb-3 row', 'col-md-4', 'col-md-8', __('transaction_sale')['col_ppn'], 'col-3 col-lg-2', 'col-3 col-lg-2', 'col-6 col-lg-8', 'ppn', $transaction_sale["ppn"] ?? $ppn, 'ppn_percent', $transaction_sale["ppn_percent"] ?? '%', 'ppn_price', $transaction_sale["ppn_price"] ?? '', 'onkeypress="return false;"', 'disabled', 'onkeypress="return false;"', 'ppn', 'ppn_percent', 'ppn_price', $mode) !!}
                                     {!! renderInput('mb-3 row', 'col-md-4 col-form-label', 'col-md-8', 'text', 'total', __('transaction_sale')['col_total'], $transaction_sale['total'] ?? '', $mode, 'onkeypress="return false;"') !!}
                                 </div>
                             </div>

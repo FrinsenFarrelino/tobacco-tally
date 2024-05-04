@@ -68,6 +68,7 @@ class SaleController extends GlobalController
         $formData['action_customer'] = $this->globalVariable->actionGetCustomer;
         $today = Carbon::today();
         $formData['today'] = Carbon::parse($today)->toDateString();
+        $formData['ppn'] = $this->getDataTax();
 
         return view($this->form_file, $formData);
     }
@@ -132,6 +133,7 @@ class SaleController extends GlobalController
         $today = Carbon::today();
         $formData['today'] = Carbon::parse($today)->toDateString();
         $formData['show_button'] = $show_button;
+        $formData['ppn'] = $this->getDataTax();
 
         return view($this->form_file, $formData);
     }
@@ -160,6 +162,7 @@ class SaleController extends GlobalController
         $formData['action_customer'] = $this->globalVariable->actionGetCustomer;
         $today = Carbon::today();
         $formData['today'] = Carbon::parse($today)->toDateString();
+        $formData['ppn'] = $this->getDataTax();
 
         return view($this->form_file, $formData);
     }

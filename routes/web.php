@@ -22,6 +22,8 @@ use App\Http\Controllers\Report\SaleController as ReportSaleController;
 use App\Http\Controllers\Report\StockBalanceController as ReportStockBalanceController;
 use App\Http\Controllers\Report\StockReportController;
 use App\Http\Controllers\Setting\GroupUserController;
+use App\Http\Controllers\Setting\Tax\TaxHistoryController;
+use App\Http\Controllers\Setting\Tax\TaxSettingController;
 use App\Http\Controllers\Setting\UserController;
 use App\Http\Controllers\Transaction\PurchaseController;
 use App\Http\Controllers\Transaction\SaleController;
@@ -66,6 +68,15 @@ Route::group(['middleware' => ['web']], function () {
                     Route::post('group-user/access-menu', [GroupUserController::class, 'setAccessMenu'])->name('group-user.set-access-menu');
                 });
                 Route::resource('user', UserController::class);
+
+                Route::prefix('/tax/')->group(function () {
+                    Route::controller(TaxSettingController::class)->group(function () {
+                        Route::get('tax-setting', [TaxSettingController::class, 'index'])->name('tax-setting.index');
+                        Route::post('tax-setting', [TaxSettingController::class, 'store'])->name('tax-setting.store');
+                    });
+    
+                    Route::get('tax-history', [TaxHistoryController::class, 'index'])->name('tax-history.index');
+                });
             });
 
             Route::prefix('/master-data/')->group(function () {
