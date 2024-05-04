@@ -46,7 +46,6 @@
                             <table class="table table-striped" id="myTable">
                                 <thead>
                                     <tr>
-                                        <th></th>
                                         <th>{{ __('transaction_warehouse_incoming_item')['col_code'] }}</th>
                                         <th>{{ __('transaction_warehouse_incoming_item')['col_date'] }}</th>
                                         <th>{{ __('transaction_warehouse_incoming_item')['col_is_approve'] }}</th>
@@ -88,14 +87,7 @@
                     };
                 }
             },
-            columns: [{
-                    data: null,
-                    render: function(data, type, row, meta) {
-                        return meta.row + 1;
-                    },
-                    orderable: false,
-                    searchable: false
-                },
+            columns: [
                 {
                     data: 'code',
                     name: 'code'
