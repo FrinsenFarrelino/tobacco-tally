@@ -8,6 +8,7 @@ use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\GlobalVariable;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PurchaseController extends GlobalController
 {
@@ -16,6 +17,7 @@ class PurchaseController extends GlobalController
 
     private $index_file;
     private $form_file;
+    private $print_file;
 
     public function __construct(GlobalVariable $globalVariable, GlobalActionController $globalActionController)
     {
@@ -25,6 +27,7 @@ class PurchaseController extends GlobalController
 
         $this->index_file = 'report.purchase.index';
         $this->form_file = 'report.purchase.form';
+        $this->print_file = 'report.purchase.print';
     }
 
     private function computeSetFeatures()
@@ -134,45 +137,42 @@ class PurchaseController extends GlobalController
     }
 
     public function createPDF(string $id) {
-        dd($id);
-        // // retreive all records from db
-        // $search_key[] = array(
-        //     'key' => 'marketing_orders.id',
-        //     'term' => 'equal',
-        //     'query' => $id
-        // );
+        // retreive all records from db
+        $search_key[] = array(
+            'key' => 'purchases.id',
+            'term' => 'equal',
+            'query' => $id
+        );
 
-        // $set_request = SetRequestGlobal(action:$this->globalVariable->actionGetMarketingOrder, deviceInfo:collectDeviceInfo(), search:$search_key);
-        // $result = $this->getApi($set_request);
-        // $decodedData = removeArrayBracket($result['data']['data']);
+        $set_request = SetRequestGlobal(action:$this->globalVariable->actionGetPurchase, search:$search_key);
+        $result = $this->getData($set_request);
+        $decodedData = $result['data'][0];
 
-        // $search_key_detail[] = array(
-        //     'key' => 'marketing_order_item_details.marketing_order_id',
-        //     'term' => 'equal',
-        //     'query' => $id
-        // );
+        $search_key_detail[] = array(
+            'key' => 'purchase_item_details.purchase_id',
+            'term' => 'equal',
+            'query' => $id
+        );
 
-        // $set_request_grid = SetRequestGlobal(action:'getMarketingOrderDetail', deviceInfo:collectDeviceInfo(), search:$search_key_detail);
+        $set_request_grid = SetRequestGlobal(action:'getPurchaseDetail', search:$search_key_detail);
+        $result_grid = $this->getData($set_request_grid);
+        $decodedDataGrid = $result_grid['data'];
 
-        // $result_grid = $this->getApi($set_request_grid);
+        $formData['data'] = $decodedData;
+        $formData['data_grid'] = $decodedDataGrid;
 
-        // $formData['data'] = $decodedData;
-        // $formData['data_grid'] = $result_grid['data']['data'];
+        // load blade / html content to pdf
+        $pdf = PDF::loadView($this->print_file, $formData)->setPaper('A4','landscape');
 
-        // // load blade / html content to pdf
-        // $pdf = PDF::loadView($this->print_file, $formData)->setPaper('A4','landscape');
+        $pdf->output();
+        $domPdf = $pdf->getDomPDF();
+        $canvas = $domPdf->get_canvas();
 
-        // $pdf->output();
-        // $domPdf = $pdf->getDomPDF();
-        // $canvas = $domPdf->get_canvas();
+        // another way to define footer. but if there using page then use this.
+        $canvas->page_text($canvas->get_width() - 60, $canvas->get_height() - 42, "Hal {PAGE_NUM} / {PAGE_COUNT}", null, 11, [0, 0, 0]);
+        // $canvas->page_text(180, $canvas->get_height() - 42, "    Hal {PAGE_NUM} / {PAGE_COUNT}", null, 11, [0, 0, 0]);
 
-        // // another way to define footer. but if there using page then use this.
-        // $canvas->page_text($canvas->get_width() - 60, $canvas->get_height() - 42, "Hal {PAGE_NUM} / {PAGE_COUNT}", null, 11, [0, 0, 0]);
-        // // $canvas->page_text(180, $canvas->get_height() - 42, "    Hal {PAGE_NUM} / {PAGE_COUNT}", null, 11, [0, 0, 0]);
+        return $pdf->stream();
 
-        // return $pdf->stream();
-
-        // // download PDF file with download method
-        // // return $pdf->download('pdf_file.pdf');
     }
 }

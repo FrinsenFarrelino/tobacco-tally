@@ -29,8 +29,10 @@ class GlobalActionController extends Controller
         // GET TRANSACTION
         'getPurchase' => 'Purchase',
         'getPurchaseItemGrid' => 'Purchase',
+        'getPurchaseDetail' => 'PurchaseItemDetail',
         'getSale' => 'Sale',
         'getSaleItemGrid' => 'Sale',
+        'getSaleDetail' => 'SaleItemDetail',
         'getIncomingItem' => 'StockTransfer',
         'getIncomingItemItemGrid' => 'StockTransfer',
         'getOutgoingItem' => 'StockTransfer',

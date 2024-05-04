@@ -251,6 +251,7 @@ class GlobalController extends DashboardController
             $query->select(
                 'purchases.*',
                 'suppliers.name as supplier_name',
+                'suppliers.code as supplier_code',
                 'created_by_user.name as created_by',
                 'updated_by_user.name as updated_by',
                 'deleted_by_user.name as deleted_by',
@@ -268,6 +269,17 @@ class GlobalController extends DashboardController
             } else {
                 return response()->json(['success' => false, 'message' => 'Filter by Purchase Id is required!'], 400);
             }
+        } elseif ($action == 'getPurchaseDetail') {
+            $query->leftJoin('items', 'items.id', '=', 'purchase_item_details.item_id');
+            $query->leftJoin('categories', 'categories.id', '=', 'items.category_id');
+            $query->leftJoin('units', 'units.id', '=', 'items.unit_id');
+            $query->select(
+                'purchase_item_details.*',
+                'items.name as item_name',
+                'items.buy_price as buy_price',
+                'units.name as unit_name',
+                'categories.name as category_name',
+            );
         }
         elseif ($action == 'getSale') {
             $query->leftJoin('customers', 'customers.id', '=', 'sales.customer_id');
@@ -294,7 +306,19 @@ class GlobalController extends DashboardController
             } else {
                 return response()->json(['success' => false, 'message' => 'Filter by Sale Id is required!'], 400);
             }
+        } elseif ($action == 'getSaleDetail') {
+            $query->leftJoin('items', 'items.id', '=', 'sale_item_details.item_id');
+            $query->leftJoin('categories', 'categories.id', '=', 'items.category_id');
+            $query->leftJoin('units', 'units.id', '=', 'items.unit_id');
+            $query->select(
+                'sale_item_details.*',
+                'items.name as item_name',
+                'items.sell_price as sell_price',
+                'units.name as unit_name',
+                'categories.name as category_name',
+            );
         }
+
         elseif ($action == 'getOutgoingItemItemGrid' || $action == 'getIncomingItemItemGrid') {
             // Must be filtered by sale id.
             if (isset($filters['id'])) {
