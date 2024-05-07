@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
-class GlobalController extends DashboardController
+class GlobalController extends GrandController
 {
     private $globalVariable;
     protected $customerGridService;
@@ -1453,6 +1453,20 @@ class GlobalController extends DashboardController
         ];
 
         return view('warning', $objResponse)->with('message', $message); // Load the 'warning.blade.php' view
+    }
+
+    public function showError()
+    {
+        $message = session('message');
+
+        $objResponse = [
+            'title' => 'Error',
+            'subtitle' =>  'Error',
+            'menu' => 'error',
+            'mode' => 'index'
+        ];
+
+        return view('error', $objResponse)->with('message', $message); // Load the 'error.blade.php' view
     }
 
     public function callRenderBody(Request $request)

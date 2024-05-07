@@ -99,6 +99,12 @@
         "back": "Kembali ke beranda"
     },
 
+    "error": {
+        "title": "Kesalahan Server Internal",
+        "content": "Anda tidak memiliki izin untuk melihat sumber daya ini",
+        "back": "Log out"
+    },
+
     "profile_user": {
         "title": "Profil Edit",
         "back": "Kembali",
