@@ -24,6 +24,8 @@
     "not_authorized_action": "Anda tidak memiliki akses untuk melakukan aksi ini.",
     "not_authorized_page": "Anda tidak memiliki akses menuju halaman ini.",
     "no_stock": "Tidak ada stok di dalam warehouse",
+    "redirect_purchase": "Pergi ke pembelian",
+    "redirect_sale": "Pergi ke Penjualan",
 
     "script_modal": {
         "title_delete": "Hapus data",
@@ -90,7 +92,19 @@
         "menu": "Menu",
         "col_no": "Nomor",
         "col_name": "Nama",
-        "col_title": "Judul"
+        "col_title": "Judul",
+        "purchase_not_approved": "Total Pembelian Belum Disetujui",
+        "purchase_approved": "Total Pembelian Sudah Disetujui",
+        "sale_not_approved": "Total Penjualan Belum Disetujui",
+        "sale_approved": "Total Penjualan Sudah Disetujui",
+        "outgoing_item": "Barang Keluar",
+        "incoming_item": "Barang Masuk",
+        "on_the_way": "Dalam Perjalanan",
+        "stock_summary": "Rincian Stok",
+        "total_sale": "Total Penjualan",
+        "total_purchase": "Total Pembelian",
+        "profit": "Keuntungan",
+        "top_selling": "Barang yang paling laris dijual"
     },
 
     "warning": {
