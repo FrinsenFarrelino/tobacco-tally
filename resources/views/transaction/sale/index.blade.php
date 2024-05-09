@@ -82,6 +82,7 @@
                 type: "GET",
                 data: function(d) {
                     d.route = "{{ $menu_route }}";
+                    d.sort = 'desc';
                 }
             },
             columns: [
