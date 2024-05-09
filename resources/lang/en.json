@@ -24,6 +24,8 @@
     "not_authorized_action": "You do not have permission to perform this action.",
     "not_authorized_page": "You do not have permission to access this page.",
     "no_stock": "There is no stock in the warehouse",
+    "redirect_purchase": "Go to Purchase",
+    "redirect_sale": "Go to Sale",
 
     "script_modal": {
         "title_delete": "Delete Data",
@@ -95,7 +97,19 @@
         "menu": "Menu",
         "col_no": "Number",
         "col_name": "Name",
-        "col_title": "Title"
+        "col_title": "Title",
+        "purchase_not_approved": "Total Purchase Not Approved",
+        "purchase_approved": "Total Purchase Approved",
+        "sale_not_approved": "Total Sale Not Approved",
+        "sale_approved": "Total Sale Approved",
+        "outgoing_item": "Outgoing Item",
+        "incoming_item": "Incoming Item",
+        "on_the_way": "On The Way",
+        "stock_summary": "Stock Summary",
+        "total_sale": "Total Sale",
+        "total_purchase": "Total Expenses",
+        "profit": "Profit",
+        "top_selling": "Top Selling Item"
     },
 
     "warning": {

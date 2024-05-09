@@ -18,148 +18,112 @@ use App\Models\UserGroup;
 use App\Models\Warehouse;
 use Carbon\Carbon;
 
-class DashboardController extends Controller
+class DashboardController extends GlobalController
 {
     private $globalVariable;
+    protected $globalActionController;
 
-    // public function __construct(GlobalVariable $globalVariable)
-    // {
-    //     $this->globalVariable = $globalVariable;
-    //     $this->globalVariable->ModuleGlobal('home', 'dashboard', '/', 'dashboard', 'dashboard');
-    // }
+    public function __construct(GlobalVariable $globalVariable, GlobalActionController $globalActionController)
+    {
+        $this->globalVariable = $globalVariable;
+        $this->globalActionController = $globalActionController;
+        $this->globalVariable->ModuleGlobal('home', 'dashboard', '/', 'dashboard', 'dashboard');
+    }
 
     public function dashboard(Request $request)
     {
         $listMenu = Session::get('list_menu');
+        $user_group = Session::get('user_group');
+
         $formData['list_menus'] = $listMenu;
         // dd($formData);
         $formData['title'] = 'Home';
 
-        // todo tambahkan kondisi jika usergroup name nya manager, maka langsung redirect ke dashboard grafik
-        return view('dashboard', $formData);
-    }
+        // data purchase section
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetPurchase);
+        $result = $this->getData($set_request);
+        $totalPurchaseNotApproved = 0;
+        $totalPurchaseApproved = 0;
 
-    public function loginpage()
-    {
-        return view('auth.login', [
-            'title' => 'Login'
-        ]);
-    }
-
-    /**
-     * loginSend a newly created resource in storage.
-     */
-    public function loginSend(Request $request)
-    {
-        try {
-            $checkUser = User::where('email', $request->email)->first();
-
-            if ($checkUser === null) {
-                return redirect()->back()
-                    ->with('error', 'Your credential does not match out record')
-                    ->withInput();
-            }
-
-            if ($checkUser->is_blocked) {
-                return redirect()->back()
-                    ->with('error', 'Blocked due to wrong password 3 times')
-                    ->withInput();
-            }
-
-            if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-
-                $checkUser->increment('login_attempt');
-
-                if ($checkUser->login_attempt > 2) {
-                    User::where('email', $request->email)->update([
-                        'is_blocked' => 1,
-                        'remark' => 'blocked due to wrong password 3 times'
-                    ]);
-                    return redirect()->back()
-                        ->with('error', 'Blocked due to wrong password 3 times')
-                        ->withInput();
-                }
-
-                return redirect()->back()
-                    ->with('error', 'Wrong email or password')
-                    ->withInput();
-            }
-
-            $user = Auth::user();
-            Session::put('user', $user);
-            $list_menu = Menu::where('is_active', 1)->orderBy("order", "asc")->get();
-            Session::put('list_menu', $list_menu);
-            $userGroup = UserGroup::where('id', Session::get('user')['user_group_id'])->first();
-            Session::put('user_group', $userGroup);
-            $getAccessMenu = AccessMenu::where('user_group_id', $userGroup->id)
-                ->with(['menu' => function ($query) {
-                    $query->select('id', 'code');
-                }])
-                ->select('access_menus.id', 'access_menus.user_group_id', 'access_menus.menu_id', 'open', 'add', 'edit', 'delete', 'print', 'approve', 'disapprove', 'menus.url_menu as menu_url')
-                ->distinct('access_menus.menu_id')
-                ->orderBy('access_menus.menu_id')
-                ->orderBy('open', 'DESC')
-                ->orderBy('add', 'DESC')
-                ->orderBy('edit', 'DESC')
-                ->orderBy('delete', 'DESC')
-                ->orderBy('print', 'DESC')
-                ->orderBy('approve', 'DESC')
-                ->orderBy('disapprove', 'DESC')
-                ->leftJoin('menus', 'access_menus.menu_id', '=', 'menus.id')
-                ->get();
-            Session::put('access_menu', $getAccessMenu);
-
-            // update overstaple status
-            $this->updateOverstapleStatus();
-
-            return redirect()->route('dashboard');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->withErrors($e)
-                ->with('error', $e->getMessage())
-                ->withInput();
-        }
-    }
-
-    public function sendLogout(Request $request)
-    {
-        $message = 'Successfully logged out';
-
-        if ($request->session()->get('message')) {
-            $message = $request->session()->get('message');
-        }
-
-        Session::flush();
-        Auth::logout();
-        return redirect()->route('login')
-            ->with('success', $message);
-    }
-
-    public function updateOverstapleStatus() {
-        $dataWarehouses = Warehouse::all();
-        foreach ($dataWarehouses as $dataWarehouse) {
-            if ($this->isMoreThanThreeMonths($dataWarehouse->overstapled_at)) {
-                Warehouse::where('id', $dataWarehouse->id)->update([
-                    'is_overstapled' => false
-                ]);
+        foreach ($result['data'] as $dataPurchase) {
+            if($dataPurchase['is_approve'] !== true) {
+                $totalPurchaseNotApproved++;
+            } else {
+                $totalPurchaseApproved++;
             }
         }
-    }
+        $formData['totalPurchaseNotApproved'] = $totalPurchaseNotApproved;
+        $formData['totalPurchaseApproved'] = $totalPurchaseApproved;
+        // end of data purchase section
 
-    public function isMoreThanThreeMonths($stockLastUpdated)
-    {
-        $dateToCheck = Carbon::parse($stockLastUpdated);
+        // data sale section
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetSale);
+        $result = $this->getData($set_request);
+        $totalSaleNotApproved = 0;
+        $totalSaleApproved = 0;
 
-        // Get the current date
-        $currentDate = Carbon::now();
-
-        // Check if the date is more than 3 months ago
-        if ($dateToCheck->diffInMonths($currentDate) > 3) {
-            // Date is more than 3 months ago
-            return true;
-        } else {
-            // Date is within the last 3 months
-            return false;
+        foreach ($result['data'] as $dataSale) {
+            if($dataSale['is_approve'] !== true) {
+                $totalSaleNotApproved++;
+            } else {
+                $totalSaleApproved++;
+            }
         }
+        $formData['totalSaleNotApproved'] = $totalSaleNotApproved;
+        $formData['totalSaleApproved'] = $totalSaleApproved;
+        // end of data sale section
+
+        // data warehouse section
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetOutgoingItem);
+        $result = $this->getData($set_request);
+        $totalOutgoing = 0;
+        $totalIncoming = 0;
+        $totalOnTheWay = 0;
+
+        foreach ($result['data'] as $dataOutgoing) {
+            if($dataOutgoing['is_approve_1'] == true && $dataOutgoing['is_approve_2'] == false) {
+                $totalOnTheWay++;
+            }
+            if($dataOutgoing['is_approve_1'] == true && $dataOutgoing['is_approve_2'] == true) {
+                $totalIncoming++;
+            }
+            if($dataOutgoing['is_approve_1'] == false && $dataOutgoing['is_approve_2'] == false) {
+                $totalOutgoing++;
+            }
+        }
+        $formData['totalOutgoing'] = $totalOutgoing;
+        $formData['totalIncoming'] = $totalIncoming;
+        $formData['totalOnTheWay'] = $totalOnTheWay;
+        // end of data warehouse section
+
+        // data stock
+        $set_request = SetRequestGlobal(action: $this->globalVariable->actionGetWarehouse);
+        $result = $this->getData($set_request);
+        $formData['dataWarehouses'] = $result['data'];
+        // end of data stock
+
+        // admin lombok
+        if ($user_group['name'] === 'Admin Lombok' && $user_group['branch_id'] === 1) {
+            return view('dashboard-adm-lombok', $formData);
+        }
+        // admin bojonegoro
+        if ($user_group['name'] === 'Admin Bojonegoro' && $user_group['branch_id'] === 2) {
+            return view('dashboard-adm-bjn', $formData);
+        }
+        // admin warehouse
+        if (str_contains($user_group['name'], 'Warehouse')) {
+            return view('dashboard-adm-wh', $formData);
+        }
+        // super admin
+        if($user_group['name'] === 'Admin') {
+            return view('dashboard-manager', $formData);
+        }
+        // manager
+        if (str_contains($user_group['name'], 'Manager')) {
+            return view('dashboard-manager', $formData);
+        }
+
+        return redirect()->route('error')->with('message', 'You do not have permission to access this page.');
+
     }
 }
