@@ -127,6 +127,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h4>{{ __('dashboard')['stock_summary'] }}</h4>
+                        <div>(KG)</div>
                     </div>
                     <div class="card-body">
                         @foreach($dataWarehouses as $dataWarehouse)
