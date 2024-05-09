@@ -104,6 +104,12 @@
         "back": "Back to Home"
     },
 
+    "error": {
+        "title": "Internal Server Error",
+        "content": "You do not have permission to view this resource",
+        "back": "Logout"
+    },
+
     "profile_user": {
         "title": "Edit Profile",
         "back": "Back",

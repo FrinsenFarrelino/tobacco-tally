@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GlobalController;
+use App\Http\Controllers\GrandController;
 use App\Http\Controllers\MasterData\Business\BankController;
 use App\Http\Controllers\MasterData\Business\BranchController;
 use App\Http\Controllers\MasterData\Business\CityController;
@@ -146,7 +147,7 @@ Route::group(['middleware' => ['web']], function () {
         });
     });
 
-    Route::controller(DashboardController::class)->group(function () {
+    Route::controller(GrandController::class)->group(function () {
         Route::get('login', 'loginpage')->name('login');
         Route::post('/login/send', 'loginSend');
         Route::get('/logout/send', 'sendLogout')->name('logout');
@@ -156,5 +157,6 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/call-helper-function', 'callRenderBody')->name('call-helper-function');
         Route::get('lang/{lang}', ['as' => 'lang.switch', 'uses' => 'switchLang']);
         Route::get('/warning', 'showWarning')->name('warning');
+        Route::get('/error', 'showError')->name('error');
     });
 });
