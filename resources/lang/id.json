@@ -101,10 +101,16 @@
         "incoming_item": "Barang Masuk",
         "on_the_way": "Dalam Perjalanan",
         "stock_summary": "Rincian Stok",
+        "total_sale_this_month": "Total Penjualan Bulan Ini",
+        "total_purchase_this_month": "Total Pembelian Bulan Ini",
+        "profit": "Keuntungan",
+        "top_selling": "Barang yang paling laris dijual",
+        "sale_buy": "Total Penjualan dan Pembelian 1 Tahun Terakhir(Rp)",
         "total_sale": "Total Penjualan",
         "total_purchase": "Total Pembelian",
-        "profit": "Keuntungan",
-        "top_selling": "Barang yang paling laris dijual"
+        "amount": "Jumlah",
+        "month_year": "Bulan/Tahun",
+        "monthly_sale_purchase": "Penjualan dan Pembelian Bulanan (Rp)"
     },
 
     "warning": {

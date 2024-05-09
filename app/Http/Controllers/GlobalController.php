@@ -114,6 +114,23 @@ class GlobalController extends GrandController
             });
         }
 
+
+        // Filter by date range
+        if (isset($filters['start_date']) && isset($filters['end_date'])) {
+            $table = $tableName . '.date';
+            $query->whereBetween($table, [$filters['start_date'], $filters['end_date']]);
+        }
+        // SORT = DESC | ASC
+        if (isset($filters['sort'])) {
+            if (isset($filters['order_by'])) {
+                // $table = $tableName . "." . $filters['order_by'];
+                $table = $filters['order_by'];
+            } else {
+                $table = 'id';
+            }
+            $query->orderBy($tableName .'.'. $table ?? $tableName . '.id', $filters['sort']);
+        }
+        
         if ($action == 'getCity') {
             $query->leftJoin('provinces', 'provinces.id', '=', 'cities.province_id');
             $query->leftJoin('users as created_by_user', 'created_by_user.id', '=', 'cities.created_by');
@@ -1196,6 +1213,14 @@ class GlobalController extends GrandController
             );
     
             $set_request = SetRequestGlobal($action, search: $search_key);
+        } else {
+            $set_request = SetRequestGlobal($action);
+        }
+
+        if(isset($request->sort)) {
+            $sort = $request->sort;
+    
+            $set_request = SetRequestGlobal($action, sort: $sort);
         } else {
             $set_request = SetRequestGlobal($action);
         }

@@ -106,10 +106,16 @@
         "incoming_item": "Incoming Item",
         "on_the_way": "On The Way",
         "stock_summary": "Stock Summary",
-        "total_sale": "Total Sale",
-        "total_purchase": "Total Expenses",
+        "total_sale_this_month": "Total Sale This Month",
+        "total_purchase_this_month": "Total Expenses This Month",
         "profit": "Profit",
-        "top_selling": "Top Selling Item"
+        "top_selling": "Top Selling Item",
+        "sale_buy": "Total Sale and Purchase in the Last 1 Year (Rp)",
+        "total_sale": "Total Sale",
+        "total_purchase": "Total Purchase",
+        "amount": "Amount",
+        "month_year": "Month/Year",
+        "monthly_sale_purchase": "Monthly Sales and Purchases (Rp)"
     },
 
     "warning": {
