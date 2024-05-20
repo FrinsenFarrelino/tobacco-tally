@@ -68,6 +68,11 @@
 
 @section('scripts')
 <script>
+    @if(session('success'))
+        {!! renderSweetAlert('Success',session('success'),'success') !!}
+    @endif
+</script>
+<script>
     $(document).ready(function() {
         setMenuActive();
 
