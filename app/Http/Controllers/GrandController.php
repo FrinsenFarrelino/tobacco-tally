@@ -114,6 +114,7 @@ class GrandController extends Controller
 
             return redirect()->route('dashboard');
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->back()
                 ->withErrors($e)
                 ->with('error', $e->getMessage())
