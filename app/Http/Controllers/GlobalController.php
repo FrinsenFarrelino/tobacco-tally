@@ -175,6 +175,7 @@ class GlobalController extends GrandController
                 'created_by_user.name as created_by',
                 'updated_by_user.name as updated_by',
                 'deleted_by_user.name as deleted_by',
+                DB::raw("TO_CHAR(warehouses.overstapled_at, 'DD Mon YYYY') as overstapled_at")
             );
         } elseif ($action == 'getEmployee') {
             $query->leftJoin('positions', 'positions.id', '=', 'employees.position_id');
